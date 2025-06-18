@@ -1,0 +1,93 @@
+main{
+  width: 100vw;
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+main .uppr{
+  
+  width: 100vw;
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+ 
+}
+main .uppr h1{
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  color:#62686ed3 ;
+}
+main .uppr button{
+  position: relative;
+ 
+}
+main .uppr h2{
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  color:#62686ed3 ;
+}
+main .lower{
+  position: relative;
+  width: 90vw;
+  min-height: 30vh;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  
+}
+main .lower .card button{
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+main .lower .card{
+  position: relative;
+  background: rgba(225, 225, 232, 0.67);
+  min-width: 20vw;
+  min-height: 15rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border-radius: 8px;
+  margin: 1rem;
+  border: 0.5px solid black;
+  
+}
+main .uppr button{
+  color: white;
+  padding: 12px 30px;
+  background: #62686ed3;
+  border-radius: 6px;
+  border: none;
+  font-family: sans-serif;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+main .lower .card .linkstyle{
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  padding: 12px 25px;
+  background: #62686ed3;
+  border-radius: 8px;
+}
+main .lower .card p{
+  font-size: 1.5rem;
+  font-family: sans-serif;
+}
+main .lower .card p:nth-child(2){
+  font-size: 1.2rem;
+}

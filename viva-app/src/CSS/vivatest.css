@@ -1,0 +1,171 @@
+.viva-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.viva-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.viva-question-block {
+  margin-bottom: 20px;
+}
+
+.viva-question {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.viva-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.viva-submit-btn {
+  display: block;
+  margin: 30px auto 0;
+  background-color: #62686ed3;
+  color: white;
+  padding: 12px 30px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.viva-submit-btn:hover {
+  background-color: #0056b3;
+}
+.timestyle{
+  font-family: sans-serif;
+  margin: 1rem 0rem;
+}
+.timestyle p strong{
+  color: #62686ed3;
+}
+
+
+/* VivaTest.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+}
+
+.viva-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.viva-heading {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #1f2937;
+}
+
+.viva-question-block {
+  margin-bottom: 25px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.viva-question {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.viva-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.viva-option-label {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.viva-option-label:hover {
+  background-color: #e0f2fe;
+}
+
+.viva-option-label input[type="radio"] {
+  margin-right: 12px;
+  accent-color: #2563eb;
+}
+
+.option-letter {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.selected {
+  border-color: #2563eb;
+  background-color: #eff6ff;
+}
+
+.viva-submit-btn {
+  margin-top: 30px;
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background-color: #2563eb;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.viva-submit-btn:hover {
+  background-color: #1e40af;
+}
+
+.submitted-data {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #e0f7fa;
+  border-radius: 12px;
+  border: 1px solid #b2ebf2;
+}
+
+.submitted-block {
+  margin-bottom: 25px;
+}
+
+.submitted-block ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.submitted-block li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}

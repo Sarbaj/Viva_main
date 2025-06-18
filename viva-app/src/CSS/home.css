@@ -1,0 +1,72 @@
+h3{
+    font-size: 1.5rem;
+    position: relative;
+    top: 2rem;
+}
+.dashboard-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-title {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  border: 1px solid #ddd;
+  border-radius: 16px;
+  padding: 20px;
+  background-color: #fff;
+  transition: box-shadow 0.2s ease;
+}
+
+.feature-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.feature-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.icon-container {
+  padding: 8px;
+  background-color: #f2f2f2;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-description {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.manage-btn {
+  padding: 8px 16px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.manage-btn:hover {
+  background-color: #0059c1;
+}

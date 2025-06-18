@@ -1,0 +1,288 @@
+@font-face {
+    font-family: "uppercasefont";
+    src: url(../CSS/Fonts/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2)format('woff');
+    ;
+}
+@font-face {
+    font-family: "logo";
+    src: url(../CSS/Fonts/QldNNTtLsx4E__B0XQmWaXx0xKVu.woff2)format('woff');
+}
+
+.MainDiv{
+    width: 100vw;
+    min-height: 75vh;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    font-family: uppercasefont;
+    position: relative;
+}
+.MainDiv .uppr{
+    width: 100vw;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.MainDiv .lowers{
+    width: 100vw;
+    min-height:40vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+   
+}
+.MainDiv .lowers > button{
+    border: 1px solid black;
+    color: rgb(0, 0, 0);
+    padding: 1rem 5rem;
+    border-radius: 6px;
+    font-family: uppercasefont;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+.MainDiv .lowers .btn2{
+    width: 60vw;
+    height: 3rem;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.MainDiv .lowers .btn2 button{
+    font-family: uppercasefont;
+    padding: 1rem 12%;
+    border-radius: 6px;
+    border: none;
+    transition: all ease-in-out 0.5s;
+}
+.MainDiv .lowers .btn2 button:nth-child(1){
+    border-radius: 6px 0px 0px 6px;
+    border-right: 1px solid black;
+}
+.MainDiv .lowers .btn2 button:nth-child(1):hover{
+   box-shadow: 5px 5px 25px rgb(129, 155, 192);
+}
+.MainDiv .lowers .btn2 button:nth-child(2):hover{
+   box-shadow: 5px 5px 25px rgb(129, 155, 192);
+}
+.MainDiv .lowers .btn2 button:nth-child(3):hover{
+   box-shadow: 5px 5px 25px rgb(129, 155, 192);
+}
+.MainDiv .lowers .btn2 button:nth-child(2){
+    border-radius: 0px;
+    border-right: 1px solid black;
+}
+.MainDiv .lowers .btn2 button:nth-child(3){
+    border-radius: 0px 6px 6px 0px;
+}
+
+.MainDiv .lowers .cardcontainer{
+    width: 60vw;
+    min-height:30vh;
+    border-radius: 6px;
+    display: flex;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+    background: rgba(237, 237, 238, 0.404);
+    padding: 2rem;
+    border:1px solid #62686ed3 ;
+    box-shadow: 3px 3px 25px #62686ed3;
+}
+.MainDiv .lowers .cardcontainer .cards{
+    width: 15vw;
+    height: 33vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: rgb(0, 0, 0);
+    padding: 5px;
+    border-radius: 6px;
+    position: relative;
+    background: rgba(255, 255, 255, 0.168);
+    box-shadow: 5px 5px 25px rgba(89, 89, 93, 0.61);
+    transform: scale(0.9);
+    transition: all ease-in-out 0.4s;
+  
+}
+.MainDiv .lowers .cardcontainer .cards:hover{
+    transform: scale(1);
+}
+.MainDiv .lowers .cardcontainer .cards .top{
+    height: 8vh;
+    display: flex;
+   justify-content: center;
+    align-items: center;
+}
+.MainDiv .lowers .cardcontainer .cards .top p{
+    font-size: 1rem;
+    margin: 0rem 2rem;
+    text-align: center;
+}
+.MainDiv .lowers .cardcontainer .cards .top > button{
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    bottom: 0.5rem;
+    margin-left: 0.5rem;
+}
+.MainDiv .lowers .cardcontainer .cards .content p{
+    position: relative;
+    margin: 0.6rem 0rem;
+}
+.MainDiv .lowers .cardcontainer .cards > button{
+    padding: 13px 20px;
+    position: relative;
+   background: transparent;
+  border: none;
+   border-radius: 6px;
+   background: #52545727;
+   font-family: uppercasefont;
+   transition: all ease-in-out 0.4s;
+}
+.MainDiv .lowers .cardcontainer .cards > button:hover{
+    background: #62686ed3;
+}
+.popup{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 30vw;
+    min-height: 50vh;
+    background:#62686ed3;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
+    gap: 1rem;
+    z-index: 10;
+    border-radius: 6px;
+    backdrop-filter: blur(2px);
+
+}
+.popup input{
+    padding: 0.6rem 0rem;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+}
+.popup button{
+    padding: 0.6rem 0rem;
+    border: n;
+    color: rgb(84, 81, 81);
+    font-weight: 500;
+}
+.popup p{
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    background: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    position: absolute;
+    top: 1rem;
+    right: 3rem;
+}
+.student{
+    width: 100vw;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 0rem 0rem;
+    position: relative;
+    top: 2rem;
+}
+.student .uppr{
+    width: 70vw;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 6px;
+    border: 1px solid black;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+.student .lowers{
+    position: relative;
+    top: 2rem;
+    border: 1px solid black;
+    min-width: 70vw;
+    min-height: 40vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+     background: rgba(255, 255, 255, 0.168);
+    box-shadow: 5px 5px 25px rgba(89, 89, 93, 0.61);
+    border-radius: 6px;
+}
+
+.student .lowers thead th{
+  padding: 0.5rem 1rem;
+}
+.student .lowers tbody{
+    text-align: center;
+}
+.student .lowers tbody tr{
+    column-span: 1rem;
+}
+.student .lowers table{
+    border-spacing: 0 0.8rem;
+}
+.resultpopup{
+    background: #62686ed3;
+    min-width: 70vw;
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 2rem;
+    backdrop-filter: blur(2px);
+    transform: translate(-50%,-50%);
+    z-index: 20;
+    color: white;
+    position: fixed;
+    border-radius: 4px;
+}
+.resultpopup table{
+    padding: 0.5rem;
+}
+.resultpopup table thead th{
+    padding: 0.3rem 2rem;
+}
+.resultpopup table tbody{
+    text-align: center;
+}
+.resultpopup .crossresult{
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    font-weight: 500;
+    background: white;
+    color: black;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+}
+.resultpopup button{
+    color: #62686ed3;
+    padding: 5px 12px;
+    border-radius: 3px;
+    border: none;
+}
+
+

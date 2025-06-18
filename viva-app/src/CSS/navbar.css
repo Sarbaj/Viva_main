@@ -1,0 +1,73 @@
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #62686ed3;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+.navbar .logo-link{
+    text-decoration: none;
+    color: white;
+}
+
+.nav-links button {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 8px 18px;
+  margin-left: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-links button:hover {
+  background-color: white;
+  color: #62686ed3;
+}
+
+.logout-btn {
+  border-color: #ff4d4d;
+}
+
+.logout-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+.login-toggle-btn {
+  border-color: #28a745;
+}
+
+.login-toggle-btn:hover {
+  background-color: #28a745;
+  color: white;
+}
+.nav-link {
+  color: white;
+  text-decoration: none;
+  border: 2px solid white;
+  padding: 8px 18px;
+  margin-left: 15px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  display: inline-block;
+}
+
+.nav-link:hover {
+  background-color: white;
+  color: #62686ed3;
+}

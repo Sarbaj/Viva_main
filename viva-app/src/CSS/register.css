@@ -1,0 +1,76 @@
+/* Register.css */
+.register-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(to right, #f7f8fa, #e2e8f0);
+}
+
+.register-form {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.register-form h2 {
+  margin-bottom: 25px;
+  color: #333;
+  text-align: center;
+}
+
+.register-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+}
+
+.register-form input {
+  width: 95%;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border 0.3s ease;
+}
+
+.register-form input:focus {
+  border-color: #62686ed3;
+  outline: none;
+}
+
+.register-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #62686ed3;
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.4s ease-in-out;
+}
+
+.register-form button:hover {
+  background-color: black;
+}
+
+.login-text {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.login-text a {
+  color: #62686ed3;
+  text-decoration: none;
+}
+
+.login-text a:hover {
+  text-decoration: underline;
+}
