@@ -20,7 +20,7 @@ const Login = () => {
  async function handleSubmit(e) {
     e.preventDefault()
     try {
-        const response = await fetch('http://localhost:5050/bin/login', {
+        const response = await fetch('https://vivaportalbackend.vercel.app/bin/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

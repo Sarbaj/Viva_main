@@ -53,7 +53,7 @@ const VivaTest = () => {
 
     try {
       const VivaExistInResult = await fetch(
-        "http://localhost:5050/bin/api/questionsresultcalculate",
+        "https://vivaportalbackend.vercel.app/bin/api/questionsresultcalculate",
         {
           method: "POST",
           headers: {
@@ -66,7 +66,7 @@ const VivaTest = () => {
    
 
       const UpdateResul = await fetch(
-        "http://localhost:5050/bin/update/status",
+        "https://vivaportalbackend.vercel.app/bin/update/status",
         {
           method: "POST",
           headers: {
@@ -91,12 +91,12 @@ const VivaTest = () => {
   };
 
   const HandleGenrateQ = async (data) => {
-    //  http://localhost:5050/bin/get/viva-resultexist
+    //  https://vivaportalbackend.vercel.app/bin/get/viva-resultexist
 
 
     try {
       const VivaExistInResult = await fetch(
-        "http://localhost:5050/bin/get/viva-resultexist",
+        "https://vivaportalbackend.vercel.app/bin/get/viva-resultexist",
         {
           method: "POST",
           headers: {
@@ -152,7 +152,7 @@ const VivaTest = () => {
         //// if viva does not Exist
         
         const responseQuetion = await fetch(
-          "http://localhost:5050/bin/api/questions",
+          "https://vivaportalbackend.vercel.app/bin/api/questions",
           {
             method: "POST",
             headers: {
@@ -192,7 +192,7 @@ const VivaTest = () => {
     
 
         const PostResultData = await fetch(
-          "http://localhost:5050/bin/take/vivatest",
+          "https://vivaportalbackend.vercel.app/bin/take/vivatest",
           {
             method: "POST",
             headers: {
@@ -294,7 +294,7 @@ const VivaTest = () => {
       try {
         const VivaId = localStorage.getItem("VivaId");
         const response = await fetch(
-          "http://localhost:5050/bin/get/viva-detail",
+          "https://vivaportalbackend.vercel.app/bin/get/viva-detail",
           {
             method: "POST",
             headers: {

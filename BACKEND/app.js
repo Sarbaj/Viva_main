@@ -7,7 +7,7 @@ dotenv.config();
 const app=express()
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:5173',  // Replace with your frontend URL
+  origin: 'https://vivaportal.vercel.app/',  // Replace with your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   credentials: true, // if you want to allow cookies/auth headers
 }));

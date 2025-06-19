@@ -22,7 +22,7 @@ const Register = () => {
     e.preventDefault();
     if (formData.password===formData.confirmpassword) {
       try{
-        const data=await fetch("http://localhost:5050/bin/registerstudent",{
+        const data=await fetch("https://vivaportalbackend.vercel.app/bin/registerstudent",{
           method:"POST",
           headers: {
             "Content-Type": "application/json",

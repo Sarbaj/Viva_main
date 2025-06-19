@@ -33,7 +33,7 @@ const location = useLocation();
         console.log("No Token");
         
         }
-        const response = await fetch("http://localhost:5050/bin/getUsername", {
+        const response = await fetch("https://vivaportalbackend.vercel.app/bin/getUsername", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

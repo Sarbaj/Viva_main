@@ -26,7 +26,7 @@ const TeacherDashboard = () => {
 useEffect(() => {
   const GetClassCode=async()=>{
   try{
-      const data=await fetch("http://localhost:5050/bin/get/student",{
+      const data=await fetch("https://vivaportalbackend.vercel.app/bin/get/student",{
         method:"POST",
          headers: {
             "Content-Type": "application/json",
@@ -76,7 +76,7 @@ GetClassCode()
     try {
       console.log(formData.classname );
       
-         const response = await fetch("http://localhost:5050/bin/create/classcode", {
+         const response = await fetch("https://vivaportalbackend.vercel.app/bin/create/classcode", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

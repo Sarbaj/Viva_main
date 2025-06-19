@@ -45,7 +45,7 @@ const ClassOverview = () => {
            
              window.location.href="/login"
           }
-          const response = await fetch("http://localhost:5050/bin/getUsername", {
+          const response = await fetch("https://vivaportalbackend.vercel.app/bin/getUsername", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const ClassOverview = () => {
     try {
       const FetchData = async () => {
         const response = await fetch(
-          "http://localhost:5050/bin/get/studentinclass",
+          "https://vivaportalbackend.vercel.app/bin/get/studentinclass",
           {
             method: "POST",
             headers: {
@@ -95,7 +95,7 @@ const ClassOverview = () => {
           const idList=data.map((s)=>s.student)
           
            const allstudent = await fetch(
-          "http://localhost:5050/bin/get/allstudentinclass",
+          "https://vivaportalbackend.vercel.app/bin/get/allstudentinclass",
           {
             method: "POST",
             headers: {
@@ -121,7 +121,7 @@ const ClassOverview = () => {
       try {
         const FetchData = async () => {
           const response = await fetch(
-            "http://localhost:5050/bin/get/vivavbyclasscode",
+            "https://vivaportalbackend.vercel.app/bin/get/vivavbyclasscode",
             {
               method: "POST",
               headers: {
@@ -186,7 +186,7 @@ const ClassOverview = () => {
     e.preventDefault();
     console.log(formData);
     //  const { title, classCode, date,time,totalquetions, status,syllabus } = req.body;
-    const response = await fetch("http://localhost:5050/bin/create/viva", {
+    const response = await fetch("https://vivaportalbackend.vercel.app/bin/create/viva", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -250,7 +250,7 @@ const ClassOverview = () => {
 setRelode("1")
    try {
     console.log(value);
-    const UpdateViva = await fetch("http://localhost:5050/bin/update/vivadetail", {
+    const UpdateViva = await fetch("https://vivaportalbackend.vercel.app/bin/update/vivadetail", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -288,7 +288,7 @@ setRelode("1")
  
 
     try {
-       const response = await fetch("http://localhost:5050/bin/get/studentinresult", {
+       const response = await fetch("https://vivaportalbackend.vercel.app/bin/get/studentinresult", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -298,7 +298,7 @@ setRelode("1")
         const Data=await response.json()
         
         
-        const responseViva = await fetch("http://localhost:5050/bin/get/all-viva", {
+        const responseViva = await fetch("https://vivaportalbackend.vercel.app/bin/get/all-viva", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -358,7 +358,7 @@ setRelode("1")
       const vivaname=data.title;
     
       try {
-        const responseViva = await fetch("http://localhost:5050/bin/get/all-vivaresult", {
+        const responseViva = await fetch("https://vivaportalbackend.vercel.app/bin/get/all-vivaresult", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -665,6 +665,6 @@ setRelode("1")
 };
 
 //tittle,date,totalq
-//http://localhost:5050/bin/get/vivavbyclasscode
+//https://vivaportalbackend.vercel.app/bin/get/vivavbyclasscode
 
 export default ClassOverview;
