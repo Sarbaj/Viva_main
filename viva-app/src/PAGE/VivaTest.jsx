@@ -53,7 +53,7 @@ const VivaTest = () => {
 
     try {
       const VivaExistInResult = await fetch(
-        "https://vivaportalbackend.vercel.app/bin/api/questionsresultcalculate",
+        "https://vivabackend.onrender.com/bin/api/questionsresultcalculate",
         {
           method: "POST",
           headers: {
@@ -66,7 +66,7 @@ const VivaTest = () => {
    
 
       const UpdateResul = await fetch(
-        "https://vivaportalbackend.vercel.app/bin/update/status",
+        "https://vivabackend.onrender.com/bin/update/status",
         {
           method: "POST",
           headers: {
@@ -91,12 +91,12 @@ const VivaTest = () => {
   };
 
   const HandleGenrateQ = async (data) => {
-    //  https://vivaportalbackend.vercel.app/bin/get/viva-resultexist
+    //  https://vivabackend.onrender.com/bin/get/viva-resultexist
 
 
     try {
       const VivaExistInResult = await fetch(
-        "https://vivaportalbackend.vercel.app/bin/get/viva-resultexist",
+        "https://vivabackend.onrender.com/bin/get/viva-resultexist",
         {
           method: "POST",
           headers: {
@@ -152,7 +152,7 @@ const VivaTest = () => {
         //// if viva does not Exist
         
         const responseQuetion = await fetch(
-          "https://vivaportalbackend.vercel.app/bin/api/questions",
+          "https://vivabackend.onrender.com/bin/api/questions",
           {
             method: "POST",
             headers: {
@@ -192,7 +192,7 @@ const VivaTest = () => {
     
 
         const PostResultData = await fetch(
-          "https://vivaportalbackend.vercel.app/bin/take/vivatest",
+          "https://vivabackend.onrender.com/bin/take/vivatest",
           {
             method: "POST",
             headers: {
@@ -294,7 +294,7 @@ const VivaTest = () => {
       try {
         const VivaId = localStorage.getItem("VivaId");
         const response = await fetch(
-          "https://vivaportalbackend.vercel.app/bin/get/viva-detail",
+          "https://vivabackend.onrender.com/bin/get/viva-detail",
           {
             method: "POST",
             headers: {

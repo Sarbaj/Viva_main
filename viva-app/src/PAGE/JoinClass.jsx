@@ -27,7 +27,7 @@ const JoinClass = () => {
                 console.log("no token");
                  window.location.href="/login"
               }
-              const response = await fetch("https://vivaportalbackend.vercel.app/bin/getUsername", {
+              const response = await fetch("https://vivabackend.onrender.com/bin/getUsername", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -69,7 +69,7 @@ const JoinClass = () => {
   const handleJoin = async() => {
    
       try {
-            const response = await fetch('https://vivaportalbackend.vercel.app/bin/join/class', {
+            const response = await fetch('https://vivabackend.onrender.com/bin/join/class', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ const JoinClass = () => {
 
     const FetchData=async()=>{
         try {
-            const response = await fetch('https://vivaportalbackend.vercel.app/bin/get/viva-info', {
+            const response = await fetch('https://vivabackend.onrender.com/bin/get/viva-info', {
                method: 'POST',
                headers: {
                    'Content-Type': 'application/json'
