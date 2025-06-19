@@ -1,10 +1,13 @@
 import React, { useState ,useEffect} from 'react';
 import { useDispatch, useSelector} from "react-redux";
 import '../CSS/navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { addBasicInfo } from '../REDUX/UserSlice';
+import { useLocation } from 'react-router-dom';
 
 const NavBar = () => {
+    const navigate = useNavigate();
+const location = useLocation();
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [Role, SetRole] = useState("");
     const dispatch = useDispatch();
@@ -27,7 +30,8 @@ const NavBar = () => {
       try {
         const token =localStorage.getItem("authToken");
         if (!token) {
-          console.log("");
+        console.log("No Token");
+        
         }
         const response = await fetch("http://localhost:5050/bin/getUsername", {
           method: "POST",
@@ -43,6 +47,8 @@ const NavBar = () => {
         }
         setIsLoggedIn(true)
         const data = await response.json();
+       
+       
         dispatch(addBasicInfo(data))
         setUsername(data)
        SetRole(data.payload.role)
@@ -56,6 +62,7 @@ const NavBar = () => {
   }, [],);
 
 
+
   return (
     <nav className="navbar">
       <div className="logo">
@@ -63,9 +70,8 @@ const NavBar = () => {
       </div>
 
       <div className="nav-links">
-        {Role==="0" && (<Link to="/join" className="nav-link">Student</Link>)}
-        {Role==="1" && (<Link to="/teacherdashboard" className="nav-link">Class Manage</Link>)}
-        {isLoggedIn && Role==="0" && (<>
+        {Role=="1" && (<Link to="/teacherdashboard" className="nav-link">Class Manage</Link>)}
+        {isLoggedIn && Role==0 && (<>
             <Link to="/join" className="nav-link">Join Class</Link>
         </>
         ) }

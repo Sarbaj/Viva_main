@@ -1,6 +1,6 @@
 import React from "react";
 import "../CSS/classoverview.css";
-import { useParams,Link } from "react-router-dom";
+import { useParams,Link, useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faFileImport,faFileArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -11,9 +11,9 @@ import { toast } from "react-toastify";
 import Studentresult from "./Studentresult";
 import { useDispatch } from "react-redux";
 import { addstudentresult } from "../REDUX/UserSlice";
-
 const ClassOverview = () => {
   const dispatch = useDispatch();
+  const location=useLocation()
   const { teacherclasscodeid } = useParams();
   const [vivaItem, setvivaItem] = useState([]);
   const [messagedisplay, setMessgeDisplay] = useState(null);
@@ -30,6 +30,7 @@ const ClassOverview = () => {
   const [exelDataResult, setExelDataResult] = useState([]);
   const [value, setValue] = useState("");
   const [relode, setRelode] = useState("");
+    const [downloadCount, setDownloadCount] = useState(true)
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -37,6 +38,43 @@ const ClassOverview = () => {
     time: "",
     syllabus: "",
   });
+  const verifyToken = async () => {
+        try {
+          const token =localStorage.getItem("authToken");
+          if (!token) {
+           
+             window.location.href="/login"
+          }
+          const response = await fetch("http://localhost:5050/bin/getUsername", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+          });
+  
+          if (!response.ok) {
+            const errorData = await response.json();
+            setErrorlogin(errorData.message);
+          }
+          
+          const data = await response.json();
+         
+          if (data.payload.role!=1) {
+           
+            window.location.href="/login"
+            
+          }
+          
+        } catch (error) {
+          console.log("error");
+        }
+      };
+  useEffect(() => {
+
+      verifyToken();
+    }, []);
+
   useEffect(() => {
     try {
       const FetchData = async () => {
@@ -102,6 +140,8 @@ const ClassOverview = () => {
     [teacherclasscodeid],
     [relode]);
 
+
+
   const HandleUpcoming = (e) => {
     e.preventDefault();
     if (mainVivaItem.length > 0) {
@@ -154,37 +194,50 @@ const ClassOverview = () => {
       body: JSON.stringify({
         title: formData.title,
         classCode: teacherclasscodeid,
-        date: toString(formData.date),
+        date: formData.date,
         time: formData.time,
         totalquetions: formData.totalquetions,
         status: "false",
         syllabus: formData.syllabus,
       }),
     });
-    if (!response.ok) {
+    if (response.status!==201) {
       const error = await response.json();
+      toast.error(error.message)
+      return;
     }
     const data = await response.json();
     console.log(data);
-    toast.error(data.message);
+    toast.success(data.message);
   };
   const HandleInputchange = (e) => {
     const { name, value } = e.target;
+   
+    if (name=="date") {
+      const stringdata=value.toString()
+       setFormData((prevData) => ({
+      ...prevData,
+      [name]: stringdata,
+    }));
+    return;
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+    console.log("else");
+    
   };
   const HandleSetinput = (data, e) => {
     setFormData({
       title: data.title,
-      date: toString(data.date),
+      date: data.date,
       totalquetions: data.totalquetions,
       time: data.time,
       syllabus: data.syllabus,
     });
     SetVivaIds(data._id);
-    console.log(data._id);
+   
     
     setUpdateStatus(true);
   };
@@ -193,7 +246,7 @@ const ClassOverview = () => {
   };
 
   const HandleUpdate = async() => {
-console.log(formData);
+
 setRelode("1")
    try {
     console.log(value);
@@ -230,7 +283,9 @@ setRelode("1")
   }
   const HandleViewStudent=async(data,e)=>{
     //data._id //teacherclasscodeid
-    setstudentBasic({student:data.name,ennumber:data.ennumber,email:data.email})
+   
+      setstudentBasic({student:data.name,ennumber:data.ennumber,email:data.email})
+ 
 
     try {
        const response = await fetch("http://localhost:5050/bin/get/studentinresult", {
@@ -250,29 +305,26 @@ setRelode("1")
           },
         });
         const Dataviva=await responseViva.json()
-        
-        console.log(Dataviva);
-
-
         if (Data) {
           const vivaname=Dataviva.filter((item)=>item._id==Data.vivaId)
           
           setvivaNameList(vivaname);
           setstudentResultItem(Data)
         }
-        console.log(Data);  
+      
         
     } catch (error) {
       
     }
     setstudentResultStatus(true)
     e.preventDefault()
-    console.log(data);
+
     
   }
 
  const HandleDownloadExel=(e)=>{
   e.preventDefault()
+  console.log(exelData);
   
  if (studentResultItem.length>0) {
    const worksheet = XLSX.utils.json_to_sheet(exelData);
@@ -296,6 +348,7 @@ setRelode("1")
     a.download = "student_individual_result.xlsx";
     a.click();
     URL.revokeObjectURL(url);
+    setExelData([])
  }
    
  }
@@ -303,8 +356,7 @@ setRelode("1")
  const HandleDownloadvivaexelresult=async(e,data)=>{
       e.preventDefault()
       const vivaname=data.title;
-      console.log(data);
-      console.log(studentResultItem);
+    
       try {
         const responseViva = await fetch("http://localhost:5050/bin/get/all-vivaresult", {
           method: "POST",
@@ -314,14 +366,15 @@ setRelode("1")
           body: JSON.stringify({ vivaId:data._id}),
         });
         const Dataviva=await responseViva.json()
-        console.log(studentData);
-       console.log(Dataviva);
+  
+     
        Dataviva.map((data)=>{
         const newdata=studentData.filter((std)=>std._id==data.student)
         exelDataResult.push({Viva:vivaname,Name:newdata[0].name,Enrollment_num:newdata[0].ennumber,Email:newdata[0].email,Marks:data.score})
+        
        }
        )
-       console.log(exelDataResult);
+      
        const worksheet = XLSX.utils.json_to_sheet(exelDataResult);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
@@ -485,8 +538,15 @@ setRelode("1")
             <tbody>
           
               {studentResultItem.length>0 &&(studentResultItem.map((data,i)=>{
+                
+                
                 const vivaname=vivaItem.filter((res)=>res._id==data.vivaId)
+              
+              if (downloadCount===true) {
                 exelData.push({Name:studentBasic.student,"Enrollment-Number":studentBasic.ennumber,Email:studentBasic.email,Viva:vivaname[0].title,Marks:data.score})
+                setDownloadCount(false)
+              }  
+            
                 
                 
               return <tr key={i}>
@@ -494,7 +554,7 @@ setRelode("1")
                 <td>{studentBasic.ennumber}</td>
                 <td>{vivaname[0].title}</td>
                 <td>{data.score}</td>
-                <td><Link to="/class/overview/studentresult" style={{padding:"5px 14px",border:"none",background:"#62686ed3",cursor:"pointer",color:"white"}} onClick={()=>localStorage.setItem('vivaresult',JSON.stringify(data.answers))}>VIEW Q/A</Link></td>
+                <td><Link to="/class/overview/studentresult" style={{padding:"5px 14px",border:"none",background:"#62686ed3",cursor:"pointer",color:"white",textDecoration:"none"}} onClick={()=>localStorage.setItem('vivaresult',JSON.stringify(data.answers))}>Result</Link></td>
             
               </tr>
               }
@@ -526,6 +586,8 @@ setRelode("1")
             </div>
             {vivaItem.length > 0 &&
               vivaItem.map((data, i) => {
+                
+                
                 return (
                   <div className="cards" key={i}>
                     <div className="top">
@@ -540,7 +602,7 @@ setRelode("1")
                       <button onClick={(e)=>HandleDownloadvivaexelresult(e,data)}><FontAwesomeIcon icon={faFileArrowDown} /></button>
                     </div>
                     <div className="content">
-                      <p>Date: [{data.date}]</p>
+                      <p>Date: {data.date}</p>
                       <p>Quetion: {data.totalquetions}</p>
                       <p>Duration: {data.time}MIN</p>
                       {data.status === "true" ? (
@@ -580,7 +642,7 @@ setRelode("1")
                 <td>{data.ennumber}</td>
                 <td>{DateFunc(data.createdAt)}</td>
                 <td>{data.email}</td>
-                <td><button style={{padding:"5px 14px",border:"none",background:"#62686ed3",cursor:"pointer"}} onClick={(e)=>HandleViewStudent(data,e)}>VIEW</button></td>
+                <td><button onClick={(e)=>HandleViewStudent(data,e)}>VIEW</button></td>
               </tr>
               }))}
             </tbody>

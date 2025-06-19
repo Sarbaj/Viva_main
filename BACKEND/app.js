@@ -15,7 +15,12 @@ const PORT=process.env.PORT || 5050;
 app.get('/',(req,res)=>{
     res.send("Server Is Up")
 })
+
 app.use('/bin',router)
+
+
+//middlewares
+
 app.listen(PORT,()=>{
     DbConnection()
     console.log(`Server Running On ${PORT} PORT `);

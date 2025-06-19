@@ -16,6 +16,10 @@ const TeacherDashboard = () => {
   useEffect(()=>{
     if (UserInfo && UserInfo.length > 0) {
      setUsername(UserInfo[0].payload._id);
+     if(UserInfo[0].payload.role!=1){
+        window.location.href="/login"
+     }
+     
     }
     }, [UserInfo]);
 
@@ -95,7 +99,7 @@ GetClassCode()
 
   return (
     <>
-    <main>
+    <div className='mainteacher'>
       <div className="uppr">
        {UserInfo.length>0 &&(<h1>{UserInfo[0].payload.name}</h1>)}
         <h2>"A teacher's words may fade from memory,
@@ -128,7 +132,7 @@ But their impact echoes for a lifetime."</h2>
             <button onClick={(e) => HandleCreteClass(e)}>CREATE CLASS</button>
           </div>
         )}
-    </main>
+    </div >
     </>
   )
 }

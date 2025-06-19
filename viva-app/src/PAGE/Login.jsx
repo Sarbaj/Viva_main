@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastContainer ,toast} from 'react-toastify';
 import '../CSS/login.css';
 import { Link } from 'react-router-dom';
@@ -6,6 +6,10 @@ import { Link } from 'react-router-dom';
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
 
+  useEffect(() => {
+   const token=localStorage.removeItem("authToken")
+  }, [])
+  
   const handleChange = (e) => {
     setFormData(prev => ({
       ...prev,

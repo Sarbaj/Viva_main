@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import '../CSS/register.css';
+import { ToastContainer ,toast} from 'react-toastify';
 import { Link } from 'react-router-dom';
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -28,15 +29,32 @@ const Register = () => {
           },
           body: JSON.stringify({ name:formData.name,email:formData.email,password:formData.password,ennumber:formData.ennumber })})
           const result=await data.json() 
+       
           
-          console.log('Register data:', result); 
+          if (result.status!==201) {
+            toast.error(result.message)
+            return;
+          }
+          if (result.status===201) {
+            toast.success("Successfully Registered !")
+          setFormData({
+             name: '',
+    email: '',
+    password: '',
+    confirmpassword:'',
+    ennumber: '',
+          })
+          }
+          
       
       
   } catch (error) {
-    
+    toast.error(result.message)
   }
     }
-  
+    if (formData.password!=formData.confirmpassword) {
+        toast.error("Password Is Not Matching !!!")
+    }
   };
 
   return (
@@ -101,6 +119,16 @@ const Register = () => {
           Already have an account? <Link to="/login">Login</Link>
         </p>
       </form>
+           <ToastContainer
+              position="top-center"
+              autoClose={3000}      // 3 seconds
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              pauseOnHover
+              draggable
+              pauseOnFocusLoss
+            />
     </div>
   );
 };

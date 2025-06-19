@@ -72,11 +72,13 @@ const questions = [
 
 const Studentresult = () => {
   const [VivaResult, SetVivaResult] = useState([])
+
     useEffect(() => {
             try {
                 const result=JSON.parse(localStorage.getItem('vivaresult'))
                 SetVivaResult(result)
-                console.log(result);
+         
+              
                 
             } catch (error) {
                 

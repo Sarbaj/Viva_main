@@ -71,3 +71,29 @@
   background-color: white;
   color: #62686ed3;
 }
+@media screen and (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+  }
+
+  .nav-links {
+    display: flex;
+    width: 100%;
+    margin-top: 10px;
+   
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .nav-links button,
+  .nav-link {
+    margin: 8px 0;
+    text-align: center;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+}

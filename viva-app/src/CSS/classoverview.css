@@ -12,10 +12,12 @@
     width: 100vw;
     min-height: 75vh;
     display: flex;
+    flex-direction: column;
     justify-content: start;
     align-items: center;
     font-family: uppercasefont;
     position: relative;
+    overflow-x: hidden;
 }
 .MainDiv .uppr{
     width: 100vw;
@@ -227,6 +229,13 @@
 .student .lowers thead th{
   padding: 0.5rem 1rem;
 }
+.student .lowers tbody td button{
+  padding:5px 14px;
+  border:none;
+  background:#62686ed3;
+  cursor:pointer
+}
+
 .student .lowers tbody{
     text-align: center;
 }
@@ -284,5 +293,148 @@
     border-radius: 3px;
     border: none;
 }
+/* Medium Devices - Tablets (<= 768px) */
+@media (max-width: 768px) {
+  .MainDiv .lowers .btn2 {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+    align-items: center;
+     margin-bottom: 6rem;
+    
+  }
+
+  .MainDiv .lowers .btn2 button {
+    position: relative;
+    top: 2rem;
+    width: 90%;
+    border-radius: 6px !important;
+    border-right: none !important;
+  
+  }
+
+  .MainDiv .lowers .cardcontainer {
+    width: 95vw;
+    justify-content: center;
+    padding: 1rem;
+     
+     position: relative;
+  
+   
+  }
+
+  .MainDiv .lowers .cardcontainer .cards {
+    width: 45vw;
+    height: auto;
+  }
+
+  .popup {
+    width: 80vw;
+  }
+
+  .student .uppr,
+  .student .lowers {
+    width: 95vw;
+  }
+
+  .resultpopup {
+    min-width: 90vw;
+  }
+  .resultpopup table{
+    padding: 0.2rem;
+  
+}
+.resultpopup table thead th{
+    padding: 0.3rem 2rem;
+      
+}
+.resultpopup table tbody{
+    text-align: center;
+}
+}
+
+/* Small Devices - Phones (<= 480px) */
+@media (max-width: 480px) {
+  .MainDiv .lowers > button {
+    padding: 0.8rem 2rem;
+    font-size: 0.9rem;
+  }
+
+  .MainDiv .lowers .cardcontainer .cards {
+    width: 90%;
+  }
+
+  .popup {
+    width: 90vw;
+    padding: 1rem 0.5rem;
+    position: absolute;
+    top:25rem;
+  }
+
+  .popup p {
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .student .uppr {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+
+  .resultpopup table thead th,
+  .resultpopup table tbody td {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+  }
+ 
+  
+
+ .resultpopup{
+    background: #62686ed3;
+    width: 90vw;
+    min-height: 30vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    padding: 2rem;
+    backdrop-filter: blur(2px);
+  
+    z-index: 20;
+    color: white;
+    position: fixed;
+    border-radius: 4px;
+}
+
+  .resultpopup .crossresult {
+    top: 0.9rem;
+    right: 2rem;
+  }
+  
+  .student .lowers thead th{
+  padding: 0.5rem 0.1rem;
+  font-size: 0.5rem;
+}
+.student .lowers tbody td{
+    text-align: center;
+    padding: 0 0.3rem;
+    font-size: 0.5rem;
+}
+.student .lowers tbody td button{
+  padding:5px 14px;
+  border:none;
+  background:#62686ed3;
+  cursor:pointer;
+  border-radius: 4px;
+}
+.student .lowers tbody tr{
+    column-span: 0rem;
+}
+.student .lowers table{
+    border-spacing: 0 0.4rem;
+}
+}
+
 
 

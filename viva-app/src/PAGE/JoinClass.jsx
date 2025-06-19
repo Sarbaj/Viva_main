@@ -14,9 +14,48 @@ const JoinClass = () => {
     useEffect(() => {
     if (UserInfo && UserInfo.length > 0) {
      setUserId(UserInfo[0].payload._id);
+     if (UserInfo[0].payload.role!=0) {
+      window.location.href="/login"
+     }
     }
     }, [UserInfo]);
 
+      const verifyToken = async () => {
+            try {
+              const token =localStorage.getItem("authToken");
+              if (!token) {
+                console.log("no token");
+                 window.location.href="/login"
+              }
+              const response = await fetch("http://localhost:5050/bin/getUsername", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ token }),
+              });
+      
+              if (!response.ok) {
+                const errorData = await response.json();
+                setErrorlogin(errorData.message);
+              }
+              
+              const data = await response.json();
+              
+              if (data.payload.role!=0) {
+                console.log("Not Allowed");
+                window.location.href="/login"
+                
+              }
+              
+            } catch (error) {
+              console.log("error");
+            }
+          };
+      useEffect(() => {
+    
+          verifyToken();
+        }, []);
    
     
     const HandleFalseViva=(e)=>{
@@ -28,7 +67,7 @@ const JoinClass = () => {
       toast.success("Yup You Can Start")
     }
   const handleJoin = async() => {
-      console.log("Class code joined:", classCode);
+   
       try {
             const response = await fetch('http://localhost:5050/bin/join/class', {
                method: 'POST',
@@ -37,7 +76,8 @@ const JoinClass = () => {
                },
                body: JSON.stringify({classcode:classCode,studentid:userid})
            });
-   
+            console.log(classCode+" "+userid);
+            
            if (!response.ok) {
                setShowModal(false);
                const errorData = await response.json();
@@ -82,8 +122,7 @@ const JoinClass = () => {
       
    useEffect(() => {
     if (userid) {
-      FetchData(); // ✅ Fetch when component mounts or userid changes
-      
+      FetchData(); // ✅ Fetch when component mounts or userid changes  
     }
   }, [userid]);
   

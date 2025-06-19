@@ -4,14 +4,18 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/home.css';
 import {
+  HelpCircle,
+  BookOpen,
   Upload,
-  BookOpenText,
+  Search,
   CalendarDays,
   Users,
   FileText,
   Megaphone,
   LogOut,
   Plus,
+  Clock,
+  Bell,
   RefreshCw
 } from "lucide-react";
 import { useDispatch, useSelector} from "react-redux";
@@ -36,15 +40,64 @@ function FeatureCard({ icon, title, description }) {
     </div>
   );
 }
+
+
+
  return (
   <>
   <div className="wlcm">
  {UserInfo.length>0 &&(<center><h3>Welcome {UserInfo[0].payload.name} 👋</h3></center>)}
   </div>
     <div className="dashboard-container">
-      <h1 className="dashboard-title" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>🛠️ Educator Features</h1>
-    
-      <div className="feature-grid">
+     {UserInfo.length>0 &&(<h1 className="dashboard-title" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>🛠️ {UserInfo[0].payload.role==0 ? ("Student"):("Educator")} Features</h1>)} 
+    {UserInfo.length>0 &&(<>
+    {UserInfo[0].payload.role==0 ? (<>
+    <div className="feature-grid">
+  <FeatureCard
+    icon={<Search />}
+    title="Join Class"
+    description="Enter a class code to join a viva session and access related content."
+  />
+  <FeatureCard
+    icon={<BookOpen />}
+    title="View Syllabus"
+    description="Access the syllabus uploaded by your teacher for viva preparation."
+  />
+  <FeatureCard
+    icon={<HelpCircle />}
+    title="Take Viva"
+    description="Start the AI-powered viva session based on your class schedule."
+  />
+  <FeatureCard
+    icon={<Clock />}
+    title="View Viva Timer"
+    description="Track remaining time during the viva to stay on pace."
+  />
+  <FeatureCard
+    icon={<FileText />}
+    title="View Results"
+    description="See your viva scores, correct answers, and AI feedback."
+  />
+  <FeatureCard
+    icon={<RefreshCw />}
+    title="Retake Viva (If Allowed)"
+    description="Retake the viva if your teacher has enabled multiple attempts."
+  />
+  <FeatureCard
+    icon={<Bell />}
+    title="View Announcements"
+    description="Check for important messages or instructions from your teacher."
+  />
+  <FeatureCard
+    icon={<LogOut />}
+    title="Logout"
+    description="Securely log out and end your session."
+  />
+</div>
+
+    </>):(
+      <>
+       <div className="feature-grid">
         <FeatureCard
           icon={<Plus />}
           title="Create Class Code"
@@ -85,7 +138,10 @@ function FeatureCard({ icon, title, description }) {
           title="Logout"
           description="Securely log out and end your current session."
           />
-      </div>
+      </div></>
+    )}
+    </>)}
+     
     </div>
           </>
   );

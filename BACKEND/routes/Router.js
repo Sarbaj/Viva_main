@@ -1,12 +1,5 @@
 
-
-
-
-
 //middleware will be applied soon
-
-
-
 
 import express from "express";
 import bcrypt from "bcryptjs";
@@ -54,10 +47,15 @@ router.post("/registerstudent", async (req, res) => {
   const { name, email, password, ennumber } = req.body;
   if (!name || !email || !password || !ennumber)
     return res.status(400).json({ message: "All field are required" });
+  
   try {
     const existingUser = await User.findOne({ ennumber });
     if (existingUser) {
-      return res.status(409).json({ message: "Student already registered" });
+      return res.status(409).json({ message: "Student Already registered With Enrollment Number" });
+    }
+    const existingUserEmail = await User.findOne({ email });
+    if (existingUserEmail) {
+      return res.status(409).json({ message: "Email Already Exist " });
     }
     //lets Genrate Hash Bro
     //First Salt
@@ -72,7 +70,7 @@ router.post("/registerstudent", async (req, res) => {
       role: "0",
     });
     await regisuser.save();
-    res.status(201).json({ message: "Student Registered Successfully" });
+    res.status(201).json({ message: "Student Registered Successfully" ,status:201});
   } catch (err) {
     console.error("Error in /register:", err);
     res.status(500).json({ message: "Server error" });
@@ -245,7 +243,7 @@ router.post("/join/class", async (req, res) => {
     student: studentid,
   });
   await newStudent.save();
-  res.status(200).json({ message: "Successfully Student Added To Class" });
+  res.status(200).json({ message: "Successfully Student Added To Class" ,status:201});
 });
 // uploading syllabus
 
@@ -266,9 +264,11 @@ router.post("/upload/syllabus", async (req, res) => {
 // create viva
 router.post("/create/viva", async (req, res) => {
   const { title, classCode, date,time,totalquetions, status,syllabus } = req.body;
+  console.log(date);
+  
   const Iscode = await classModel.findOne({ code: classCode });
   if (!title || !classCode || !date || !totalquetions || !status || !time) {
-    return res.status(201).json({ message: "All Fields Are Required" });
+    return res.status(501).json({ message: "All Fields Are Required" });
   }
   if (!Iscode) {
     return res.status(501).json({ message: "Code Is Incorrect" });
@@ -283,7 +283,7 @@ router.post("/create/viva", async (req, res) => {
     status,
   });
   await newViva.save();
-  res.status(200).json({ message: "Successfully Viva Created" });
+  res.status(201).json({ message: "Successfully Viva Created",status:201 });
 });
 
 // When user Take Viva
