@@ -13,17 +13,16 @@ app.use(cors({
   origin: allowedOrigin,
   credentials: true,
 }));
-const PORT=process.env.PORT || 5050;
+ DbConnection()
+
 app.get('/',(req,res)=>{
     res.send("Server Is Up")
+    
 })
 
 app.use('/bin',router)
 
-
 //middlewares
- DbConnection()
-
 
 export default app
 
