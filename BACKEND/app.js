@@ -6,10 +6,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 const app=express()
 app.use(express.json());
+
+const allowedOrigin = "https://vivaportal.vercel.app";
+
 app.use(cors({
-  origin: 'https://vivaportal.vercel.app/',  // Replace with your frontend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // if you want to allow cookies/auth headers
+  origin: allowedOrigin,
+  credentials: true,
 }));
 const PORT=process.env.PORT || 5050;
 app.get('/',(req,res)=>{
