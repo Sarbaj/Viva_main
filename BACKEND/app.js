@@ -20,9 +20,8 @@ app.use('/bin',router)
 
 
 //middlewares
+ DbConnection()
 
-app.listen(PORT,()=>{
-    DbConnection()
-    console.log(`Server Running On ${PORT} PORT `);
-})
+
+export default app
 
