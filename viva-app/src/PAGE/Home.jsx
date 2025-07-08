@@ -54,7 +54,6 @@ function FeatureCard({ icon, title, description }) {
   <>
   {userstatus === false ? (
   <>
-  <center>
     <div className="home-container">
       {/* Hero Section */}
       <div className="hero-section">
@@ -130,7 +129,6 @@ function FeatureCard({ icon, title, description }) {
 
       </div>
     </div>
-    </center>
   </>
 ) : (
   ''
