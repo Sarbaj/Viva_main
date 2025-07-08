@@ -62,7 +62,6 @@ function FeatureCard({ icon, title, description }) {
           Empower your learning with AI-driven viva practice. Automatically generated
           questions, anti-cheat protections, and real-time evaluation to boost your confidence!
         </p>
-        <button className="start-btn">Start Viva</button>
       </div>
 
       {/* Features Section */}
@@ -81,10 +80,10 @@ function FeatureCard({ icon, title, description }) {
       <div className="how-it-works">
         <h2>🚀 How It Works</h2>
         <ol>
-          <li>Select your <strong>Role</strong> and <strong>Topics</strong></li>
-          <li>AI generates viva questions based on your input</li>
+          <li>Join <strong>Viva</strong> and <strong>Take Test</strong></li>
+          <li>AI generates viva questions based on syllabus</li>
           <li>Answer them in a time-bound and secure environment</li>
-          <li>Get real-time feedback and result instantly</li>
+          <li>Get real-time feedback</li>
         </ol>
       </div>
 
@@ -94,7 +93,7 @@ function FeatureCard({ icon, title, description }) {
         <div className="testimonial-card">
           <p>
             "This app helped me prepare for my practicals quickly and effectively. The best part is the
-            anti-cheat features that make it feel like a real exam!" – <strong>Riya S., BCA Student</strong>
+            anti-cheat features that make it feel like a real exam!" – <strong>Riya S., MCA Student</strong>
           </p>
         </div>
         <div className="testimonial-card">
@@ -109,7 +108,25 @@ function FeatureCard({ icon, title, description }) {
       <div className="cta-section">
         <h2>🎓 Ready to Experience AI-Powered Viva?</h2>
         <p>Login or register to get started. No more boring preparations!</p>
-        <button className="start-btn">Join Now</button>
+        <Link
+  to="/register"
+  style={{
+    background: "#d36d00cd",
+    border: "none",
+    color: "white",
+    padding: "12px 24px",
+    fontSize: "1rem",
+    borderRadius: "6px",
+    cursor: "pointer",
+    textDecoration: "none",
+    fontFamily: "Poppins, sans-serif",
+    transition: "0.3s ease-in-out",
+    display: "inline-block"
+  }}
+>
+  Join Now
+</Link>
+
       </div>
     </div>
   </>
