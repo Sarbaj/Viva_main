@@ -19,12 +19,19 @@ import {
   RefreshCw
 } from "lucide-react";
 import { useDispatch, useSelector} from "react-redux";
+import { login } from '../REDUX/UserSlice';
 const Home = () => {
+  const dispatch=useDispatch()
      const { UserInfo } = useSelector((state) => state.user);
+     const { isLogin } = useSelector((state) => state.user);
+     const [userstatus, setuserstatus] = useState(isLogin)
      const [username, setUsername] = useState(null)
        useEffect(() => {
       if (UserInfo && UserInfo.length > 0) {
         setUsername(UserInfo[0].payload.name);
+        dispatch(login)
+        setuserstatus(true)
+        
       }
     }, [UserInfo]);
 
@@ -46,7 +53,7 @@ function FeatureCard({ icon, title, description }) {
  return (
   <>
   <div className="wlcm">
-    {UserInfo.length<=0 &&(<>
+    {userstatus&&(<>
        <div className="home-container">
       <div className="hero-section">
         <h1>Welcome to AI Viva App 🤖</h1>
@@ -54,7 +61,7 @@ function FeatureCard({ icon, title, description }) {
           Empower your learning with AI-driven viva practice. Automatically generated
           questions, anti-cheat protections, and real-time evaluation to boost your confidence!
         </p>
-        <button className="start-btn" onClick={handleStart}>
+        <button className="start-btn" >
           Start Viva
         </button>
       </div>
