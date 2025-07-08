@@ -109,9 +109,9 @@ function FeatureCard({ icon, title, description }) {
         <h2>🎓 Ready to Experience AI-Powered Viva?</h2>
         <p>Login or register to get started. No more boring preparations!</p>
         <Link
-  to="/register"
+  to="/login"
   style={{
-    background: "#d36d00cd",
+    background: "#62686ed3",
     border: "none",
     color: "white",
     padding: "12px 24px",
