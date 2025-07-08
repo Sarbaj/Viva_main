@@ -52,20 +52,20 @@ function FeatureCard({ icon, title, description }) {
 
  return (
   <>
-  <div className="wlcm">
-    {userstatus===false ?(<>
-       <div className="home-container">
+  {userstatus === false ? (
+  <>
+    <div className="home-container">
+      {/* Hero Section */}
       <div className="hero-section">
         <h1>Welcome to AI Viva App 🤖</h1>
         <p>
           Empower your learning with AI-driven viva practice. Automatically generated
           questions, anti-cheat protections, and real-time evaluation to boost your confidence!
         </p>
-        <button className="start-btn" >
-          Start Viva
-        </button>
+        <button className="start-btn">Start Viva</button>
       </div>
 
+      {/* Features Section */}
       <div className="features-section">
         <h2>🔥 Features</h2>
         <ul>
@@ -76,9 +76,49 @@ function FeatureCard({ icon, title, description }) {
           <li>🧠 Topic-based learning for any subject</li>
         </ul>
       </div>
+
+      {/* How It Works Section */}
+      <div className="how-it-works">
+        <h2>🚀 How It Works</h2>
+        <ol>
+          <li>Select your <strong>Role</strong> and <strong>Topics</strong></li>
+          <li>AI generates viva questions based on your input</li>
+          <li>Answer them in a time-bound and secure environment</li>
+          <li>Get real-time feedback and result instantly</li>
+        </ol>
+      </div>
+
+      {/* Testimonials Section */}
+      <div className="testimonials">
+        <h2>💬 What Users Say</h2>
+        <div className="testimonial-card">
+          <p>
+            "This app helped me prepare for my practicals quickly and effectively. The best part is the
+            anti-cheat features that make it feel like a real exam!" – <strong>Riya S., BCA Student</strong>
+          </p>
+        </div>
+        <div className="testimonial-card">
+          <p>
+            "As a teacher, I can monitor students' progress and create class-specific viva tests.
+            Brilliant tool!" – <strong>Prof. Sharma, Computer Science Dept.</strong>
+          </p>
+        </div>
+      </div>
+
+      {/* Call to Action Section */}
+      <div className="cta-section">
+        <h2>🎓 Ready to Experience AI-Powered Viva?</h2>
+        <p>Login or register to get started. No more boring preparations!</p>
+        <button className="start-btn">Join Now</button>
+      </div>
     </div>
-      
-      </>):('') }
+  </>
+) : (
+  ''
+)}
+
+  <div className="wlcm">
+   
  {UserInfo.length>0 &&(<center><h3>Welcome {UserInfo[0].payload.name} 👋</h3></center>)}
   </div>
     <div className="dashboard-container">

@@ -76,6 +76,44 @@
   align-items: center;
   gap: 0.5rem;
 }
+.how-it-works, .testimonials, .cta-section {
+  background: white;
+  padding: 2rem;
+  margin: 2rem auto;
+  border-radius: 12px;
+  max-width: 800px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Poppins", sans-serif;
+}
+
+.how-it-works h2,
+.testimonials h2,
+.cta-section h2 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+}
+
+.how-it-works ol {
+  padding-left: 1.2rem;
+  color: #444;
+}
+
+.testimonial-card {
+  margin-bottom: 1rem;
+  background: #f4f4f4;
+  padding: 1rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.cta-section p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
 
 @media (max-width: 600px) {
   .hero-section h1 {
