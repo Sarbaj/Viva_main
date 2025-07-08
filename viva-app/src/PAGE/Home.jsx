@@ -46,6 +46,32 @@ function FeatureCard({ icon, title, description }) {
  return (
   <>
   <div className="wlcm">
+    {UserInfo.length<0 &&(<>
+       <div className="home-container">
+      <div className="hero-section">
+        <h1>Welcome to AI Viva App 🤖</h1>
+        <p>
+          Empower your learning with AI-driven viva practice. Automatically generated
+          questions, anti-cheat protections, and real-time evaluation to boost your confidence!
+        </p>
+        <button className="start-btn" onClick={handleStart}>
+          Start Viva
+        </button>
+      </div>
+
+      <div className="features-section">
+        <h2>🔥 Features</h2>
+        <ul>
+          <li>🎯 Viva questions generated from syllabus using AI</li>
+          <li>🔒 Anti-cheat mechanisms (tab switch, timer, logs)</li>
+          <li>📈 Instant result and feedback</li>
+          <li>👨‍🏫 Teacher & Student dashboards</li>
+          <li>🧠 Topic-based learning for any subject</li>
+        </ul>
+      </div>
+    </div>
+      
+      </>) }
  {UserInfo.length>0 &&(<center><h3>Welcome {UserInfo[0].payload.name} 👋</h3></center>)}
   </div>
     <div className="dashboard-container">
