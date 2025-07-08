@@ -46,7 +46,7 @@ function FeatureCard({ icon, title, description }) {
  return (
   <>
   <div className="wlcm">
-    {UserInfo.length<0 &&(<>
+    {UserInfo.length<=0 &&(<>
        <div className="home-container">
       <div className="hero-section">
         <h1>Welcome to AI Viva App 🤖</h1>
