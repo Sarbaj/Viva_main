@@ -53,7 +53,7 @@ function FeatureCard({ icon, title, description }) {
  return (
   <>
   <div className="wlcm">
-    {userstatus&&(<>
+    {userstatus===false ?(<>
        <div className="home-container">
       <div className="hero-section">
         <h1>Welcome to AI Viva App 🤖</h1>
@@ -78,7 +78,7 @@ function FeatureCard({ icon, title, description }) {
       </div>
     </div>
       
-      </>) }
+      </>):('') }
  {UserInfo.length>0 &&(<center><h3>Welcome {UserInfo[0].payload.name} 👋</h3></center>)}
   </div>
     <div className="dashboard-container">
