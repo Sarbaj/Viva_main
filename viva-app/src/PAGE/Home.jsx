@@ -99,7 +99,7 @@ function FeatureCard({ icon, title, description }) {
         <div className="testimonial-card">
           <p>
             "As a teacher, I can monitor students' progress and create class-specific viva tests.
-            Brilliant tool!" – <strong>Prof. CD Patel, Computer Ampics.</strong>
+            Brilliant tool!" – <strong>Prof. CD Patel, AMPICS Dept.</strong>
           </p>
         </div>
       </div>
