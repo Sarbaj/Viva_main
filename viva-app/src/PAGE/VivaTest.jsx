@@ -21,8 +21,8 @@ const VivaTest = () => {
   useEffect(() => {
     if (UserInfo && UserInfo.length > 0) {
       setUserId(UserInfo[0].payload._id);
-      if (UserInfo[0].payload.role!=0) {
-        window.location.href="/login"
+      if (UserInfo[0].payload.role != 0) {
+        window.location.href = "/login";
       }
     }
   }, [UserInfo]);
@@ -35,7 +35,6 @@ const VivaTest = () => {
     const updatedQuestions = [...FinalQuetion];
     updatedQuestions[index].answer = value;
     setFinalQuetion(updatedQuestions);
-    
   };
 
   const handleSubmit = async () => {
@@ -46,25 +45,20 @@ const VivaTest = () => {
       selectedAnswer: userAnswers[i] || "Not Answered",
       correctAnswer: q.answer,
     }));
+    let marks = 0;
+    console.log(data);
+
+    data.forEach((q) => {
+      if (q.selectedAnswer === q.correctAnswer) {
+        marks++;
+      }
+    });
+
     setSubmittedData(data);
-  
+
     const _id = vivaMainid;
 
-
     try {
-      const VivaExistInResult = await fetch(
-        "https://vivabackend.onrender.com/bin/api/questionsresultcalculate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ paper: data }),
-        }
-      );
-      const Data = await VivaExistInResult.json();
-   
-
       const UpdateResul = await fetch(
         "https://vivabackend.onrender.com/bin/update/status",
         {
@@ -75,16 +69,15 @@ const VivaTest = () => {
           body: JSON.stringify({
             _id,
             status: false,
-            marks: Data,
+            marks: marks,
             answers: data,
           }),
         }
       );
-      
+
       setFinalQuetion([]);
       const res = await UpdateResul.json();
-     window.location.href="/"
-      
+      window.location.href = "/";
     } catch (error) {
       console.log(error);
     }
@@ -92,7 +85,6 @@ const VivaTest = () => {
 
   const HandleGenrateQ = async (data) => {
     //  https://vivabackend.onrender.com/bin/get/viva-resultexist
-
 
     try {
       const VivaExistInResult = await fetch(
@@ -107,25 +99,23 @@ const VivaTest = () => {
       );
       const Data = await VivaExistInResult.json();
       const status = VivaExistInResult.status;
-    
-      
+
       if (Data.result) {
         if (Data.result.active === false && Data.result.student == userid) {
           setFinalQuetion([]);
-          setDone(true)
-           localStorage.removeItem("quizEndTs");
-       
+          setDone(true);
+          localStorage.removeItem("quizEndTs");
         }
         if (Data.result.active === true && Data.result.student == userid) {
-          setLoad(false)
+          setLoad(false);
           setFinalQuetion(Data.result.vivaq);
           const existingEndTs = localStorage.getItem("quizEndTs");
-         
+
           if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
             const oneMinuteMs = data.time * 60 * 1000;
             const endTs = Date.now() + oneMinuteMs;
             localStorage.setItem("quizEndTs", endTs);
-            setTimeLeft(data.time*60); // or time in seconds based on viva
+            setTimeLeft(data.time * 60); // or time in seconds based on viva
           } else {
             const remaining = Math.floor(
               (parseInt(existingEndTs) - Date.now()) / 1000
@@ -133,24 +123,20 @@ const VivaTest = () => {
             setTimeLeft(remaining);
           }
 
-         
           setvivaMainid(Data.result._id);
         }
         setUserId(Data.result.student);
-       
+
         setvivaMainid(Data.result._id);
-       
       }
-   
 
       if (Data.result) {
         setVivaResultId(Data.result._id);
       }
-     
 
       if (status === 409) {
         //// if viva does not Exist
-        
+
         const responseQuetion = await fetch(
           "https://vivabackend.onrender.com/bin/api/questions",
           {
@@ -158,28 +144,30 @@ const VivaTest = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ syllabus: data.syllabus,totalq:data.totalquetions }),
+            body: JSON.stringify({
+              syllabus: data.syllabus,
+              totalq: data.totalquetions,
+            }),
           }
         );
 
-       
         setVivaResultId(data._id);
-        
-              const existingEndTs = localStorage.getItem("quizEndTs");
-          if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
-            const Time = Number(data.time) * 60 * 1000;
-            const endTs = Date.now() + Time;
-            localStorage.setItem("quizEndTs", endTs);
-            setTimeLeft(data.time*60); // or time in seconds based on viva
-          } else {
-            const remaining = Math.floor(
-              (parseInt(existingEndTs) - Date.now()) / 1000
-            );
-            setTimeLeft(remaining);
-          }
+
+        const existingEndTs = localStorage.getItem("quizEndTs");
+        if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
+          const Time = Number(data.time) * 60 * 1000;
+          const endTs = Date.now() + Time;
+          localStorage.setItem("quizEndTs", endTs);
+          setTimeLeft(data.time * 60); // or time in seconds based on viva
+        } else {
+          const remaining = Math.floor(
+            (parseInt(existingEndTs) - Date.now()) / 1000
+          );
+          setTimeLeft(remaining);
+        }
         const DataQ = await responseQuetion.json();
-        setLoad(false)
-      
+        setLoad(false);
+
         // const text=DataQ.output;
         //   const cleaned = text
         //   .replace(/^```json\s*/, '')  // remove ```json at start
@@ -188,8 +176,6 @@ const VivaTest = () => {
         //   const fixed = cleaned.replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
         //   const questionArray = JSON.parse(fixed);
         setFinalQuetion(DataQ.questions);
-         
-    
 
         const PostResultData = await fetch(
           "https://vivabackend.onrender.com/bin/take/vivatest",
@@ -209,16 +195,15 @@ const VivaTest = () => {
         const Empp = await PostResultData.json();
 
         // if no viva in result endddd
-       
+
         setvivaMainid(Empp.data._id);
       }
       if (Data.result) {
         if (Data.result.active === false && Data.result.student == userid) {
           setFinalQuetion([]);
-          setLoad(false)
-          alert('Already Submited')
-          window.location.href="/"
-         
+          setLoad(false);
+          alert("Already Submited");
+          window.location.href = "/";
         }
         if (Data.result.active === true && Data.result.student == userid) {
           const existingEndTs = localStorage.getItem("quizEndTs");
@@ -226,19 +211,16 @@ const VivaTest = () => {
             const Time = data.time * 60 * 1000;
             const endTs = Date.now() + Time;
             localStorage.setItem("quizEndTs", endTs);
-            setTimeLeft(data.time*60); // or time in seconds based on viva
+            setTimeLeft(data.time * 60); // or time in seconds based on viva
           } else {
             const remaining = Math.floor(
               (parseInt(existingEndTs) - Date.now()) / 1000
             );
             setTimeLeft(remaining);
           }
-
-          
         }
         setUserId(Data.result.student);
         setvivaMainid(Data.result._id);
-      
       }
 
       ///get/viva-resultexist"
@@ -275,9 +257,8 @@ const VivaTest = () => {
           if (!submitted) {
             //  handleSubmit();
             // setSubmitted(true);
-            handleSubmit()
-            setDone(true)
-            
+            handleSubmit();
+            setDone(true);
           }
 
           return 0;
@@ -306,7 +287,6 @@ const VivaTest = () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          
         }
         const data = await response.json();
 
@@ -345,11 +325,11 @@ const VivaTest = () => {
   useEffect(() => {
     const stopMonitoring = startTabFocusMonitor((status) => {
       if (status === "inactive") {
-          alert('Form Is Submited Because You Left The Tab')
-          setTimeLeft(2)
-       
+        alert("Form Is Submited Because You Left The Tab 🚨");
+        setTimeLeft(2);
+
         // Optional: increase count, warn, or auto-submit
-      } 
+      }
     });
 
     return () => stopMonitoring(); // cleanup on unmount
@@ -372,7 +352,30 @@ const VivaTest = () => {
     setSubmittedData(newData);
     console.log("Submitted Data:", newData);
   };
+  (function () {
+    let initialWidth = window.innerWidth; // Starting Width
+    let initialHeight = window.innerHeight; // Starting Height
 
+    window.addEventListener("resize", function () {
+      let currentWidth = window.innerWidth;
+      let currentHeight = window.innerHeight;
+
+      let widthChange = Math.abs(
+        ((currentWidth - initialWidth) / initialWidth) * 100
+      );
+      let heightChange = Math.abs(
+        ((currentHeight - initialHeight) / initialHeight) * 100
+      );
+
+      if (widthChange >= 20 || heightChange >= 20) {
+        handleSubmit();
+
+        // Reset to new size after alert so it doesn't trigger too often
+        initialWidth = currentWidth;
+        initialHeight = currentHeight;
+      }
+    });
+  })();
   return (
     <div className="viva-container">
       <h2 className="viva-title">📝 Viva Test</h2>
@@ -387,7 +390,7 @@ const VivaTest = () => {
         )}
       </div>
 
-      {FinalQuetion.length > 0 && (
+      {FinalQuetion.length > 0 &&
         FinalQuetion.map((q, i) => (
           <div key={i} className="viva-question-block">
             <p className="viva-question">
@@ -414,17 +417,24 @@ const VivaTest = () => {
               ))}
             </div>
           </div>
-        ))
-      ) }
-      {done ? (<>
-      <h1>You Have Successfully Submited Your Viva Assigment</h1></>):(<>
-      <h1></h1></>)}
-      {load &&(<h1>Loading..</h1>)}
-{FinalQuetion.length > 0 &&(<>
-  <button className="viva-submit-btn" onClick={() => handleSubmit()}>
-        Submit Viva
-      </button></>)}
-    
+        ))}
+      {done ? (
+        <>
+          <h1>You Have Successfully Submited Your Viva Assigment</h1>
+        </>
+      ) : (
+        <>
+          <h1></h1>
+        </>
+      )}
+      {load && <h1>Loading..</h1>}
+      {FinalQuetion.length > 0 && (
+        <>
+          <button className="viva-submit-btn" onClick={() => handleSubmit()}>
+            Submit Viva
+          </button>
+        </>
+      )}
     </div>
   );
 };
