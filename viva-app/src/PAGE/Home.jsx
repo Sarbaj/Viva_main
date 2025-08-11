@@ -93,13 +93,13 @@ function FeatureCard({ icon, title, description }) {
         <div className="testimonial-card">
           <p>
             "This app helped me prepare for my practicals quickly and effectively. The best part is the
-            anti-cheat features that make it feel like a real exam!" – <strong>Riya S., MCA Student</strong>
+            anti-cheat features that make it feel like a real exam!" – <strong>Sarbaz Malek, MCA Student</strong>
           </p>
         </div>
         <div className="testimonial-card">
           <p>
             "As a teacher, I can monitor students' progress and create class-specific viva tests.
-            Brilliant tool!" – <strong>Prof. Sharma, Computer Science Dept.</strong>
+            Brilliant tool!" – <strong>Prof. CD Patel, AMPICS Dept.</strong>
           </p>
         </div>
       </div>
