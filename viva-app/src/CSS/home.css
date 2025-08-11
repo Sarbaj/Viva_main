@@ -2,7 +2,7 @@
 .home-container {
   width: 100%;
   min-height: 100vh;
-  
+
   font-family: "Poppins", sans-serif;
   background: #f9f9f9;
   overflow-x: hidden;
@@ -204,12 +204,12 @@
 
 @media (max-width: 480px) {
   .home-container {
-  width: 75%;
-  min-height: 100vh;
-  padding: 2rem;
-  font-family: "Poppins", sans-serif;
-  background: #f9f9f9;
-}
+    width: 75%;
+    min-height: 100vh;
+    padding: 2rem;
+    font-family: "Poppins", sans-serif;
+    background: #f9f9f9;
+  }
   .start-btn {
     width: 100%;
     padding: 10px 16px;
