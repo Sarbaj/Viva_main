@@ -36,51 +36,63 @@ const VivaTest = () => {
     updatedQuestions[index].answer = value;
     setFinalQuetion(updatedQuestions);
   };
-
-  const handleSubmit = async () => {
-    ///api/questionsresultcalculate
-    const data = FinalQuetion.map((q, i) => ({
-      question: q.question,
-      options: q.options,
-      selectedAnswer: userAnswers[i] || "Not Answered",
-      correctAnswer: q.answer,
-    }));
-    let marks = 0;
-    console.log(data);
-
-    data.forEach((q) => {
-      if (q.selectedAnswer === q.correctAnswer) {
-        marks++;
-      }
-    });
-
-    setSubmittedData(data);
-
-    const _id = vivaMainid;
-
-    try {
-      const UpdateResul = await fetch(
-        "https://vivabackend.onrender.com/bin/update/status",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            _id,
-            status: false,
-            marks: marks,
-            answers: data,
-          }),
-        }
-      );
-
-      setFinalQuetion([]);
-      const res = await UpdateResul.json();
-      window.location.href = "/";
-    } catch (error) {
-      console.log(error);
+  function openFullscreen(element) {
+    if (!element) {
+      element = document.documentElement; // Default to whole page
     }
+
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+      /* Safari */
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      /* IE11 */
+      element.msRequestFullscreen();
+    }
+  }
+
+  openFullscreen();
+  const handleSubmit = async () => {
+    alert("submited");
+    ///api/questionsresultcalculate
+    // const data = FinalQuetion.map((q, i) => ({
+    //   question: q.question,
+    //   options: q.options,
+    //   selectedAnswer: userAnswers[i] || "Not Answered",
+    //   correctAnswer: q.answer,
+    // }));
+    // let marks = 0;
+    // console.log(data);
+    // data.forEach((q) => {
+    //   if (q.selectedAnswer === q.correctAnswer) {
+    //     marks++;
+    //   }
+    // });
+    // setSubmittedData(data);
+    // const _id = vivaMainid;
+    // try {
+    //   const UpdateResul = await fetch(
+    //     "https://vivabackend.onrender.com/bin/update/status",
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify({
+    //         _id,
+    //         status: false,
+    //         marks: marks,
+    //         answers: data,
+    //       }),
+    //     }
+    //   );
+    //   setFinalQuetion([]);
+    //   const res = await UpdateResul.json();
+    //   window.location.href = "/";
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const HandleGenrateQ = async (data) => {
@@ -352,30 +364,7 @@ const VivaTest = () => {
     setSubmittedData(newData);
     console.log("Submitted Data:", newData);
   };
-  (function () {
-    let initialWidth = window.innerWidth; // Starting Width
-    let initialHeight = window.innerHeight; // Starting Height
 
-    window.addEventListener("resize", function () {
-      let currentWidth = window.innerWidth;
-      let currentHeight = window.innerHeight;
-
-      let widthChange = Math.abs(
-        ((currentWidth - initialWidth) / initialWidth) * 100
-      );
-      let heightChange = Math.abs(
-        ((currentHeight - initialHeight) / initialHeight) * 100
-      );
-
-      if (widthChange >= 20 || heightChange >= 20) {
-        handleSubmit();
-
-        // Reset to new size after alert so it doesn't trigger too often
-        initialWidth = currentWidth;
-        initialHeight = currentHeight;
-      }
-    });
-  })();
   return (
     <div className="viva-container">
       <h2 className="viva-title">📝 Viva Test</h2>
