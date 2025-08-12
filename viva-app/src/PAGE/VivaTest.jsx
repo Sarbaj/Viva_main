@@ -365,6 +365,36 @@ const VivaTest = () => {
     console.log("Submitted Data:", newData);
   };
 
+  (function () {
+    let initialWidth = window.innerWidth;
+    let initialHeight = window.innerHeight;
+    let resizeTimeout; // for debounce
+
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimeout); // reset timer
+
+      resizeTimeout = setTimeout(function () {
+        let currentWidth = window.innerWidth;
+        let currentHeight = window.innerHeight;
+
+        let widthChange = Math.abs(
+          ((currentWidth - initialWidth) / initialWidth) * 100
+        );
+        let heightChange = Math.abs(
+          ((currentHeight - initialHeight) / initialHeight) * 100
+        );
+
+        if (heightChange >= 30) {
+          //  handleSubmit();
+          alert("Heigh Compromized");
+          // Set a cooldown period so it doesn't trigger again immediately
+          initialWidth = currentWidth;
+          initialHeight = currentHeight;
+        }
+      }, 500); // Runs 500ms after last resize event
+    });
+  })();
+
   return (
     <div className="viva-container">
       <h2 className="viva-title">📝 Viva Test</h2>
