@@ -9,7 +9,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["https://vivaportal.vercel.app"],
+    origin: ["https://vivaportal.vercel.app", "http://localhost:5173/"],
     credentials: true,
   })
 );
