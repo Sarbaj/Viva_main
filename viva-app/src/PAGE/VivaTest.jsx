@@ -54,45 +54,44 @@ const VivaTest = () => {
 
   openFullscreen();
   const handleSubmit = async () => {
-    alert("submited");
-    ///api/questionsresultcalculate
-    // const data = FinalQuetion.map((q, i) => ({
-    //   question: q.question,
-    //   options: q.options,
-    //   selectedAnswer: userAnswers[i] || "Not Answered",
-    //   correctAnswer: q.answer,
-    // }));
-    // let marks = 0;
-    // console.log(data);
-    // data.forEach((q) => {
-    //   if (q.selectedAnswer === q.correctAnswer) {
-    //     marks++;
-    //   }
-    // });
-    // setSubmittedData(data);
-    // const _id = vivaMainid;
-    // try {
-    //   const UpdateResul = await fetch(
-    //     "https://vivabackend.onrender.com/bin/update/status",
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({
-    //         _id,
-    //         status: false,
-    //         marks: marks,
-    //         answers: data,
-    //       }),
-    //     }
-    //   );
-    //   setFinalQuetion([]);
-    //   const res = await UpdateResul.json();
-    //   window.location.href = "/";
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    // /api/questionsresultcalculate
+    const data = FinalQuetion.map((q, i) => ({
+      question: q.question,
+      options: q.options,
+      selectedAnswer: userAnswers[i] || "Not Answered",
+      correctAnswer: q.answer,
+    }));
+    let marks = 0;
+    console.log(data);
+    data.forEach((q) => {
+      if (q.selectedAnswer === q.correctAnswer) {
+        marks++;
+      }
+    });
+    setSubmittedData(data);
+    const _id = vivaMainid;
+    try {
+      const UpdateResul = await fetch(
+        "https://vivabackend.onrender.com/bin/update/status",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id,
+            status: false,
+            marks: marks,
+            answers: data,
+          }),
+        }
+      );
+      setFinalQuetion([]);
+      const res = await UpdateResul.json();
+      window.location.href = "/";
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const HandleGenrateQ = async (data) => {
@@ -385,8 +384,8 @@ const VivaTest = () => {
         );
 
         if (heightChange >= 30) {
-          //  handleSubmit();
-          alert("Heigh Compromized");
+          alert("Height Compromized");
+          handleSubmit();
           // Set a cooldown period so it doesn't trigger again immediately
           initialWidth = currentWidth;
           initialHeight = currentHeight;
