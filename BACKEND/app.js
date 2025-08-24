@@ -22,4 +22,4 @@ app.get("/", (req, res) => res.send("Server running"));
 app.use("/bin", router);
 
 const PORT = process.env.PORT || 5050;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on portt ${PORT}`));
