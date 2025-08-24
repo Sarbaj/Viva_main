@@ -146,7 +146,6 @@ const Home = () => {
                 <li>✅ Progress Tracking</li>
                 <li>✅ Predictive Insights</li>
               </ul>
-              <a href="#">Explore Feature →</a>
             </div>
 
             <div className="feature-card">
@@ -162,7 +161,6 @@ const Home = () => {
                 <li>✅ Behavior Analysis</li>
                 <li>✅ Secure Environment</li>
               </ul>
-              <a href="#">Explore Feature →</a>
             </div>
           </div>
         </div>
