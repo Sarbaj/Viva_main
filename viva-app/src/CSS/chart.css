@@ -111,3 +111,86 @@
 .see-more-btn:hover {
   background: #5b21b6;
 }
+/* ========== Responsive Design ========== */
+
+/* Large Tablets (≤ 1024px) */
+@media (max-width: 1024px) {
+  .analytics-container {
+    padding: 10vh 2rem;
+  }
+
+  .stats-grid1 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-grid {
+    flex-direction: column;
+  }
+
+  .chart-card {
+    max-width: 100%;
+  }
+}
+
+/* Tablets & Small Laptops (≤ 768px) */
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .analytics-header1 {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .stats-grid {
+    width: 100%;
+  }
+}
+
+/* Mobile (≤ 480px) */
+@media (max-width: 480px) {
+  .analytics-container {
+    position: relative;
+    background: #0f0f1a;
+    color: white;
+
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+  }
+
+  .analytics-header h1 {
+    font-size: 1.5rem;
+  }
+  .analytics-header1 {
+    padding: 6rem 0rem;
+    min-height: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .analytics-header1 select,
+  .analytics-header1 input {
+    width: 100%;
+    padding: 12px;
+    margin: 0.5rem;
+  }
+
+  .chart-card {
+    padding: 15px;
+  }
+
+  .table-card th,
+  .table-card td {
+    font-size: 0.85rem;
+    padding: 6px;
+  }
+
+  .see-more-btn {
+    width: 100%;
+  }
+}

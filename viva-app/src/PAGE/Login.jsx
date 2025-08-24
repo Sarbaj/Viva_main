@@ -56,7 +56,7 @@ const Login = () => {
     <>
       <div className="login-wrapper">
         <form className="login-form">
-          <h2
+          {/* <h2
             style={{
               position: "absolute",
               top: "5px",
@@ -69,7 +69,7 @@ const Login = () => {
             }}
           >
             X
-          </h2>
+          </h2> */}
           <h2>Welcome Back</h2>
 
           <label>ENROLLMENT NUMBER</label>

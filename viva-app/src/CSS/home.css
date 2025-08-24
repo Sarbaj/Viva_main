@@ -5,8 +5,9 @@
   background: linear-gradient(to bottom right, #0a0a0a, #111827);
 }
 .maindiv2 {
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
+  padding: 3rem;
 }
 .home-container {
   font-family: "Poppins", sans-serif;
@@ -15,6 +16,7 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+
   align-items: center;
 }
 
@@ -181,7 +183,7 @@ html {
 
 .maindiv2 {
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -226,9 +228,8 @@ html {
   width: 80vw;
   min-height: 20vh;
   display: flex;
-  justify-content: space-between;
-  gap: 2rem;
-  overflow: visible;
+  gap: 1rem;
+  justify-content: space-around;
 }
 
 .feature-card {
@@ -238,12 +239,12 @@ html {
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   color: white;
-  padding: 25px 20px;
+  padding: 20px 20px;
   flex: 1;
   width: 150px;
+  min-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   transition: transform 0.3s;
 }
 
@@ -271,7 +272,7 @@ html {
 
 .feature-card ul {
   list-style: none;
-  padding: 0;
+  padding: 2rem 0rem;
   margin-top: 10px;
 }
 
@@ -281,12 +282,12 @@ html {
 }
 
 .feature-card a {
-  margin-top: auto;
   color: #ffffff;
   font-weight: bold;
   text-decoration: none;
   font-size: 14px;
 }
+/* ================= Responsive Design ================= */
 /* ================= Responsive Design ================= */
 
 /* Tablets (≤1024px) */
@@ -362,8 +363,17 @@ html {
 
 /* Small Phones (≤480px) */
 @media (max-width: 480px) {
-  .hero {
-    padding: 40px 10px 30px;
+  /* .maindiv2 {
+    padding-top: -15rem;
+  } */
+  .home-container {
+    font-family: "Poppins", sans-serif;
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4rem;
+    align-items: center;
   }
 
   .hero h1 {
@@ -377,6 +387,7 @@ html {
 
   .stats h2 {
     font-size: 1.4rem;
+    text-align: center;
   }
 
   .stats p {
@@ -399,10 +410,35 @@ html {
   }
 
   .header h1 {
-    font-size: 1.8em;
+    font-size: 1em;
   }
 
   .header p {
     font-size: 0.95em;
+  }
+
+  .features {
+    width: 100vw;
+    min-height: 200vh;
+    gap: 2rem;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .feature-card {
+    width: 90%;
+    overflow: hidden;
+    padding: 15px;
+    font-size: 13px;
+    justify-content: start;
+  }
+  .feature-card a {
+    color: #d10f0f;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
   }
 }

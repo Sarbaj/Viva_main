@@ -81,38 +81,58 @@ const NavBar = () => {
 
       {/* Links */}
       <div className={`nav-links ${isMenuOpen ? "active" : ""}`}>
+        {(isMenuOpen === true) & (isLoggedIn == false) ? (
+          <>
+            <Link to="/login" className="signin-link">
+              Sign In
+            </Link>
+          </>
+        ) : (
+          <> </>
+        )}
+
         {Role === "1" && (
-          <Link
-            to="/teacherdashboard"
-            className="nav-link"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <BarChart2 size={16} /> Dashboard
-          </Link>
+          <>
+            <Link
+              to="/teacherdashboard"
+              className="nav-link"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <BarChart2 size={16} /> Dashboard
+            </Link>
+            <Link
+              to="/resources"
+              className="nav-link"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <BookOpen size={16} /> Resources
+            </Link>
+            <Link
+              to="/analytics"
+              className="nav-link"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <BarChart2 size={16} /> Analytics
+            </Link>
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
         )}
         {isLoggedIn && Role == 0 && (
-          <Link
-            to="/join"
-            className="nav-link"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <Users size={16} /> Classes
-          </Link>
+          <>
+            <Link
+              to="/join"
+              className="nav-link"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Users size={16} /> Classes
+            </Link>
+            <button className="logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </>
         )}
-        <Link
-          to="/resources"
-          className="nav-link"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <BookOpen size={16} /> Resources
-        </Link>
-        <Link
-          to="/analytics"
-          className="nav-link"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <BarChart2 size={16} /> Analytics
-        </Link>
       </div>
 
       {/* Right Side */}
@@ -122,18 +142,18 @@ const NavBar = () => {
           <span className="badge">3</span>
         </div>
         {isLoggedIn ? (
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
+          <></>
         ) : (
           // <Login />
-          <Link to="/login" className="signin-link">
-            Sign In
-          </Link>
+          <>
+            <Link to="/login" className="signin-link">
+              Sign In
+            </Link>
+            <Link to="/login" className="get-started-btn">
+              Get Started
+            </Link>
+          </>
         )}
-        <Link to="/get-started" className="get-started-btn">
-          Get Started
-        </Link>
       </div>
     </nav>
   );

@@ -93,7 +93,7 @@
 /* Mobile screens */
 @media (max-width: 600px) {
   .login-form {
-    width: 100%;
+    width: 20rem;
     max-width: 95%;
     padding: 25px 20px;
   }
@@ -123,6 +123,7 @@
 @media (max-width: 400px) {
   .login-form {
     width: 20rem;
+    background: red;
     padding: 20px 15px;
   }
 
