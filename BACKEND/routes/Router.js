@@ -539,7 +539,8 @@ router.post("/get/analytics", async (req, res) => {
     // 2. For each class, get all viva results + populate student
     const classData = await Promise.all(
       classes.map(async (cls) => {
-        const results = await VivaResult.find({ classCode: cls.code })
+        const results = await resultModel
+          .find({ classCode: cls.code })
           .populate("student", "name rollNo email") // adjust fields as per your Student schema
           .lean();
 
