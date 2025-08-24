@@ -132,7 +132,6 @@ const Home = () => {
                 <li>✅ Adaptive Questioning</li>
                 <li>✅ Real-time Analysis</li>
               </ul>
-              <a href="#">Explore Feature →</a>
             </div>
 
             <div className="feature-card">
