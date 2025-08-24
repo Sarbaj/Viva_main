@@ -1,6 +1,6 @@
 .quiz-container {
-  padding: 20px;
-  max-width: 600px;
+  padding: 15vh 20px;
+  width: 60vw;
   margin: auto;
 }
 
@@ -38,4 +38,28 @@
   background-color: #fff3cd;
   border-color: #ffc107;
   color: #856404;
+}
+@media (max-width: 992px) {
+  .quiz-container {
+    width: 80%;
+    padding: 10vh 15px;
+  }
+}
+
+/* Mobile (small screens) */
+@media (max-width: 600px) {
+  .quiz-container {
+    width: 95%;
+    padding: 15vh 12px;
+  }
+
+  .question-block {
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  .option {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
 }

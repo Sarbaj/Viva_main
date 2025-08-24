@@ -1,24 +1,32 @@
 /* Register.css */
 .register-wrapper {
+  position: relative;
+  padding-top: 5vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: linear-gradient(to right, #f7f8fa, #e2e8f0);
+  min-height: 95vh;
+  background: transparent;
 }
 
 .register-form {
-  background: #fff;
-  padding: 40px 30px;
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px 30px;
   border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
+  background: rgba(30, 30, 30, 0.342);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  width: 25rem;
 }
 
 .register-form h2 {
   margin-bottom: 25px;
-  color: #333;
+  color: #7b5cff;
   text-align: center;
 }
 
@@ -26,7 +34,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #555;
+  color: white;
 }
 
 .register-form input {
@@ -47,7 +55,7 @@
 .register-form button {
   width: 100%;
   padding: 12px;
-  background-color: #62686ed3;
+  background-color: #7b5cff;
   color: white;
   border: none;
   font-size: 16px;
@@ -57,7 +65,7 @@
 }
 
 .register-form button:hover {
-  background-color: black;
+  background-color: #7a5cff7b;
 }
 
 .login-text {
@@ -67,10 +75,48 @@
 }
 
 .login-text a {
-  color: #62686ed3;
+  color: #7b5cff;
   text-decoration: none;
 }
 
 .login-text a:hover {
   text-decoration: underline;
+}
+@media (max-width: 992px) {
+  .register-form {
+    width: 22rem;
+    padding: 18px 25px;
+    top: 50%;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 600px) {
+  .register-form {
+    width: 80%;
+    max-width: 95%;
+    padding: 15px 20px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .register-form h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .register-form input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .register-form button {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .login-text {
+    font-size: 13px;
+  }
 }

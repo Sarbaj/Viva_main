@@ -1,298 +1,315 @@
 @font-face {
-    font-family: "uppercasefont";
-    src: url(../CSS/Fonts/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2)format('woff');
-    ;
+  font-family: "uppercasefont";
+  src: url(../CSS/Fonts/JTUSjIg1_i6t8kCHKm459WlhyyTh89Y.woff2) format("woff");
 }
 @font-face {
-    font-family: "logo";
-    src: url(../CSS/Fonts/QldNNTtLsx4E__B0XQmWaXx0xKVu.woff2)format('woff');
+  font-family: "logo";
+  src: url(../CSS/Fonts/QldNNTtLsx4E__B0XQmWaXx0xKVu.woff2) format("woff");
 }
 
-.MainDiv{
-    width: 100vw;
-    min-height: 75vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    font-family: uppercasefont;
-    position: relative;
-    overflow-x: hidden;
+.MainDiv {
+  top: 10vh;
+  width: 100vw;
+  min-height: 75vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  font-family: uppercasefont;
+  position: relative;
 }
-.MainDiv .uppr{
-    width: 100vw;
-    height: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+.MainDiv .uppr {
+  width: 100%;
+  min-height: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
-.MainDiv .lowers{
-    width: 100vw;
-    min-height:40vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-   
+.MainDiv .lowers {
+  width: 100%;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
-.MainDiv .lowers > button{
-    border: 1px solid black;
-    color: rgb(0, 0, 0);
-    padding: 1rem 5rem;
-    border-radius: 6px;
-    font-family: uppercasefont;
-    cursor: pointer;
-    margin-bottom: 2rem;
+.MainDiv .lowers > button {
+  border: 1px solid black;
+  color: rgb(255, 255, 255);
+  padding: 1rem 5rem;
+  border-radius: 6px;
+  font-family: uppercasefont;
+  cursor: pointer;
+  margin-bottom: 2rem;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
-.MainDiv .lowers .btn2{
-    width: 60vw;
-    height: 3rem;   
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.MainDiv .lowers .btn2 {
+  width: 60vw;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.MainDiv .lowers .btn2 button{
-    font-family: uppercasefont;
-    padding: 1rem 12%;
-    border-radius: 6px;
-    border: none;
-    transition: all ease-in-out 0.5s;
-}
-.MainDiv .lowers .btn2 button:nth-child(1){
-    border-radius: 6px 0px 0px 6px;
-    border-right: 1px solid black;
-}
-.MainDiv .lowers .btn2 button:nth-child(1):hover{
-   box-shadow: 5px 5px 25px rgb(129, 155, 192);
-}
-.MainDiv .lowers .btn2 button:nth-child(2):hover{
-   box-shadow: 5px 5px 25px rgb(129, 155, 192);
-}
-.MainDiv .lowers .btn2 button:nth-child(3):hover{
-   box-shadow: 5px 5px 25px rgb(129, 155, 192);
-}
-.MainDiv .lowers .btn2 button:nth-child(2){
-    border-radius: 0px;
-    border-right: 1px solid black;
-}
-.MainDiv .lowers .btn2 button:nth-child(3){
-    border-radius: 0px 6px 6px 0px;
-}
-
-.MainDiv .lowers .cardcontainer{
-    width: 60vw;
-    min-height:30vh;
-    border-radius: 6px;
-    display: flex;
-    gap: 1rem 2rem;
-    flex-wrap: wrap;
-    background: rgba(237, 237, 238, 0.404);
-    padding: 2rem;
-    border:1px solid #62686ed3 ;
-    box-shadow: 3px 3px 25px #62686ed3;
-}
-.MainDiv .lowers .cardcontainer .cards{
-    width: 15vw;
-    height: 33vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    color: rgb(0, 0, 0);
-    padding: 5px;
-    border-radius: 6px;
-    position: relative;
-    background: rgba(255, 255, 255, 0.168);
-    box-shadow: 5px 5px 25px rgba(89, 89, 93, 0.61);
-    transform: scale(0.9);
-    transition: all ease-in-out 0.4s;
-  
-}
-.MainDiv .lowers .cardcontainer .cards:hover{
-    transform: scale(1);
-}
-.MainDiv .lowers .cardcontainer .cards .top{
-    height: 8vh;
-    display: flex;
-   justify-content: center;
-    align-items: center;
-}
-.MainDiv .lowers .cardcontainer .cards .top p{
-    font-size: 1rem;
-    margin: 0rem 2rem;
-    text-align: center;
-}
-.MainDiv .lowers .cardcontainer .cards .top > button{
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    bottom: 0.5rem;
-    margin-left: 0.5rem;
-}
-.MainDiv .lowers .cardcontainer .cards .content p{
-    position: relative;
-    margin: 0.6rem 0rem;
-}
-.MainDiv .lowers .cardcontainer .cards > button{
-    padding: 13px 20px;
-    position: relative;
-   background: transparent;
+.MainDiv .lowers .btn2 button {
+  font-family: uppercasefont;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 1rem 12%;
+  border-radius: 6px;
   border: none;
-   border-radius: 6px;
-   background: #52545727;
-   font-family: uppercasefont;
-   transition: all ease-in-out 0.4s;
+  transition: all ease-in-out 0.5s;
+  color: #7b5cff;
 }
-.MainDiv .lowers .cardcontainer .cards > button:hover{
-    background: #62686ed3;
+.MainDiv .lowers .btn2 button:nth-child(1) {
+  border-radius: 6px 0px 0px 6px;
+  border-right: 1px solid black;
 }
-.popup{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 30vw;
-    min-height: 50vh;
-    background:#62686ed3;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 1rem;
-    gap: 1rem;
-    z-index: 10;
-    border-radius: 6px;
-    backdrop-filter: blur(2px);
-
+.MainDiv .lowers .btn2 button:nth-child(1):hover {
+  box-shadow: 5px 5px 25px rgb(129, 155, 192);
 }
-.popup input{
-    padding: 0.6rem 0rem;
-    border: none;
-    outline: none;
-    border-radius: 3px;
+.MainDiv .lowers .btn2 button:nth-child(2):hover {
+  box-shadow: 5px 5px 25px rgb(129, 155, 192);
 }
-.popup button{
-    padding: 0.6rem 0rem;
-    border: n;
-    color: rgb(84, 81, 81);
-    font-weight: 500;
+.MainDiv .lowers .btn2 button:nth-child(3):hover {
+  box-shadow: 5px 5px 25px rgb(129, 155, 192);
 }
-.popup p{
-    color: rgb(0, 0, 0);
-    cursor: pointer;
-    background: white;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    position: absolute;
-    top: 1rem;
-    right: 3rem;
+.MainDiv .lowers .btn2 button:nth-child(2) {
+  border-radius: 0px;
+  border-right: 1px solid black;
 }
-.student{
-    width: 100vw;
-    min-height: 60vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    padding: 0rem 0rem;
-    position: relative;
-    top: 2rem;
-}
-.student .uppr{
-    width: 70vw;
-    height: 3rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    border: 1px solid black;
-    font-weight: 500;
-    font-size: 1.2rem;
-}
-.student .lowers{
-    position: relative;
-    top: 2rem;
-    border: 1px solid black;
-    min-width: 70vw;
-    min-height: 40vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-     background: rgba(255, 255, 255, 0.168);
-    box-shadow: 5px 5px 25px rgba(89, 89, 93, 0.61);
-    border-radius: 6px;
+.MainDiv .lowers .btn2 button:nth-child(3) {
+  border-radius: 0px 6px 6px 0px;
 }
 
-.student .lowers thead th{
+.MainDiv .lowers .cardcontainer {
+  width: 52vw;
+  min-height: 40vh;
+  border-radius: 6px;
+  display: flex;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+  padding: 2rem;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  margin-bottom: 7rem;
+}
+.MainDiv .lowers .cardcontainer .cards {
+  width: 15vw;
+  height: 33vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: rgb(255, 254, 254);
+  padding: 5px;
+  border-radius: 6px;
+  position: relative;
+  background: #1a1a1a;
+  transform: scale(0.9);
+  border: 1px solid #7a5cff71;
+  transition: all ease-in-out 0.4s;
+}
+.MainDiv .lowers .cardcontainer .cards:hover {
+  transform: scale(1);
+}
+.MainDiv .lowers .cardcontainer .cards .top {
+  height: 8vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.MainDiv .lowers .cardcontainer .cards .top p {
+  font-size: 1rem;
+  margin: 0rem 2rem;
+  text-align: center;
+}
+.MainDiv .lowers .cardcontainer .cards .top > button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  bottom: 0.5rem;
+  margin-left: 0.5rem;
+}
+.MainDiv .lowers .cardcontainer .cards .content p {
+  position: relative;
+  margin: 0.6rem 0rem;
+}
+.MainDiv .lowers .cardcontainer .cards > button {
+  padding: 13px 20px;
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  background: #52545727;
+  color: white;
+  font-family: uppercasefont;
+  transition: all ease-in-out 0.4s;
+}
+.MainDiv .lowers .cardcontainer .cards > button:hover {
+  background: #62686ed3;
+}
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30vw;
+  min-height: 50vh;
+  background: #62686ed3;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  gap: 1rem;
+  z-index: 10;
+  border-radius: 6px;
+  backdrop-filter: blur(2px);
+}
+.popup input {
+  padding: 0.6rem 0rem;
+  border: none;
+  outline: none;
+  border-radius: 3px;
+}
+.popup button {
+  padding: 0.6rem 0rem;
+  border: n;
+  color: rgb(84, 81, 81);
+  font-weight: 500;
+}
+.popup p {
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  background: white;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  position: absolute;
+  top: 1rem;
+  right: 3rem;
+}
+.student {
+  width: 100vw;
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+
+  position: relative;
+}
+.student .uppr {
+  width: 70vw;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  border: 1px solid black;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+.student .lowers {
+  position: relative;
+  top: 2rem;
+  border: 1px solid black;
+  min-width: 70vw;
+  min-height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.student .lowers thead th {
   padding: 0.5rem 1rem;
 }
-.student .lowers tbody td button{
-  padding:5px 14px;
-  border:none;
-  background:#62686ed3;
-  cursor:pointer
+.student .lowers tbody td button {
+  padding: 5px 14px;
+  border: none;
+  background: #7b5cff;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.student .lowers tbody{
-    text-align: center;
+.student .lowers tbody {
+  text-align: center;
 }
-.student .lowers tbody tr{
-    column-span: 1rem;
+.student .lowers tbody tr {
+  column-span: 1rem;
 }
-.student .lowers table{
-    border-spacing: 0 0.8rem;
+.student .lowers table {
+  border-spacing: 0 0.8rem;
 }
-.resultpopup{
-    background: #62686ed3;
-    min-width: 70vw;
-    min-height: 30vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    padding: 2rem;
-    backdrop-filter: blur(2px);
-    transform: translate(-50%,-50%);
-    z-index: 20;
-    color: white;
-    position: fixed;
-    border-radius: 4px;
+.resultpopup {
+  min-width: 70vw;
+  min-height: 30vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 2rem;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  color: white;
+  position: fixed;
+  border-radius: 4px;
 }
-.resultpopup table{
-    padding: 0.5rem;
+.resultpopup table {
+  padding: 0.5rem;
 }
-.resultpopup table thead th{
-    padding: 0.3rem 2rem;
+.resultpopup table thead th {
+  padding: 0.3rem 2rem;
 }
-.resultpopup table tbody{
-    text-align: center;
+.resultpopup table tbody {
+  text-align: center;
 }
-.resultpopup .crossresult{
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 2px;
-    font-weight: 500;
-    background: white;
-    color: black;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    cursor: pointer;
+.resultpopup .crossresult {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+  font-weight: 500;
+  background: white;
+  color: black;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
 }
-.resultpopup button{
-    color: #62686ed3;
-    padding: 5px 12px;
-    border-radius: 3px;
-    border: none;
+.resultpopup button {
+  color: #62686ed3;
+  padding: 5px 12px;
+  border-radius: 3px;
+  border: none;
 }
+
 /* Medium Devices - Tablets (<= 768px) */
 @media (max-width: 768px) {
   .MainDiv .lowers .btn2 {
@@ -300,8 +317,7 @@
     width: 100%;
     gap: 0.5rem;
     align-items: center;
-     margin-bottom: 6rem;
-    
+    margin-bottom: 6rem;
   }
 
   .MainDiv .lowers .btn2 button {
@@ -310,17 +326,14 @@
     width: 90%;
     border-radius: 6px !important;
     border-right: none !important;
-  
   }
 
   .MainDiv .lowers .cardcontainer {
     width: 95vw;
     justify-content: center;
     padding: 1rem;
-     
-     position: relative;
-  
-   
+
+    position: relative;
   }
 
   .MainDiv .lowers .cardcontainer .cards {
@@ -340,17 +353,15 @@
   .resultpopup {
     min-width: 90vw;
   }
-  .resultpopup table{
+  .resultpopup table {
     padding: 0.2rem;
-  
-}
-.resultpopup table thead th{
+  }
+  .resultpopup table thead th {
     padding: 0.3rem 2rem;
-      
-}
-.resultpopup table tbody{
+  }
+  .resultpopup table tbody {
     text-align: center;
-}
+  }
 }
 
 /* Small Devices - Phones (<= 480px) */
@@ -368,7 +379,7 @@
     width: 90vw;
     padding: 1rem 0.5rem;
     position: absolute;
-    top:25rem;
+    top: 25rem;
   }
 
   .popup p {
@@ -386,10 +397,8 @@
     padding: 0.2rem;
     font-size: 0.8rem;
   }
- 
-  
 
- .resultpopup{
+  .resultpopup {
     background: #62686ed3;
     width: 90vw;
     min-height: 30vh;
@@ -400,41 +409,52 @@
     top: 50%;
     padding: 2rem;
     backdrop-filter: blur(2px);
-  
+
     z-index: 20;
     color: white;
     position: fixed;
     border-radius: 4px;
-}
+  }
 
   .resultpopup .crossresult {
     top: 0.9rem;
     right: 2rem;
   }
-  
-  .student .lowers thead th{
-  padding: 0.5rem 0.1rem;
-  font-size: 0.5rem;
-}
-.student .lowers tbody td{
+
+  .student .lowers thead th {
+    padding: 0.5rem 0.1rem;
+    font-size: 0.5rem;
+  }
+  .student .lowers tbody td {
     text-align: center;
     padding: 0 0.3rem;
     font-size: 0.5rem;
-}
-.student .lowers tbody td button{
-  padding:5px 14px;
-  border:none;
-  background:#62686ed3;
-  cursor:pointer;
-  border-radius: 4px;
-}
-.student .lowers tbody tr{
+  }
+  .student .lowers tbody td button {
+    padding: 5px 14px;
+    border: none;
+    background: #62686ed3;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  .student .lowers tbody tr {
     column-span: 0rem;
-}
-.student .lowers table{
+  }
+  .student .lowers table {
     border-spacing: 0 0.4rem;
+  }
+  .MainDiv .lowers .btn2 {
+    flex-direction: column;
+    min-height: 10rem;
+    margin-bottom: 6rem;
+    overflow: visible;
+  }
+
+  .MainDiv .lowers .btn2 button {
+    position: relative;
+    top: 2rem;
+    width: 90%;
+    border-radius: 6px !important;
+    border-right: none !important;
+  }
 }
-}
-
-
-

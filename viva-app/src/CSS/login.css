@@ -1,24 +1,32 @@
 /* Login.css */
 .login-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(to right, #f7f8fa, #e2e8f0);
+  background: transparent;
 }
 
 .login-form {
-  background: #fff;
+  position: relative;
   padding: 40px 30px;
   border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  background: rgba(30, 30, 30, 0.342);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(2.5px);
+  width: 25rem;
   max-width: 400px;
 }
 
 .login-form h2 {
   margin-bottom: 25px;
-  color: #333;
+  color: #7b5cff;
   text-align: center;
 }
 
@@ -26,7 +34,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #555;
+  color: white;
 }
 
 .login-form input {
@@ -47,7 +55,7 @@
 .login-form button {
   width: 100%;
   padding: 12px;
-  background-color: #62686ed3;
+  background-color: #7b5cff;
   color: white;
   border: none;
   font-size: 16px;
@@ -57,7 +65,7 @@
 }
 
 .login-form button:hover {
-  background-color: black;
+  background-color: #7a5cff84;
 }
 
 .register-text {
@@ -67,10 +75,58 @@
 }
 
 .register-text a {
-  color: #62686ed3;
+  color: #7b5cff;
   text-decoration: none;
 }
 
 .register-text a:hover {
   text-decoration: underline;
+}
+
+@media (max-width: 992px) {
+  .login-form {
+    width: 22rem;
+    padding: 30px 25px;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 600px) {
+  .login-form {
+    width: 100%;
+    max-width: 95%;
+    padding: 25px 20px;
+  }
+
+  .login-form h2 {
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+  }
+
+  .login-form input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .login-form button {
+    padding: 10px;
+    font-size: 15px;
+  }
+
+  .register-text {
+    font-size: 13px;
+  }
+}
+
+/* Extra small devices (≤400px) */
+@media (max-width: 400px) {
+  .login-form {
+    width: 20rem;
+    padding: 20px 15px;
+  }
+
+  .login-form h2 {
+    font-size: 1.2rem;
+  }
 }
