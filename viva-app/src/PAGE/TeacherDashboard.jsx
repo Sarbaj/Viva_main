@@ -105,24 +105,7 @@ const TeacherDashboard = () => {
           <p>Active Classes</p>
           <span className="badge">+2 this week</span>
         </div>
-        <div className="stat-card">
-          <span className="icon">📖</span>
-          <h2>284</h2>
-          <p>Total Students</p>
-          <span className="badge">+18 this month</span>
-        </div>
-        <div className="stat-card">
-          <span className="icon">⏱</span>
-          <h2>45</h2>
-          <p>Tests Created</p>
-          <span className="badge">+5 this week</span>
-        </div>
-        <div className="stat-card">
-          <span className="icon">📈</span>
-          <h2>78%</h2>
-          <p>Avg Score</p>
-          <span className="badge">+3% this month</span>
-        </div>
+        
       </div>
 
       {/* Quick Actions + Activity */}
