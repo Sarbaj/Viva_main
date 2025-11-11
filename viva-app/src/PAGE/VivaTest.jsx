@@ -447,7 +447,7 @@ const VivaTest = () => {
           <h1></h1>
         </>
       )}
-      {load && <h1>Loading..</h1>}
+      {load && <h1 className="loadingH1">Loading..</h1>}
       {FinalQuetion.length > 0 && (
         <>
           <button className="viva-submit-btn" onClick={() => handleSubmit()}>
