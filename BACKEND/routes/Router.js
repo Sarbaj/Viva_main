@@ -137,17 +137,19 @@ router.post("/login", async (req, res) => {
 router.post("/api/questions", async (req, res) => {
   const { syllabus, totalq } = req.body;
   const NoData = "```javascript ``` dont add any thing after ]";
-  const prompt = `Generate ${totalq} multiple-choice questions for a viva exam based on the following syllabus: "${syllabus}". Each question should include:
+const prompt = `Generate ${totalq} multiple-choice questions for a viva exam based on the following syllabus: "${syllabus}". Each question should include:
 - A "question" string
 - An "options" object with keys "A", "B", "C", and "D"
 - An "answer" string containing the correct option key ("A", "B", "C", or "D")
 
-Only return a valid JSON array of objects (not a string or code block), using double quotes ("") for all keys and values. Do not add any text before or after the array. Only output the array.
+JSON array format only. Do not include markdown or any text outside the JSON. use double quotes ("") for all keys and values. Do not add any text before or after the array. Only give the array.
 `;
+
 
   try {
     const response = await axios.post(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.AIKEY}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.AIKEY}
+`,
       {
         contents: [{ parts: [{ text: prompt }] }],
       }
@@ -155,16 +157,23 @@ Only return a valid JSON array of objects (not a string or code block), using do
 
     const output = response.data.candidates[0].content.parts[0].text;
 
-    let parsedOutput;
-    try {
-      parsedOutput = JSON.parse(output);
-    } catch (err) {
-      return res
-        .status(400)
-        .json({ error: "Failed to parse JSON response from Gemini.", output });
-    }
-    console.log(parsedOutput);
+  let parsedOutput;
+ try {
+  // Clean up markdown-style wrappers
+  const cleanOutput = output
+    .replace(/```json|```/g, '') // remove ```json and ```
+    .trim();
 
+  // Try parsing again
+  parsedOutput = JSON.parse(cleanOutput);
+} catch (err) {
+  return res.status(400).json({
+    error: "Failed to parse JSON response from Gemini.",
+    output, // keep original for debugging
+  });
+}
+
+console.log(parsedOutput);
     res.json({ questions: parsedOutput });
   } catch (error) {
     console.error(error.response?.data || error.message);
