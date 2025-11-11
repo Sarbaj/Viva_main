@@ -120,3 +120,10 @@
     font-size: 13px;
   }
 }
+
+/* Disabled states */
+.register-form button:disabled,
+.register-form input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

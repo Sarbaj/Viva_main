@@ -131,3 +131,10 @@
     font-size: 1.2rem;
   }
 }
+
+/* Disabled states */
+.login-form button:disabled,
+.login-form input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
