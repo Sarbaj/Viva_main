@@ -176,7 +176,7 @@
   backdrop-filter: blur(2px);
 }
 .popup input {
-  padding: 0.6rem 0rem;
+  padding: 0.6rem 2rem;
   border: none;
   outline: none;
   border-radius: 3px;
