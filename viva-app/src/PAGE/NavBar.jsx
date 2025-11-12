@@ -33,8 +33,23 @@ const NavBar = () => {
     const verifyToken = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        if (!token) return;
+        
+        // If no token, user is logged out
+        if (!token) {
+          setIsLoggedIn(false);
+          SetRole("");
+          return;
+        }
 
+        // If UserInfo already exists in Redux, use it
+        if (UserInfo && UserInfo.length > 0) {
+          setIsLoggedIn(true);
+          setUsername(UserInfo[0].payload.name);
+          SetRole(UserInfo[0].payload.role);
+          return;
+        }
+
+        // Fetch user info from API
         const response = await fetch(
           "https://vivabackend.onrender.com/bin/getUsername",
           {
@@ -44,19 +59,27 @@ const NavBar = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          // Invalid token, clear it
+          localStorage.removeItem("authToken");
+          setIsLoggedIn(false);
+          SetRole("");
+          return;
+        }
 
         setIsLoggedIn(true);
         const data = await response.json();
         dispatch(addBasicInfo(data));
-        setUsername(data);
+        setUsername(data.payload.name);
         SetRole(data.payload.role);
       } catch (error) {
         console.log("error verifying token");
+        setIsLoggedIn(false);
+        SetRole("");
       }
     };
     verifyToken();
-  }, [dispatch]);
+  }, [dispatch, location, UserInfo]);
 
   return (
     <nav className="navbar glassy-nav">
@@ -149,7 +172,7 @@ const NavBar = () => {
             <Link to="/login" className="signin-link">
               Sign In
             </Link>
-            <Link to="/login" className="get-started-btn">
+            <Link to="/register" className="get-started-btn">
               Get Started
             </Link>
           </>

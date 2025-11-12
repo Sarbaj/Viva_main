@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "../CSS/login.css";
-import { Link } from "react-router-dom";
+import "../CSS/global-loading.css";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.removeItem("authToken");
@@ -19,6 +23,7 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch(
         "https://vivabackend.onrender.com/bin/login",
@@ -36,24 +41,75 @@ const Login = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
+        setIsLoading(false);
         toast.error(errorData.message);
         throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
 
-      // Store the token in sessionStorage
+      // Store the token in localStorage
       localStorage.setItem("authToken", data.token);
-      toast.success("Success Login");
-      // Redirect to the main page
-      window.location.href = "/";
+      
+      // Fetch user info to determine role-based redirect
+      const userResponse = await fetch(
+        "https://vivabackend.onrender.com/bin/getUsername",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ token: data.token }),
+        }
+      );
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        const userRole = userData.payload.role;
+        
+        toast.success("Login Successful! Redirecting...");
+        
+        // Redirect based on user role
+        setTimeout(() => {
+          setIsLoading(false);
+          if (userRole === "0") {
+            // Student - redirect to home
+            navigate("/");
+          } else if (userRole === "1") {
+            // Teacher - redirect to dashboard
+            navigate("/teacherdashboard");
+          } else if (userRole === "2") {
+            // Admin - redirect to home
+            navigate("/");
+          } else {
+            // Default fallback
+            navigate("/");
+          }
+        }, 1500);
+      } else {
+        // Fallback if user info fetch fails
+        toast.success("Login Successful! Redirecting...");
+        setTimeout(() => {
+          setIsLoading(false);
+          navigate("/");
+        }, 1500);
+      }
     } catch (error) {
       console.error("Error during login:", error);
+      setIsLoading(false);
     }
   }
 
   return (
     <>
+      {isLoading && (
+        <div className="global-loading-overlay">
+          <div className="global-loading-spinner">
+            <Loader2 className="global-spinner-icon" size={48} />
+            <p>Logging in...</p>
+          </div>
+        </div>
+      )}
       <div className="login-wrapper">
         <form className="login-form">
           {/* <h2
@@ -80,6 +136,7 @@ const Login = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            disabled={isLoading}
           />
 
           <label>Password</label>
@@ -90,9 +147,12 @@ const Login = () => {
             value={formData.password}
             onChange={handleChange}
             required
+            disabled={isLoading}
           />
 
-          <button onClick={(e) => handleSubmit(e)}>Login</button>
+          <button onClick={(e) => handleSubmit(e)} disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
 
           <p className="register-text">
             Don’t have an account? <Link to="/register">Register </Link>

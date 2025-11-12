@@ -2,9 +2,11 @@
   max-width: 700px;
   margin: 2rem auto;
   padding: 2rem;
+  padding-top: 1rem;
   background: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
 }
 .loadingH1{
   color: black;
@@ -54,12 +56,31 @@
   background-color: #0056b3;
 }
 .timestyle{
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border: 2px solid #62686ed3;
   font-family: sans-serif;
-  margin: 1rem 0rem;
   color: black;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
+
+.timestyle p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .timestyle p strong{
   color: #62686ed3;
+  font-size: 20px;
+  margin-left: 5px;
 }
 
 
