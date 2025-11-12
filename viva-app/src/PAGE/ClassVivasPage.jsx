@@ -1,15 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
-import { BookOpen, Calendar, Clock, FileText, Lock, CheckCircle, ArrowLeft } from 'lucide-react';
-import '../CSS/classvivaspage.css';
+import React from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { ToastContainer, toast } from "react-toastify";
+import {
+  BookOpen,
+  Calendar,
+  Clock,
+  FileText,
+  Lock,
+  CheckCircle,
+  ArrowLeft,
+} from "lucide-react";
+import "../CSS/classvivaspage.css";
 
 const ClassVivasPage = () => {
   const { classCode } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [vivas, setVivas] = useState([]);
-  const [className, setClassName] = useState('');
+  const [classname, setClassname] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [userid, setUserId] = useState("");
   const { UserInfo } = useSelector((state) => state.user);
@@ -30,7 +40,7 @@ const ClassVivasPage = () => {
         if (!token) {
           window.location.href = "/login";
         }
-        const response = await fetch("https://vivabackend.onrender.com/bin/getUsername", {
+        const response = await fetch("http://localhost:5050/bin/getUsername", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -60,20 +70,32 @@ const ClassVivasPage = () => {
 
       setIsLoading(true);
       try {
-        const response = await fetch('https://vivabackend.onrender.com/bin/get/viva-info', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ studentId: userid })
-        });
+        const response = await fetch(
+          "http://localhost:5050/bin/get/viva-info",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ studentId: userid }),
+          }
+        );
 
         if (response.ok) {
           const data = await response.json();
           // Filter vivas for this specific class
-          const classVivas = data.vivas.filter(viva => viva.classCode === classCode);
+          const classVivas = data.vivas.filter(
+            (viva) => viva.classCode === classCode
+          );
           setVivas(classVivas);
-          setClassName(`Class ${classCode}`);
+
+          // Use class name from navigation state if available
+          if (location.state?.className) {
+            setClassname(location.state.className);
+          } else {
+            // Fallback: Use class code as class name when no state is passed
+            setClassname(`Class ${classCode}`);
+          }
         }
         setIsLoading(false);
       } catch (error) {
@@ -84,15 +106,15 @@ const ClassVivasPage = () => {
     };
 
     fetchClassVivas();
-  }, [userid, classCode]);
+  }, [userid, classCode, location.state]);
 
   const handleAttendViva = (viva) => {
     if (viva.status === "false") {
       toast.error("This viva is not active yet");
       return;
     }
-    localStorage.setItem('VivaId', viva._id);
-    navigate('/vivatest');
+    localStorage.setItem("VivaId", viva._id);
+    navigate("/vivatest");
   };
 
   return (
@@ -100,14 +122,19 @@ const ClassVivasPage = () => {
       <div className="classvivaspage-container">
         {/* Header */}
         <div className="classvivaspage-header">
-          <button onClick={() => navigate('/join')} className="classvivaspage-back-btn">
+          <button
+            onClick={() => navigate("/join")}
+            className="classvivaspage-back-btn"
+          >
             <ArrowLeft size={20} /> Back to Classes
           </button>
           <div className="classvivaspage-header-content">
             <BookOpen size={48} className="classvivaspage-header-icon" />
-            <h1>{className}</h1>
+            <h1>{classname}</h1>
             <p className="classvivaspage-class-code">Class Code: {classCode}</p>
-            <p className="classvivaspage-subtitle">All viva assessments for this class</p>
+            <p className="classvivaspage-subtitle">
+              All viva assessments for this class
+            </p>
           </div>
         </div>
 
@@ -151,7 +178,9 @@ const ClassVivasPage = () => {
 
                 <button
                   onClick={() => handleAttendViva(viva)}
-                  className={`classvivaspage-attend-btn ${viva.status === "false" ? "locked" : ""}`}
+                  className={`classvivaspage-attend-btn ${
+                    viva.status === "false" ? "locked" : ""
+                  }`}
                   disabled={viva.status === "false"}
                 >
                   {viva.status === "true" ? (

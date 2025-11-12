@@ -51,7 +51,7 @@ const Home = () => {
 
         // Fetch user info from API
         const response = await fetch(
-          "https://vivabackend.onrender.com/bin/getUsername",
+          "http://localhost:5050/bin/getUsername",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -199,7 +199,7 @@ const Home = () => {
           {/* Stats Section */}
           <section className="stats">
             <div className="stat-item">
-              <h2 className="stat-number">{stats.users}K+</h2>
+              <h2 className="stat-number">20+</h2>
               <p>Active Users</p>
             </div>
             <div className="stat-item">
@@ -207,7 +207,7 @@ const Home = () => {
               <p>Satisfaction Rate</p>
             </div>
             <div className="stat-item">
-              <h2 className="stat-number">{stats.assessments}M+</h2>
+              <h2 className="stat-number">30+</h2>
               <p>Assessments</p>
             </div>
           </section>

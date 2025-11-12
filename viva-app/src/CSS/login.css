@@ -1,5 +1,5 @@
 /* Login.css */
-.login-wrapper {
+.auth-login-wrapper {
   position: absolute;
   top: 0;
   left: 50%;
@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: transparent;
+  background: linear-gradient(to bottom right, #0a0a0a, #111827);
 }
 
 .login-form {
@@ -72,6 +72,7 @@
   margin-top: 15px;
   text-align: center;
   font-size: 14px;
+  color: white;
 }
 
 .register-text a {

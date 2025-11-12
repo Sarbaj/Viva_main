@@ -64,7 +64,10 @@ const VivaTest = () => {
     let marks = 0;
     console.log(data);
     data.forEach((q) => {
-      if (q.selectedAnswer === q.correctAnswer) {
+      // Normalize both answers for comparison - handles case sensitivity, whitespace, and data types
+      const selectedAnswer = String(q.selectedAnswer || '').trim().toLowerCase();
+      const correctAnswer = String(q.correctAnswer || '').trim().toLowerCase();
+      if (selectedAnswer === correctAnswer) {
         marks++;
       }
     });
@@ -72,7 +75,7 @@ const VivaTest = () => {
     const _id = vivaMainid;
     try {
       const UpdateResul = await fetch(
-        "https://vivabackend.onrender.com/bin/update/status",
+        "http://localhost:5050/bin/update/status",
         {
           method: "POST",
           headers: {
@@ -95,11 +98,11 @@ const VivaTest = () => {
   };
 
   const HandleGenrateQ = async (data) => {
-    //  https://vivabackend.onrender.com/bin/get/viva-resultexist
+    //  http://localhost:5050/bin/get/viva-resultexist
 
     try {
       const VivaExistInResult = await fetch(
-        "https://vivabackend.onrender.com/bin/get/viva-resultexist",
+        "http://localhost:5050/bin/get/viva-resultexist",
         {
           method: "POST",
           headers: {
@@ -149,7 +152,7 @@ const VivaTest = () => {
         //// if viva does not Exist
 
         const responseQuetion = await fetch(
-          "https://vivabackend.onrender.com/bin/api/questions",
+          "http://localhost:5050/bin/api/questions",
           {
             method: "POST",
             headers: {
@@ -189,7 +192,7 @@ const VivaTest = () => {
         setFinalQuetion(DataQ.questions);
 
         const PostResultData = await fetch(
-          "https://vivabackend.onrender.com/bin/take/vivatest",
+          "http://localhost:5050/bin/take/vivatest",
           {
             method: "POST",
             headers: {
@@ -286,7 +289,7 @@ const VivaTest = () => {
       try {
         const VivaId = localStorage.getItem("VivaId");
         const response = await fetch(
-          "https://vivabackend.onrender.com/bin/get/viva-detail",
+          "http://localhost:5050/bin/get/viva-detail",
           {
             method: "POST",
             headers: {
@@ -397,7 +400,8 @@ const VivaTest = () => {
   })();
 
   return (
-    <div className="viva-container">
+    <div className="viva-test-page-wrapper">
+      <div className="viva-container">
       <h2 className="viva-title">📝 Viva Test</h2>
       <div className="timestyle">
         {FinalQuetion.length > 0 && (
@@ -455,6 +459,7 @@ const VivaTest = () => {
           </button>
         </>
       )}
+      </div>
     </div>
   );
 };

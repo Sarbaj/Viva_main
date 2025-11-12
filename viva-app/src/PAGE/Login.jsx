@@ -26,7 +26,7 @@ const Login = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://vivabackend.onrender.com/bin/login",
+        "http://localhost:5050/bin/login",
         {
           method: "POST",
           headers: {
@@ -53,7 +53,7 @@ const Login = () => {
       
       // Fetch user info to determine role-based redirect
       const userResponse = await fetch(
-        "https://vivabackend.onrender.com/bin/getUsername",
+        "http://localhost:5050/bin/getUsername",
         {
           method: "POST",
           headers: {
@@ -110,7 +110,7 @@ const Login = () => {
           </div>
         </div>
       )}
-      <div className="login-wrapper">
+      <div className="auth-login-wrapper">
         <form className="login-form">
           {/* <h2
             style={{

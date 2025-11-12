@@ -111,9 +111,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease;
 }
 
 .joinclass-card:hover::before {
@@ -121,9 +121,9 @@
 }
 
 .joinclass-card:hover {
-  transform: translateY(-8px);
-  border-color: rgba(139, 92, 246, 0.5);
-  box-shadow: 0 15px 40px rgba(139, 92, 246, 0.3);
+  transform: translateY(-3px);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.15);
 }
 
 .joinclass-card-header {
@@ -137,9 +137,9 @@
 
 .joinclass-card-icon {
   color: #8b5cf6;
-  padding: 12px;
+  padding: 15px;
   background: rgba(139, 92, 246, 0.2);
-  border-radius: 12px;
+  border-radius: 15px;
 }
 
 .joinclass-card-info h3 {

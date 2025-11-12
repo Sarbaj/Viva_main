@@ -1,68 +1,68 @@
-import React, { useState } from 'react';
-import '../CSS/register.css';
-import '../CSS/global-loading.css';
-import { ToastContainer ,toast} from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+import React, { useState } from "react";
+import "../CSS/register.css";
+import "../CSS/global-loading.css";
+import { ToastContainer, toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmpassword:'',
-    ennumber: '',
+    name: "",
+    email: "",
+    password: "",
+    confirmpassword: "",
+    ennumber: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmpassword) {
       toast.error("Password Is Not Matching !!!");
       return;
     }
-    
+
     setIsLoading(true);
-    try{
-      const data = await fetch("https://vivabackend.onrender.com/bin/registerstudent",{
-        method:"POST",
+    try {
+      const data = await fetch("http://localhost:5050/bin/registerstudent", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          name:formData.name,
-          email:formData.email,
-          password:formData.password,
-          ennumber:formData.ennumber 
-        })
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          ennumber: formData.ennumber,
+        }),
       });
       const result = await data.json();
-      
+
       if (result.status !== 201) {
         setIsLoading(false);
         toast.error(result.message);
         return;
       }
-      
+
       if (result.status === 201) {
         toast.success("Successfully Registered! Redirecting to login...");
         setFormData({
-          name: '',
-          email: '',
-          password: '',
-          confirmpassword:'',
-          ennumber: '',
+          name: "",
+          email: "",
+          password: "",
+          confirmpassword: "",
+          ennumber: "",
         });
-        
+
         // Redirect to login page after short delay
         setTimeout(() => {
           setIsLoading(false);
@@ -85,7 +85,7 @@ const Register = () => {
           </div>
         </div>
       )}
-      <div className="register-wrapper">
+      <div className="auth-register-wrapper">
         <form className="register-form" onSubmit={handleSubmit}>
           <h2>Create Account</h2>
 

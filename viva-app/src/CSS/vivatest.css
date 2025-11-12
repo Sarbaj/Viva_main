@@ -1,24 +1,32 @@
+/* Add unique wrapper for viva test page */
+.viva-test-page-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #0a0a0a, #111827);
+  padding: 20px 0;
+}
+
 .viva-container {
   max-width: 700px;
   margin: 2rem auto;
   padding: 2rem;
   padding-top: 1rem;
-  background: #f9f9f9;
+  background: rgba(30, 30, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  min-height: 100vh;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  min-height: calc(100vh - 40px);
 }
 .loadingH1{
-  color: black;
+  color: white;
+  text-align: center;
 }
-
 
 .viva-title {
   font-size: 24px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
-  color: black;
+  color: #7b5cff;
 }
 
 .viva-question-block {
@@ -28,7 +36,7 @@
 .viva-question {
   font-weight: 600;
   margin-bottom: 8px;
-  color: black;
+  color: white;
 }
 
 .viva-input {
@@ -60,13 +68,13 @@
   top: 20px;
   right: 20px;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(30, 30, 30, 0.95);
   padding: 15px 25px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  border: 2px solid #62686ed3;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  border: 2px solid #7b5cff;
   font-family: sans-serif;
-  color: black;
+  color: white;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -78,7 +86,7 @@
 }
 
 .timestyle p strong{
-  color: #62686ed3;
+  color: #7b5cff;
   font-size: 20px;
   margin-left: 5px;
 }
@@ -86,35 +94,16 @@
 
 /* VivaTest.css */
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9fafb;
-  color: #333;
-}
+/* Removed global body styling to avoid conflicts */
 
-.viva-container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.viva-heading {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 30px;
-  color: #1f2937;
-}
+/* Duplicate styles removed - using the updated dark theme styles above */
 
 .viva-question-block {
   margin-bottom: 25px;
   padding: 16px;
   border-radius: 12px;
-  background-color: #f3f4f6;
-  border: 1px solid #e5e7eb;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .viva-question {
@@ -133,15 +122,16 @@ body {
   align-items: center;
   padding: 10px;
   border-radius: 8px;
-  background-color: #ffffff;
-  border: 1px solid #d1d5db;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  color: black;
+  color: white;
   transition: all 0.2s ease;
 }
 
 .viva-option-label:hover {
-  background-color: #e0f2fe;
+  background-color: rgba(123, 92, 255, 0.2);
+  border-color: #7b5cff;
 }
 
 .viva-option-label input[type="radio"] {
@@ -155,8 +145,8 @@ body {
 }
 
 .selected {
-  border-color: #2563eb;
-  background-color: #eff6ff;
+  border-color: #7b5cff;
+  background-color: rgba(123, 92, 255, 0.3);
 }
 
 .viva-submit-btn {
@@ -164,7 +154,7 @@ body {
   display: block;
   width: 100%;
   padding: 14px;
-  background-color: #2563eb;
+  background-color: #7b5cff;
   color: white;
   font-size: 1.1rem;
   border: none;
@@ -174,7 +164,7 @@ body {
 }
 
 .viva-submit-btn:hover {
-  background-color: #1e40af;
+  background-color: rgba(123, 92, 255, 0.8);
 }
 
 .submitted-data {

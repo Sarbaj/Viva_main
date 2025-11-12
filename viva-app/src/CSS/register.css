@@ -1,12 +1,12 @@
 /* Register.css */
-.register-wrapper {
+.auth-register-wrapper {
   position: relative;
   padding-top: 5vh;
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 95vh;
-  background: transparent;
+  background: linear-gradient(to bottom right, #0a0a0a, #111827);
 }
 
 .register-form {
@@ -72,6 +72,7 @@
   margin-top: 15px;
   text-align: center;
   font-size: 14px;
+  color: white;
 }
 
 .login-text a {

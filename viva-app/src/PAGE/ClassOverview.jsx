@@ -1,24 +1,40 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import "../CSS/classoverview.css";
+import "../CSS/global-loading.css";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faPenToSquare,
-  faFileImport,
-  faFileArrowDown,
-} from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { ToastContainer } from "react-toastify";
+  GraduationCap,
+  Users,
+  FileText,
+  Calendar,
+  Clock,
+  Edit3,
+  Download,
+  Plus,
+  Play,
+  CheckCircle,
+  XCircle,
+  Eye,
+  Trash2,
+  ArrowLeft,
+  BookOpen,
+  TrendingUp,
+  Activity,
+  Loader2,
+} from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
 import * as XLSX from "xlsx";
-import { useEffect } from "react";
-import { toast } from "react-toastify";
 import Studentresult from "./Studentresult";
 import { useDispatch } from "react-redux";
 import { addstudentresult } from "../REDUX/UserSlice";
 const ClassOverview = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
   const { teacherclasscodeid } = useParams();
+
+  // State management
   const [vivaItem, setvivaItem] = useState([]);
   const [messagedisplay, setMessgeDisplay] = useState(null);
   const [mainVivaItem, setmainVivaItem] = useState([]);
@@ -35,6 +51,13 @@ const ClassOverview = () => {
   const [value, setValue] = useState("");
   const [relode, setRelode] = useState("");
   const [downloadCount, setDownloadCount] = useState(true);
+  const [classInfo, setClassInfo] = useState({
+    className: "",
+    teacherName: "",
+  });
+  const [isCreatingViva, setIsCreatingViva] = useState(false);
+  const [isUpdatingViva, setIsUpdatingViva] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -48,26 +71,32 @@ const ClassOverview = () => {
       if (!token) {
         window.location.href = "/login";
       }
-      const response = await fetch(
-        "https://vivabackend.onrender.com/bin/getUsername",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ token }),
-        }
-      );
+      const response = await fetch("http://localhost:5050/bin/getUsername", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
 
       if (!response.ok) {
         const errorData = await response.json();
-        setErrorlogin(errorData.message);
+        console.log("Auth error:", errorData.message);
+        window.location.href = "/login";
       }
 
       const data = await response.json();
 
       if (data.payload.role != 1) {
         window.location.href = "/login";
+      }
+
+      // Set teacher name from token data
+      if (data.payload && data.payload.name) {
+        setClassInfo((prev) => ({
+          ...prev,
+          teacherName: data.payload.name,
+        }));
       }
     } catch (error) {
       console.log("error");
@@ -81,7 +110,7 @@ const ClassOverview = () => {
     try {
       const FetchData = async () => {
         const response = await fetch(
-          "https://vivabackend.onrender.com/bin/get/studentinclass",
+          "http://localhost:5050/bin/get/studentinclass",
           {
             method: "POST",
             headers: {
@@ -93,11 +122,25 @@ const ClassOverview = () => {
         const data = await response.json();
 
         if (data) {
+          // Extract class name from the first student record (which contains class info)
+          if (data.length > 0 && data[0].classnname) {
+            setClassInfo((prev) => ({
+              ...prev,
+              className: data[0].classnname,
+            }));
+          } else {
+            // Fallback to class code if no class name found
+            setClassInfo((prev) => ({
+              ...prev,
+              className: `Class ${teacherclasscodeid}`,
+            }));
+          }
+
           ///get/allstudentinclass
           const idList = data.map((s) => s.student);
 
           const allstudent = await fetch(
-            "https://vivabackend.onrender.com/bin/get/allstudentinclass",
+            "http://localhost:5050/bin/get/allstudentinclass",
             {
               method: "POST",
               headers: {
@@ -119,7 +162,7 @@ const ClassOverview = () => {
       try {
         const FetchData = async () => {
           const response = await fetch(
-            "https://vivabackend.onrender.com/bin/get/vivavbyclasscode",
+            "http://localhost:5050/bin/get/vivavbyclasscode",
             {
               method: "POST",
               headers: {
@@ -131,6 +174,8 @@ const ClassOverview = () => {
           const data = await response.json();
           setvivaItem(data);
           setmainVivaItem(data);
+
+          // Class name is now properly set from the studentinclass API response above
         };
         FetchData();
       } catch (error) {}
@@ -141,6 +186,7 @@ const ClassOverview = () => {
 
   const HandleUpcoming = (e) => {
     e.preventDefault();
+    setActiveFilter("upcoming");
     if (mainVivaItem.length > 0) {
       const filteredArray = mainVivaItem.filter(
         (data) => data.status == "false"
@@ -148,12 +194,14 @@ const ClassOverview = () => {
       setvivaItem(filteredArray);
       setMessgeDisplay();
       if (filteredArray.length <= 0) {
-        setMessgeDisplay("No Upcoming Viva");
+        setMessgeDisplay("No Upcoming Vivas");
       }
     }
   };
+
   const HandleContinue = (e) => {
     e.preventDefault();
+    setActiveFilter("active");
     if (mainVivaItem.length > 0) {
       const filteredArray = mainVivaItem.filter(
         (data) => data.status == "true"
@@ -161,9 +209,16 @@ const ClassOverview = () => {
       setvivaItem(filteredArray);
       setMessgeDisplay();
       if (filteredArray.length <= 0) {
-        setMessgeDisplay("No Continue Viva");
+        setMessgeDisplay("No Active Vivas");
       }
     }
+  };
+
+  const HandleAll = (e) => {
+    e.preventDefault();
+    setActiveFilter("all");
+    setvivaItem(mainVivaItem);
+    setMessgeDisplay();
   };
 
   const HandleCreate = () => {
@@ -176,16 +231,26 @@ const ClassOverview = () => {
       syllabus: "",
     });
   };
+
   const HandleFalse = () => {
     setpopupStatus(false);
   };
   const HandleCreteViva = async (e) => {
     e.preventDefault();
-    console.log(formData);
-    //  const { title, classCode, date,time,totalquetions, status,syllabus } = req.body;
-    const response = await fetch(
-      "https://vivabackend.onrender.com/bin/create/viva",
-      {
+
+    if (
+      !formData.title.trim() ||
+      !formData.date ||
+      !formData.totalquetions ||
+      !formData.time
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    setIsCreatingViva(true);
+    try {
+      const response = await fetch("http://localhost:5050/bin/create/viva", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,16 +264,34 @@ const ClassOverview = () => {
           status: "false",
           syllabus: formData.syllabus,
         }),
+      });
+
+      if (response.status !== 201) {
+        const error = await response.json();
+        toast.error(error.message);
+        return;
       }
-    );
-    if (response.status !== 201) {
-      const error = await response.json();
-      toast.error(error.message);
-      return;
+
+      const data = await response.json();
+      toast.success(data.message);
+
+      // Reset form and close modal
+      setFormData({
+        title: "",
+        date: "",
+        totalquetions: "",
+        time: "",
+        syllabus: "",
+      });
+      setpopupStatus(false);
+
+      // Refresh viva list
+      setRelode(Date.now().toString());
+    } catch (error) {
+      toast.error("Failed to create viva");
+    } finally {
+      setIsCreatingViva(false);
     }
-    const data = await response.json();
-    console.log(data);
-    toast.success(data.message);
   };
   const HandleInputchange = (e) => {
     const { name, value } = e.target;
@@ -244,11 +327,10 @@ const ClassOverview = () => {
   };
 
   const HandleUpdate = async () => {
-    setRelode("1");
+    setIsUpdatingViva(true);
     try {
-      console.log(value);
       const UpdateViva = await fetch(
-        "https://vivabackend.onrender.com/bin/update/vivadetail",
+        "http://localhost:5050/bin/update/vivadetail",
         {
           method: "POST",
           headers: {
@@ -265,11 +347,19 @@ const ClassOverview = () => {
           }),
         }
       );
-      const updated = await UpdateViva.json();
-      if (!UpdateViva.ok) {
+
+      if (UpdateViva.ok) {
+        toast.success("Viva updated successfully!");
+        setUpdateStatus(false);
+        setRelode(Date.now().toString());
+      } else {
+        toast.error("Failed to update viva");
       }
-      setUpdateStatus(false);
-    } catch (error) {}
+    } catch (error) {
+      toast.error("An error occurred while updating");
+    } finally {
+      setIsUpdatingViva(false);
+    }
   };
   const DateFunc = (data) => {
     return data.split("T")[0];
@@ -285,7 +375,7 @@ const ClassOverview = () => {
 
     try {
       const response = await fetch(
-        "https://vivabackend.onrender.com/bin/get/studentinresult",
+        "http://localhost:5050/bin/get/studentinresult",
         {
           method: "POST",
           headers: {
@@ -300,7 +390,7 @@ const ClassOverview = () => {
       const Data = await response.json();
 
       const responseViva = await fetch(
-        "https://vivabackend.onrender.com/bin/get/all-viva",
+        "http://localhost:5050/bin/get/all-viva",
         {
           method: "GET",
           headers: {
@@ -355,7 +445,7 @@ const ClassOverview = () => {
 
     try {
       const responseViva = await fetch(
-        "https://vivabackend.onrender.com/bin/get/all-vivaresult",
+        "http://localhost:5050/bin/get/all-vivaresult",
         {
           method: "POST",
           headers: {
@@ -405,284 +495,726 @@ const ClassOverview = () => {
 
   return (
     <>
-      <main className="MainDiv">
-        {popupStatus && (
-          <div className="popup">
-            <p onClick={() => HandleFalse()}>X</p>
-            <h2>Create Viva</h2>
-            <input
-              type="text"
-              placeholder="Enter Title"
-              name="title"
-              value={formData.title}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="date"
-              placeholder="Enter Date"
-              name="date"
-              value={formData.date}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Total Quetions"
-              name="totalquetions"
-              value={formData.totalquetions}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Time For Viva"
-              name="time"
-              value={formData.time}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Syllabus"
-              name="syllabus"
-              value={formData.syllabus}
-              onChange={HandleInputchange}
-            />
-            <button onClick={(e) => HandleCreteViva(e)}>CREATE</button>
+      {/* Loading Overlays */}
+      {isCreatingViva && (
+        <div className="global-loading-overlay">
+          <div className="global-loading-spinner">
+            <Loader2 className="global-spinner-icon" size={48} />
+            <p>Creating viva...</p>
           </div>
-        )}
-        {updateStatus && (
-          <div className="popup">
-            <p onClick={() => setUpdateStatus(false) & SetVivaIds("")}>X</p>
-            <h2>Update Viva</h2>
-            <input
-              type="text"
-              placeholder="Enter Title"
-              name="title"
-              value={formData.title}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="date"
-              placeholder="Enter Date"
-              name="date"
-              value={formData.date}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Total Quetions"
-              name="totalquetions"
-              value={formData.totalquetions}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Time For Viva"
-              name="time"
-              value={formData.time}
-              onChange={HandleInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Enter Syllabus"
-              name="syllabus"
-              value={formData.syllabus}
-              onChange={HandleInputchange}
-            />
-            <h5>Select Option:</h5>
-            <div className="flexx">
-              <label>
-                <input
-                  type="radio"
-                  value="true"
-                  checked={value === true}
-                  onChange={handleChange}
-                />
-                Active
-              </label>
+        </div>
+      )}
 
-              <label>
-                <input
-                  type="radio"
-                  value="false"
-                  checked={value === false}
-                  onChange={handleChange}
-                />
-                Not Active
-              </label>
+      {isUpdatingViva && (
+        <div className="global-loading-overlay">
+          <div className="global-loading-spinner">
+            <Loader2 className="global-spinner-icon" size={48} />
+            <p>Updating viva...</p>
+          </div>
+        </div>
+      )}
+
+      <div className="class-overview-container">
+        {/* Header Section */}
+        <div className="class-overview-header">
+          <div className="class-overview-header-background">
+            <div className="class-overview-header-pattern"></div>
+            <div className="class-overview-header-gradient"></div>
+          </div>
+
+          <div className="class-overview-header-content">
+            <button
+              onClick={() => navigate("/teacherdashboard")}
+              className="class-overview-back-btn"
+            >
+              <ArrowLeft size={20} />
+              Back to Dashboard
+            </button>
+
+            <div className="class-overview-header-main">
+              <div className="class-overview-header-info">
+                <div className="class-overview-header-icon-container">
+                  <GraduationCap
+                    size={56}
+                    className="class-overview-header-icon"
+                  />
+                  <div className="class-overview-header-icon-glow"></div>
+                </div>
+                <div className="class-overview-header-text">
+                  <h1>
+                    {classInfo.className || `Class ${teacherclasscodeid}`}
+                  </h1>
+                  <div className="class-overview-header-details">
+                    {classInfo.teacherName && (
+                      <div className="class-overview-detail-item">
+                        <Users size={16} />
+                        <span>Teacher: {classInfo.teacherName}</span>
+                      </div>
+                    )}
+                    <div className="class-overview-detail-item">
+                      <BookOpen size={16} />
+                      <span>Code: {teacherclasscodeid}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="class-overview-stats-grid">
+                <div className="class-overview-stat-card">
+                  <div className="class-overview-stat-icon">
+                    <Users size={28} />
+                  </div>
+                  <div className="class-overview-stat-content">
+                    <span className="class-overview-stat-number">
+                      {studentData.length}
+                    </span>
+                    <span className="class-overview-stat-label">
+                      Students Enrolled
+                    </span>
+                  </div>
+                  <div className="class-overview-stat-trend">
+                    <TrendingUp size={16} />
+                    <span>Active</span>
+                  </div>
+                </div>
+
+                <div className="class-overview-stat-card">
+                  <div className="class-overview-stat-icon">
+                    <FileText size={28} />
+                  </div>
+                  <div className="class-overview-stat-content">
+                    <span className="class-overview-stat-number">
+                      {mainVivaItem.length}
+                    </span>
+                    <span className="class-overview-stat-label">
+                      Total Vivas
+                    </span>
+                  </div>
+                  <div className="class-overview-stat-trend">
+                    <Activity size={16} />
+                    <span>
+                      {mainVivaItem.filter((v) => v.status === "true").length}{" "}
+                      Active
+                    </span>
+                  </div>
+                </div>
+
+                <div className="class-overview-stat-card">
+                  <div className="class-overview-stat-icon">
+                    <CheckCircle size={28} />
+                  </div>
+                  <div className="class-overview-stat-content">
+                    <span className="class-overview-stat-number">
+                      {Math.round(
+                        (mainVivaItem.filter((v) => v.status === "true")
+                          .length /
+                          Math.max(mainVivaItem.length, 1)) *
+                          100
+                      )}
+                      %
+                    </span>
+                    <span className="class-overview-stat-label">
+                      Success Rate
+                    </span>
+                  </div>
+                  <div className="class-overview-stat-trend">
+                    <TrendingUp size={16} />
+                    <span>Excellent</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="class-overview-actions">
+          <button
+            className="class-overview-action-btn class-overview-action-primary"
+            onClick={() => setpopupStatus(true)}
+          >
+            <Plus size={20} />
+            Create New Viva
+          </button>
+        </div>
+
+        {/* Viva Filters */}
+        <div className="class-overview-filters">
+          <button
+            className={`class-overview-filter-btn ${
+              activeFilter === "all" ? "active" : ""
+            }`}
+            onClick={HandleAll}
+          >
+            <BookOpen size={18} />
+            All Vivas
+          </button>
+          <button
+            className={`class-overview-filter-btn ${
+              activeFilter === "upcoming" ? "active" : ""
+            }`}
+            onClick={HandleUpcoming}
+          >
+            <Clock size={18} />
+            Upcoming
+          </button>
+          <button
+            className={`class-overview-filter-btn ${
+              activeFilter === "active" ? "active" : ""
+            }`}
+            onClick={HandleContinue}
+          >
+            <CheckCircle size={18} />
+            Active
+          </button>
+        </div>
+
+        {/* Viva Section with Background */}
+        <div className="class-overview-viva-section">
+          <div className="class-overview-viva-background">
+            <div className="class-overview-section-header">
+              <h2>
+                <FileText size={24} />
+                Viva Assessments
+              </h2>
+              <p>Manage and monitor your class assessments</p>
             </div>
 
-            <button onClick={(e) => HandleUpdate(e)}>UPDATE VIVA</button>
-          </div>
-        )}
-        {studentResultStatus && (
-          <>
-            <div className="resultpopup">
-              <button onClick={(e) => HandleDownloadExel(e)}>
-                Download Exel
-              </button>
-              <div
-                className="crossresult"
-                onClick={() => setstudentResultStatus(false)}
-              >
-                <p>X</p>
+            {vivaItem.length > 0 ? (
+              <div className="class-overview-viva-grid">
+                {vivaItem.map((data, i) => (
+                  <div className="class-overview-viva-card" key={i}>
+                    <div className="class-overview-viva-header">
+                      <div className="class-overview-viva-info">
+                        <h3>{data.title}</h3>
+                        <div className="class-overview-viva-status">
+                          {data.status === "true" ? (
+                            <span className="class-overview-status-active">
+                              <CheckCircle size={16} />
+                              Active
+                            </span>
+                          ) : (
+                            <span className="class-overview-status-inactive">
+                              <XCircle size={16} />
+                              Inactive
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="class-overview-viva-actions">
+                        <button
+                          className="class-overview-viva-action-btn"
+                          onClick={(e) => HandleSetinput(data, e)}
+                          title="Edit Viva"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                        <button
+                          className="class-overview-viva-action-btn"
+                          onClick={(e) => HandleDownloadvivaexelresult(e, data)}
+                          title="Download Results"
+                        >
+                          <Download size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="class-overview-viva-details">
+                      <div className="class-overview-viva-detail">
+                        <Calendar size={16} />
+                        <span>{new Date(data.date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="class-overview-viva-detail">
+                        <FileText size={16} />
+                        <span>{data.totalquetions} Questions</span>
+                      </div>
+                      <div className="class-overview-viva-detail">
+                        <Clock size={16} />
+                        <span>{data.time} Minutes</span>
+                      </div>
+                    </div>
+
+                    <button className="class-overview-start-viva-btn">
+                      <Play size={18} />
+                      Start Viva
+                    </button>
+                  </div>
+                ))}
               </div>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Student-Name</th>
-                    <th>Student-Enrollment</th>
-                    <th>Student-VivaName</th>
-                    <th>Student-marks</th>
-                    <th>Task</th>
-                  </tr>
-                </thead>
+            ) : (
+              <div className="class-overview-empty-state">
+                {messagedisplay ? (
+                  <>
+                    <FileText size={64} className="class-overview-empty-icon" />
+                    <h3>{messagedisplay}</h3>
+                    <p>Try adjusting your filters or create a new viva</p>
+                  </>
+                ) : (
+                  <>
+                    <FileText size={64} className="class-overview-empty-icon" />
+                    <h3>No Vivas Yet</h3>
+                    <p>Create your first viva to get started</p>
+                    <button
+                      className="class-overview-create-first-btn"
+                      onClick={() => setpopupStatus(true)}
+                    >
+                      <Plus size={20} />
+                      Create First Viva
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
 
-                <tbody>
-                  {studentResultItem.length > 0 &&
-                    studentResultItem.map((data, i) => {
-                      const vivaname = vivaItem.filter(
-                        (res) => res._id == data.vivaId
-                      );
+        {/* Students Section */}
+        <div className="class-overview-students-section">
+          <div className="class-overview-students-background">
+            <div className="class-overview-section-header">
+              <h2>
+                <Users size={24} />
+                Enrolled Students
+              </h2>
+              <p>{studentData.length} students enrolled in this class</p>
+            </div>
 
-                      if (downloadCount === true) {
-                        exelData.push({
-                          Name: studentBasic.student,
-                          "Enrollment-Number": studentBasic.ennumber,
-                          Email: studentBasic.email,
-                          Viva: vivaname[0].title,
-                          Marks: data.score,
-                        });
-                        setDownloadCount(false);
-                      }
-
-                      return (
-                        <tr key={i}>
-                          <td>{studentBasic.student}</td>
-                          <td>{studentBasic.ennumber}</td>
-                          <td>{vivaname[0].title}</td>
-                          <td>{data.score}</td>
-                          <td style={{ overflow: "visible" }}>
-                            <Link
-                              to="/class/overview/studentresult"
-                              style={{
-                                padding: "8px 18px",
-                                border: "none",
-                                cursor: "pointer",
-                                color: "#7b5cff",
-                                textDecoration: "underline",
-                              }}
-                              onClick={() =>
-                                localStorage.setItem(
-                                  "vivaresult",
-                                  JSON.stringify(data.answers)
-                                )
-                              }
+            {studentData.length > 0 ? (
+              <div className="class-overview-students-table-container">
+                <div className="class-overview-table-wrapper">
+                  <table className="class-overview-students-table">
+                    <thead>
+                      <tr>
+                        <th>
+                          <div className="class-overview-th-content">
+                            <Users size={16} />
+                            Student Name
+                          </div>
+                        </th>
+                        <th>
+                          <div className="class-overview-th-content">
+                            <FileText size={16} />
+                            Enrollment
+                          </div>
+                        </th>
+                        <th className="class-overview-th-email">
+                          <div className="class-overview-th-content">
+                            <Activity size={16} />
+                            Email
+                          </div>
+                        </th>
+                        <th className="class-overview-th-joined">
+                          <div className="class-overview-th-content">
+                            <Calendar size={16} />
+                            Joined Date
+                          </div>
+                        </th>
+                        <th>
+                          <div className="class-overview-th-content">
+                            <Eye size={16} />
+                            Actions
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studentData.map((data, i) => (
+                        <tr key={i} className="class-overview-student-row">
+                          <td>
+                            <div className="class-overview-student-name">
+                              <div className="class-overview-student-avatar">
+                                <Users size={20} />
+                              </div>
+                              <span className="class-overview-name-text">
+                                {data.name}
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="class-overview-enrollment-badge">
+                              {data.ennumber}
+                            </span>
+                          </td>
+                          <td className="class-overview-td-email">
+                            <span className="class-overview-email-text">
+                              {data.email}
+                            </span>
+                          </td>
+                          <td className="class-overview-td-joined">
+                            <span className="class-overview-date-text">
+                              {DateFunc(data.createdAt)}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              className="class-overview-view-results-btn"
+                              onClick={(e) => HandleViewStudent(data, e)}
+                              title="View Student Results"
                             >
-                              Result
-                            </Link>
+                              <Eye size={16} />
+                              <span className="class-overview-btn-text">
+                                Results
+                              </span>
+                            </button>
                           </td>
                         </tr>
-                      );
-                    })}
-                </tbody>
-              </table>
-            </div>
-          </>
-        )}
-        <div className="uppr">
-          <p>Class- {teacherclasscodeid}</p>
-          <p>
-            {studentData.length > 0
-              ? "Joined Student : " + studentData.length
-              : "No Student Joined Yet !"}
-          </p>
-        </div>
-        <div className="lowers">
-          <button style={{ fontSize: "1.2rem" }} onClick={() => HandleCreate()}>
-            Create New Viva{" "}
-            <FontAwesomeIcon
-              icon={faFileImport}
-              style={{ color: "#ffffffd3" }}
-            />
-          </button>
-          <div className="cardcontainer">
-            <div className="btn2">
-              <button onClick={(e) => HandleUpcoming(e)}>UpComing</button>
-              <button onClick={(e) => HandleContinue(e)}>Continue</button>
-              <button>Previous</button>
-            </div>
-            {vivaItem.length > 0 &&
-              vivaItem.map((data, i) => {
-                return (
-                  <div className="cards" key={i}>
-                    <div className="top">
-                      <p>{data.title}</p>
-                      <button onClick={(e) => HandleSetinput(data, e)}>
-                        <FontAwesomeIcon
-                          icon={faPenToSquare}
-                          style={{ color: "#62686ed3", cursor: "pointer" }}
-                        />
-                      </button>
-                      <button
-                        onClick={(e) => HandleDownloadvivaexelresult(e, data)}
-                      >
-                        <FontAwesomeIcon icon={faFileArrowDown} />
-                      </button>
-                    </div>
-                    <div className="content">
-                      <p>Date: {data.date}</p>
-                      <p>Quetion: {data.totalquetions}</p>
-                      <p>Duration: {data.time}MIN</p>
-                      {data.status === "true" ? (
-                        <p style={{ color: "green" }}>status:Active</p>
-                      ) : (
-                        <p style={{ color: "red" }}>status: not active</p>
-                      )}
-                    </div>
-                    <button>Start-Viva</button>
-                  </div>
-                );
-              })}
-            {messagedisplay && <h1>{messagedisplay}</h1>}
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ) : (
+              <div className="class-overview-empty-students">
+                <Users size={64} className="class-overview-empty-icon" />
+                <h3>No Students Enrolled</h3>
+                <p>Students will appear here once they join your class</p>
+              </div>
+            )}
           </div>
         </div>
-      </main>
-      <div className="student">
-        <div className="uppr">
-          <p>Joined Student in #{teacherclasscodeid}</p>
-        </div>
-        <div className="lowers">
-          <table>
-            <thead>
-              <tr>
-                <th>Student-Name</th>
-                <th>Student-Enrollment</th>
-                <th>Student-Joined</th>
-                <th>Student-Mail</th>
-                <th>Student-Result</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {studentData.length > 0 &&
-                studentData.map((data, i) => {
-                  return (
-                    <tr key={i}>
-                      <td>{data.name}</td>
-                      <td>{data.ennumber}</td>
-                      <td>{DateFunc(data.createdAt)}</td>
-                      <td>{data.email}</td>
-                      <td>
-                        <button onClick={(e) => HandleViewStudent(data, e)}>
-                          VIEW
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
       </div>
+
+      {/* Create Viva Modal */}
+      {popupStatus && (
+        <div className="class-overview-modal-overlay">
+          <div className="class-overview-modal-content">
+            <div className="class-overview-modal-header">
+              <h2>Create New Viva</h2>
+              <button
+                className="class-overview-modal-close"
+                onClick={() => setpopupStatus(false)}
+                disabled={isCreatingViva}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="class-overview-modal-body">
+              <div className="class-overview-form-group">
+                <label>Viva Title</label>
+                <input
+                  type="text"
+                  placeholder="Enter viva title"
+                  name="title"
+                  value={formData.title}
+                  onChange={HandleInputchange}
+                  disabled={isCreatingViva}
+                />
+              </div>
+
+              <div className="class-overview-form-row">
+                <div className="class-overview-form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={HandleInputchange}
+                    disabled={isCreatingViva}
+                  />
+                </div>
+                <div className="class-overview-form-group">
+                  <label>Duration (minutes)</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 60"
+                    name="time"
+                    value={formData.time}
+                    onChange={HandleInputchange}
+                    disabled={isCreatingViva}
+                  />
+                </div>
+              </div>
+
+              <div className="class-overview-form-group">
+                <label>Total Questions</label>
+                <input
+                  type="number"
+                  placeholder="e.g., 20"
+                  name="totalquetions"
+                  value={formData.totalquetions}
+                  onChange={HandleInputchange}
+                  disabled={isCreatingViva}
+                />
+              </div>
+
+              <div className="class-overview-form-group">
+                <label>Syllabus</label>
+                <input
+                  type="text"
+                  placeholder="Enter syllabus topics"
+                  name="syllabus"
+                  value={formData.syllabus}
+                  onChange={HandleInputchange}
+                  disabled={isCreatingViva}
+                />
+              </div>
+            </div>
+
+            <div className="class-overview-modal-footer">
+              <button
+                className="class-overview-btn-secondary"
+                onClick={() => setpopupStatus(false)}
+                disabled={isCreatingViva}
+              >
+                Cancel
+              </button>
+              <button
+                className="class-overview-btn-primary"
+                onClick={HandleCreteViva}
+                disabled={isCreatingViva}
+              >
+                {isCreatingViva ? (
+                  <>
+                    <Loader2 className="class-overview-spinner" size={18} />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    <Plus size={18} />
+                    Create Viva
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update Viva Modal */}
+      {updateStatus && (
+        <div className="class-overview-modal-overlay">
+          <div className="class-overview-modal-content">
+            <div className="class-overview-modal-header">
+              <h2>Update Viva</h2>
+              <button
+                className="class-overview-modal-close"
+                onClick={() => setUpdateStatus(false)}
+                disabled={isUpdatingViva}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="class-overview-modal-body">
+              <div className="class-overview-form-group">
+                <label>Viva Title</label>
+                <input
+                  type="text"
+                  placeholder="Enter viva title"
+                  name="title"
+                  value={formData.title}
+                  onChange={HandleInputchange}
+                  disabled={isUpdatingViva}
+                />
+              </div>
+
+              <div className="class-overview-form-row">
+                <div className="class-overview-form-group">
+                  <label>Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={HandleInputchange}
+                    disabled={isUpdatingViva}
+                  />
+                </div>
+                <div className="class-overview-form-group">
+                  <label>Duration (minutes)</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 60"
+                    name="time"
+                    value={formData.time}
+                    onChange={HandleInputchange}
+                    disabled={isUpdatingViva}
+                  />
+                </div>
+              </div>
+
+              <div className="class-overview-form-group">
+                <label>Total Questions</label>
+                <input
+                  type="number"
+                  placeholder="e.g., 20"
+                  name="totalquetions"
+                  value={formData.totalquetions}
+                  onChange={HandleInputchange}
+                  disabled={isUpdatingViva}
+                />
+              </div>
+
+              <div className="class-overview-form-group">
+                <label>Syllabus</label>
+                <input
+                  type="text"
+                  placeholder="Enter syllabus topics"
+                  name="syllabus"
+                  value={formData.syllabus}
+                  onChange={HandleInputchange}
+                  disabled={isUpdatingViva}
+                />
+              </div>
+
+              <div className="class-overview-form-group">
+                <label>Status</label>
+                <div className="class-overview-radio-group">
+                  <label className="class-overview-radio-label">
+                    <input
+                      type="radio"
+                      value="true"
+                      checked={value === true}
+                      onChange={handleChange}
+                      disabled={isUpdatingViva}
+                    />
+                    <span>Active</span>
+                  </label>
+                  <label className="class-overview-radio-label">
+                    <input
+                      type="radio"
+                      value="false"
+                      checked={value === false}
+                      onChange={handleChange}
+                      disabled={isUpdatingViva}
+                    />
+                    <span>Inactive</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="class-overview-modal-footer">
+              <button
+                className="class-overview-btn-secondary"
+                onClick={() => setUpdateStatus(false)}
+                disabled={isUpdatingViva}
+              >
+                Cancel
+              </button>
+              <button
+                className="class-overview-btn-primary"
+                onClick={HandleUpdate}
+                disabled={isUpdatingViva}
+              >
+                {isUpdatingViva ? (
+                  <>
+                    <Loader2 className="class-overview-spinner" size={18} />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Edit3 size={18} />
+                    Update Viva
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Student Results Modal */}
+      {studentResultStatus && (
+        <div className="class-overview-modal-overlay">
+          <div className="class-overview-results-modal">
+            <div className="class-overview-modal-header">
+              <h2>Student Results</h2>
+              <div className="class-overview-results-actions">
+                <button
+                  className="class-overview-download-btn"
+                  onClick={HandleDownloadExel}
+                >
+                  <Download size={16} />
+                  Download Excel
+                </button>
+                <button
+                  className="class-overview-modal-close"
+                  onClick={() => setstudentResultStatus(false)}
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div className="class-overview-results-content">
+              <div className="class-overview-student-summary">
+                <h3>{studentBasic.student}</h3>
+                <p>Enrollment: {studentBasic.ennumber}</p>
+                <p>Email: {studentBasic.email}</p>
+              </div>
+
+              <div className="class-overview-results-table">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Viva Name</th>
+                      <th>Marks</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {studentResultItem.length > 0 &&
+                      studentResultItem.map((data, i) => {
+                        const vivaname = vivaItem.filter(
+                          (res) => res._id == data.vivaId
+                        );
+
+                        if (downloadCount === true) {
+                          exelData.push({
+                            Name: studentBasic.student,
+                            "Enrollment-Number": studentBasic.ennumber,
+                            Email: studentBasic.email,
+                            Viva: vivaname[0]?.title || "Unknown",
+                            Marks: data.score,
+                          });
+                          setDownloadCount(false);
+                        }
+
+                        return (
+                          <tr key={i}>
+                            <td>{vivaname[0]?.title || "Unknown Viva"}</td>
+                            <td>
+                              <span className="class-overview-score">
+                                {data.score}
+                              </span>
+                            </td>
+                            <td>
+                              <Link
+                                to="/class/overview/studentresult"
+                                className="class-overview-view-detail-btn"
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    "vivaresult",
+                                    JSON.stringify(data.answers)
+                                  );
+                                  localStorage.setItem(
+                                    "studentInfo",
+                                    JSON.stringify({
+                                      name: studentBasic.student,
+                                      enrollment: studentBasic.ennumber,
+                                      email: studentBasic.email,
+                                      vivaName:
+                                        vivaname[0]?.title || "Unknown Viva",
+                                      score: data.score,
+                                    })
+                                  );
+                                }}
+                              >
+                                <Eye size={16} />
+                                View Details
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ToastContainer
         position="top-right"
@@ -699,6 +1231,6 @@ const ClassOverview = () => {
 };
 
 //tittle,date,totalq
-//https://vivabackend.onrender.com/bin/get/vivavbyclasscode
+//http://localhost:5050/bin/get/vivavbyclasscode
 
 export default ClassOverview;

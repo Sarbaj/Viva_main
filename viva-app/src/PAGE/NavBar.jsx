@@ -33,7 +33,7 @@ const NavBar = () => {
     const verifyToken = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        
+
         // If no token, user is logged out
         if (!token) {
           setIsLoggedIn(false);
@@ -50,14 +50,11 @@ const NavBar = () => {
         }
 
         // Fetch user info from API
-        const response = await fetch(
-          "https://vivabackend.onrender.com/bin/getUsername",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token }),
-          }
-        );
+        const response = await fetch("http://localhost:5050/bin/getUsername", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
 
         if (!response.ok) {
           // Invalid token, clear it
