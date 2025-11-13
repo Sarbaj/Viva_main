@@ -64,7 +64,76 @@ const ClassOverview = () => {
     totalquetions: "",
     time: "",
     syllabus: "",
+    marksPerQuestion: "1",
   });
+  const [successRate, setSuccessRate] = useState(0);
+
+  // Calculate success rate from student results
+  useEffect(() => {
+    const calculateSuccessRate = async () => {
+      if (!teacherclasscodeid) return;
+
+      try {
+        // Fetch all results for this class
+        const response = await fetch(
+          "http://localhost:5050/bin/get/analytics",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              teacherId: localStorage.getItem("authToken"),
+            }),
+          }
+        );
+
+        // For simplicity, calculate from current class students
+        if (studentData.length > 0 && mainVivaItem.length > 0) {
+          // Fetch results for all students in this class
+          let totalScore = 0;
+          let totalSubmissions = 0;
+
+          for (const student of studentData) {
+            try {
+              const resultResponse = await fetch(
+                "http://localhost:5050/bin/get/studentinresult",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    classCode: teacherclasscodeid,
+                    student: student._id,
+                  }),
+                }
+              );
+              const results = await resultResponse.json();
+
+              if (Array.isArray(results)) {
+                results.forEach((result) => {
+                  if (result.score > 0) {
+                    totalScore += result.score;
+                    totalSubmissions++;
+                  }
+                });
+              }
+            } catch (error) {
+              console.log("Error fetching student results:", error);
+            }
+          }
+
+          const rate =
+            totalSubmissions > 0
+              ? Math.round(totalScore / totalSubmissions)
+              : 0;
+          setSuccessRate(rate);
+        }
+      } catch (error) {
+        console.log("Error calculating success rate:", error);
+      }
+    };
+
+    calculateSuccessRate();
+  }, [studentData, mainVivaItem, teacherclasscodeid]);
+
   const verifyToken = async () => {
     try {
       const token = localStorage.getItem("authToken");
@@ -106,6 +175,22 @@ const ClassOverview = () => {
     verifyToken();
   }, []);
 
+  // Set class name from navigation state
+  useEffect(() => {
+    if (location.state?.className) {
+      setClassInfo((prev) => ({
+        ...prev,
+        className: location.state.className,
+      }));
+    } else {
+      // Fallback if no state passed
+      setClassInfo((prev) => ({
+        ...prev,
+        className: `Class ${teacherclasscodeid}`,
+      }));
+    }
+  }, [location.state, teacherclasscodeid]);
+
   useEffect(() => {
     try {
       const FetchData = async () => {
@@ -122,20 +207,6 @@ const ClassOverview = () => {
         const data = await response.json();
 
         if (data) {
-          // Extract class name from the first student record (which contains class info)
-          if (data.length > 0 && data[0].classnname) {
-            setClassInfo((prev) => ({
-              ...prev,
-              className: data[0].classnname,
-            }));
-          } else {
-            // Fallback to class code if no class name found
-            setClassInfo((prev) => ({
-              ...prev,
-              className: `Class ${teacherclasscodeid}`,
-            }));
-          }
-
           ///get/allstudentinclass
           const idList = data.map((s) => s.student);
 
@@ -204,12 +275,27 @@ const ClassOverview = () => {
     setActiveFilter("active");
     if (mainVivaItem.length > 0) {
       const filteredArray = mainVivaItem.filter(
-        (data) => data.status == "true"
+        (data) => data.status == "true" || data.status == "active"
       );
       setvivaItem(filteredArray);
       setMessgeDisplay();
       if (filteredArray.length <= 0) {
         setMessgeDisplay("No Active Vivas");
+      }
+    }
+  };
+
+  const HandleFinished = (e) => {
+    e.preventDefault();
+    setActiveFilter("finished");
+    if (mainVivaItem.length > 0) {
+      const filteredArray = mainVivaItem.filter(
+        (data) => data.status === "ended"
+      );
+      setvivaItem(filteredArray);
+      setMessgeDisplay();
+      if (filteredArray.length <= 0) {
+        setMessgeDisplay("No Finished Vivas");
       }
     }
   };
@@ -221,6 +307,47 @@ const ClassOverview = () => {
     setMessgeDisplay();
   };
 
+  const handleStartViva = async (vivaId) => {
+    const confirmStart = window.confirm(
+      "Are you sure you want to start this viva? Students will be able to take the test once started."
+    );
+
+    if (!confirmStart) return;
+
+    try {
+      const response = await fetch(
+        "http://localhost:5050/bin/viva/toggle-status",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vivaId: vivaId, status: "active" }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        toast.success("Viva started successfully! 🎉");
+
+        // Update the viva status in the UI
+        const updatedVivas = vivaItem.map((viva) =>
+          viva._id === vivaId ? { ...viva, status: "active" } : viva
+        );
+        setvivaItem(updatedVivas);
+
+        const updatedMainVivas = mainVivaItem.map((viva) =>
+          viva._id === vivaId ? { ...viva, status: "active" } : viva
+        );
+        setmainVivaItem(updatedMainVivas);
+      } else {
+        toast.error("Failed to start viva");
+      }
+    } catch (error) {
+      console.error("Error starting viva:", error);
+      toast.error("An error occurred while starting the viva");
+    }
+  };
+
   const HandleCreate = () => {
     setpopupStatus(true);
     setFormData({
@@ -229,6 +356,7 @@ const ClassOverview = () => {
       totalquetions: "",
       time: "",
       syllabus: "",
+      marksPerQuestion: "1",
     });
   };
 
@@ -263,6 +391,7 @@ const ClassOverview = () => {
           totalquetions: formData.totalquetions,
           status: "false",
           syllabus: formData.syllabus,
+          marksPerQuestion: formData.marksPerQuestion,
         }),
       });
 
@@ -282,6 +411,7 @@ const ClassOverview = () => {
         totalquetions: "",
         time: "",
         syllabus: "",
+        marksPerQuestion: "1",
       });
       setpopupStatus(false);
 
@@ -317,8 +447,11 @@ const ClassOverview = () => {
       totalquetions: data.totalquetions,
       time: data.time,
       syllabus: data.syllabus,
+      marksPerQuestion: data.marksPerQuestion || "1",
     });
     SetVivaIds(data._id);
+    // Store the current status to preserve it during update
+    setValue(data.status);
 
     setUpdateStatus(true);
   };
@@ -342,8 +475,9 @@ const ClassOverview = () => {
             date: formData.date,
             time: formData.time,
             totalquetions: formData.totalquetions,
-            status: value || "false",
+            status: value, // Keep the existing status
             syllabus: formData.syllabus,
+            marksPerQuestion: formData.marksPerQuestion,
           }),
         }
       );
@@ -605,13 +739,7 @@ const ClassOverview = () => {
                   </div>
                   <div className="class-overview-stat-content">
                     <span className="class-overview-stat-number">
-                      {Math.round(
-                        (mainVivaItem.filter((v) => v.status === "true")
-                          .length /
-                          Math.max(mainVivaItem.length, 1)) *
-                          100
-                      )}
-                      %
+                      {successRate}%
                     </span>
                     <span className="class-overview-stat-label">
                       Success Rate
@@ -619,7 +747,13 @@ const ClassOverview = () => {
                   </div>
                   <div className="class-overview-stat-trend">
                     <TrendingUp size={16} />
-                    <span>Excellent</span>
+                    <span>
+                      {successRate >= 70
+                        ? "Excellent"
+                        : successRate >= 50
+                        ? "Good"
+                        : "Improving"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -667,6 +801,15 @@ const ClassOverview = () => {
             <CheckCircle size={18} />
             Active
           </button>
+          <button
+            className={`class-overview-filter-btn ${
+              activeFilter === "finished" ? "active" : ""
+            }`}
+            onClick={HandleFinished}
+          >
+            <XCircle size={18} />
+            Finished
+          </button>
         </div>
 
         {/* Viva Section with Background */}
@@ -688,10 +831,16 @@ const ClassOverview = () => {
                       <div className="class-overview-viva-info">
                         <h3>{data.title}</h3>
                         <div className="class-overview-viva-status">
-                          {data.status === "true" ? (
+                          {data.status === "active" ||
+                          data.status === "true" ? (
                             <span className="class-overview-status-active">
                               <CheckCircle size={16} />
                               Active
+                            </span>
+                          ) : data.status === "ended" ? (
+                            <span className="class-overview-status-ended">
+                              <XCircle size={16} />
+                              Ended
                             </span>
                           ) : (
                             <span className="class-overview-status-inactive">
@@ -702,20 +851,17 @@ const ClassOverview = () => {
                         </div>
                       </div>
                       <div className="class-overview-viva-actions">
-                        <button
-                          className="class-overview-viva-action-btn"
-                          onClick={(e) => HandleSetinput(data, e)}
-                          title="Edit Viva"
-                        >
-                          <Edit3 size={16} />
-                        </button>
-                        <button
-                          className="class-overview-viva-action-btn"
-                          onClick={(e) => HandleDownloadvivaexelresult(e, data)}
-                          title="Download Results"
-                        >
-                          <Download size={16} />
-                        </button>
+                        {(data.status === "inactive" ||
+                          data.status === "false" ||
+                          !data.status) && (
+                          <button
+                            className="class-overview-viva-action-btn"
+                            onClick={(e) => HandleSetinput(data, e)}
+                            title="Edit Viva"
+                          >
+                            <Edit3 size={16} />
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -734,10 +880,31 @@ const ClassOverview = () => {
                       </div>
                     </div>
 
-                    <button className="class-overview-start-viva-btn">
-                      <Play size={18} />
-                      Start Viva
-                    </button>
+                    {data.status === "active" || data.status === "true" ? (
+                      <button
+                        className="class-overview-view-viva-btn"
+                        onClick={() => navigate(`/viva/monitor/${data._id}`)}
+                      >
+                        <Eye size={18} />
+                        View Viva
+                      </button>
+                    ) : data.status === "ended" ? (
+                      <button
+                        className="class-overview-view-results-btn"
+                        onClick={() => navigate(`/viva/monitor/${data._id}`)}
+                      >
+                        <Eye size={18} />
+                        View Results
+                      </button>
+                    ) : (
+                      <button
+                        className="class-overview-start-viva-btn"
+                        onClick={() => handleStartViva(data._id)}
+                      >
+                        <Play size={18} />
+                        Start Viva
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -926,27 +1093,52 @@ const ClassOverview = () => {
                 </div>
               </div>
 
-              <div className="class-overview-form-group">
-                <label>Total Questions</label>
-                <input
-                  type="number"
-                  placeholder="e.g., 20"
-                  name="totalquetions"
-                  value={formData.totalquetions}
-                  onChange={HandleInputchange}
-                  disabled={isCreatingViva}
-                />
+              <div className="class-overview-form-row">
+                <div className="class-overview-form-group">
+                  <label>Total Questions</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 20"
+                    name="totalquetions"
+                    value={formData.totalquetions}
+                    onChange={HandleInputchange}
+                    disabled={isCreatingViva}
+                  />
+                </div>
+                <div className="class-overview-form-group">
+                  <label>Marks Per Question</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 1, 2, 3"
+                    name="marksPerQuestion"
+                    min="1"
+                    value={formData.marksPerQuestion}
+                    onChange={HandleInputchange}
+                    disabled={isCreatingViva}
+                  />
+                </div>
               </div>
 
               <div className="class-overview-form-group">
                 <label>Syllabus</label>
-                <input
-                  type="text"
-                  placeholder="Enter syllabus topics"
+                <textarea
+                  placeholder="Enter syllabus topics (e.g., Chapter 1: Introduction, Chapter 2: Advanced Topics, etc.)"
                   name="syllabus"
                   value={formData.syllabus}
                   onChange={HandleInputchange}
                   disabled={isCreatingViva}
+                  rows="4"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    border: "1px solid rgba(139, 92, 246, 0.3)",
+                    borderRadius: "12px",
+                    color: "white",
+                    fontSize: "1rem",
+                    resize: "vertical",
+                    fontFamily: "inherit",
+                  }}
                 />
               </div>
             </div>
@@ -1033,54 +1225,53 @@ const ClassOverview = () => {
                 </div>
               </div>
 
-              <div className="class-overview-form-group">
-                <label>Total Questions</label>
-                <input
-                  type="number"
-                  placeholder="e.g., 20"
-                  name="totalquetions"
-                  value={formData.totalquetions}
-                  onChange={HandleInputchange}
-                  disabled={isUpdatingViva}
-                />
+              <div className="class-overview-form-row">
+                <div className="class-overview-form-group">
+                  <label>Total Questions</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 20"
+                    name="totalquetions"
+                    value={formData.totalquetions}
+                    onChange={HandleInputchange}
+                    disabled={isUpdatingViva}
+                  />
+                </div>
+                <div className="class-overview-form-group">
+                  <label>Marks Per Question</label>
+                  <input
+                    type="number"
+                    placeholder="e.g., 1, 2, 3"
+                    name="marksPerQuestion"
+                    min="1"
+                    value={formData.marksPerQuestion}
+                    onChange={HandleInputchange}
+                    disabled={isUpdatingViva}
+                  />
+                </div>
               </div>
 
               <div className="class-overview-form-group">
                 <label>Syllabus</label>
-                <input
-                  type="text"
-                  placeholder="Enter syllabus topics"
+                <textarea
+                  placeholder="Enter syllabus topics (e.g., Chapter 1: Introduction, Chapter 2: Advanced Topics, etc.)"
                   name="syllabus"
                   value={formData.syllabus}
                   onChange={HandleInputchange}
                   disabled={isUpdatingViva}
+                  rows="4"
+                  style={{
+                    width: "100%",
+                    padding: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    border: "1px solid rgba(139, 92, 246, 0.3)",
+                    borderRadius: "12px",
+                    color: "white",
+                    fontSize: "1rem",
+                    resize: "vertical",
+                    fontFamily: "inherit",
+                  }}
                 />
-              </div>
-
-              <div className="class-overview-form-group">
-                <label>Status</label>
-                <div className="class-overview-radio-group">
-                  <label className="class-overview-radio-label">
-                    <input
-                      type="radio"
-                      value="true"
-                      checked={value === true}
-                      onChange={handleChange}
-                      disabled={isUpdatingViva}
-                    />
-                    <span>Active</span>
-                  </label>
-                  <label className="class-overview-radio-label">
-                    <input
-                      type="radio"
-                      value="false"
-                      checked={value === false}
-                      onChange={handleChange}
-                      disabled={isUpdatingViva}
-                    />
-                    <span>Inactive</span>
-                  </label>
-                </div>
               </div>
             </div>
 
@@ -1197,6 +1388,8 @@ const ClassOverview = () => {
                                       vivaName:
                                         vivaname[0]?.title || "Unknown Viva",
                                       score: data.score,
+                                      marksPerQuestion:
+                                        vivaname[0]?.marksPerQuestion || 1,
                                     })
                                   );
                                 }}

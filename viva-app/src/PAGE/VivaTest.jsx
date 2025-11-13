@@ -17,6 +17,7 @@ const VivaTest = () => {
   const [load, setLoad] = useState(true);
   const [done, setDone] = useState(false);
   const [submittedData, setSubmittedData] = useState([]);
+  const [marksPerQuestion, setMarksPerQuestion] = useState(1);
 
   useEffect(() => {
     if (UserInfo && UserInfo.length > 0) {
@@ -61,16 +62,20 @@ const VivaTest = () => {
       selectedAnswer: userAnswers[i] || "Not Answered",
       correctAnswer: q.answer,
     }));
-    let marks = 0;
+    let correctCount = 0;
     console.log(data);
     data.forEach((q) => {
       // Normalize both answers for comparison - handles case sensitivity, whitespace, and data types
       const selectedAnswer = String(q.selectedAnswer || '').trim().toLowerCase();
       const correctAnswer = String(q.correctAnswer || '').trim().toLowerCase();
       if (selectedAnswer === correctAnswer) {
-        marks++;
+        correctCount++;
       }
     });
+    
+    // Calculate total marks based on marksPerQuestion
+    const totalMarks = correctCount * marksPerQuestion;
+    
     setSubmittedData(data);
     const _id = vivaMainid;
     try {
@@ -84,7 +89,7 @@ const VivaTest = () => {
           body: JSON.stringify({
             _id,
             status: false,
-            marks: marks,
+            marks: totalMarks,
             answers: data,
           }),
         }
@@ -99,6 +104,9 @@ const VivaTest = () => {
 
   const HandleGenrateQ = async (data) => {
     //  http://localhost:5050/bin/get/viva-resultexist
+    
+    // Set marks per question from viva data
+    setMarksPerQuestion(data.marksPerQuestion || 1);
 
     try {
       const VivaExistInResult = await fetch(

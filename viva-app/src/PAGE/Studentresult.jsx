@@ -12,6 +12,7 @@ const Studentresult = () => {
     correctAnswers: 0,
     totalQuestions: 0,
     actualScore: 0,
+    totalPossibleMarks: 0,
   });
   const navigate = useNavigate();
 
@@ -34,6 +35,10 @@ const Studentresult = () => {
           return selectedAnswer === correctAnswer;
         }).length;
 
+        // Calculate total possible marks
+        const marksPerQuestion = storedStudentInfo?.marksPerQuestion || 1;
+        const totalPossible = result.length * marksPerQuestion;
+
         setStudentInfo({
           name: storedStudentInfo?.name || "Student Name",
           enrollment: storedStudentInfo?.enrollment || "Enrollment Number",
@@ -41,6 +46,7 @@ const Studentresult = () => {
           totalQuestions: result.length,
           // Use the actual score from database (this matches the modal)
           actualScore: storedStudentInfo?.score || 0,
+          totalPossibleMarks: totalPossible,
         });
       }
     } catch (error) {
@@ -61,7 +67,7 @@ const Studentresult = () => {
           <h2>{studentInfo.name}</h2>
           <p>Enrollment: {studentInfo.enrollment}</p>
           <p className="simple-score">
-            Score: {studentInfo.actualScore} marks ({studentInfo.correctAnswers}
+            Score: {studentInfo.actualScore}/{studentInfo.totalPossibleMarks} marks ({studentInfo.correctAnswers}
             /{studentInfo.totalQuestions} correct)
           </p>
         </div>

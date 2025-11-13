@@ -271,7 +271,7 @@ router.post("/upload/syllabus", async (req, res) => {
 
 // create viva
 router.post("/create/viva", async (req, res) => {
-  const { title, classCode, date, time, totalquetions, status, syllabus } =
+  const { title, classCode, date, time, totalquetions, status, syllabus, marksPerQuestion } =
     req.body;
   console.log(date);
 
@@ -282,6 +282,13 @@ router.post("/create/viva", async (req, res) => {
   if (!Iscode) {
     return res.status(501).json({ message: "Code Is Incorrect" });
   }
+  
+  // Validate marksPerQuestion
+  const marks = marksPerQuestion ? parseInt(marksPerQuestion) : 1;
+  if (marks < 1) {
+    return res.status(400).json({ message: "Marks per question must be at least 1" });
+  }
+  
   const newViva = new vivaModel({
     title,
     classCode,
@@ -290,6 +297,7 @@ router.post("/create/viva", async (req, res) => {
     syllabus,
     time,
     status,
+    marksPerQuestion: marks,
   });
   await newViva.save();
   res.status(201).json({ message: "Successfully Viva Created", status: 201 });
@@ -355,9 +363,13 @@ router.post("/get/viva-info", async (req, res) => {
     if (classCodes.length === 0) {
       return res.status(404).json({ message: "No classes joined" });
     }
+    
+    // Step 2: Get vivas but exclude "ended" vivas for students
     const vivaRecords = await vivaModel.find({
       classCode: { $in: classCodes },
+      status: { $ne: "ended" } // Exclude ended vivas
     });
+    
     res.status(200).json({ vivas: vivaRecords });
   } catch (error) {
     console.error(error);
@@ -413,6 +425,156 @@ router.post("/get/student", async (req, res) => {
   } catch (error) {}
 });
 
+// NEW: Get teacher classes with student and viva counts
+router.post("/get/teacher-classes-with-stats", async (req, res) => {
+  const { teacherid } = req.body;
+  try {
+    const classes = await classModel.find({ teacher: teacherid });
+    if (!classes || classes.length === 0) {
+      return res.status(200).json({ message: [], totalStats: { totalClasses: 0, totalVivas: 0, totalStudents: 0 } });
+    }
+
+    // For each class, get student count and viva count
+    const classesWithStats = await Promise.all(
+      classes.map(async (classItem) => {
+        // Get student count
+        const studentCount = await classStudent.countDocuments({ code: classItem.code });
+        
+        // Get viva count
+        const vivaCount = await vivaModel.countDocuments({ classCode: classItem.code });
+
+        return {
+          _id: classItem._id,
+          classname: classItem.classname,
+          code: classItem.code,
+          teacher: classItem.teacher,
+          time: classItem.time,
+          studentCount: studentCount,
+          vivaCount: vivaCount,
+        };
+      })
+    );
+
+    // Calculate total stats
+    const totalStats = {
+      totalClasses: classesWithStats.length,
+      totalVivas: classesWithStats.reduce((sum, c) => sum + c.vivaCount, 0),
+      totalStudents: classesWithStats.reduce((sum, c) => sum + c.studentCount, 0),
+    };
+
+    res.json({ message: classesWithStats, totalStats: totalStats });
+  } catch (error) {
+    console.error("Error fetching teacher classes with stats:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// NEW: Toggle Viva Status (Start/End Viva)
+router.post("/viva/toggle-status", async (req, res) => {
+  const { vivaId, status } = req.body;
+  try {
+    const viva = await vivaModel.findById(vivaId);
+    if (!viva) {
+      return res.status(404).json({ message: "Viva not found" });
+    }
+
+    // Update status - can be "inactive", "active", or "ended"
+    viva.status = status;
+    await viva.save();
+
+    const statusMessage = status === "active" ? "started" : status === "ended" ? "ended" : "stopped";
+    res.json({ success: true, viva: viva, message: `Viva ${statusMessage} successfully` });
+  } catch (error) {
+    console.error("Error toggling viva status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// NEW: Get Viva Monitor Data (for teacher monitoring page)
+router.post("/viva/monitor-data", async (req, res) => {
+  const { vivaId } = req.body;
+  try {
+    // Get viva details
+    const viva = await vivaModel.findById(vivaId);
+    if (!viva) {
+      return res.status(404).json({ message: "Viva not found" });
+    }
+
+    // Get class info
+    const classInfo = await classModel.findOne({ code: viva.classCode });
+    const className = classInfo ? classInfo.classname : viva.classCode;
+
+    // Get all students in the class
+    const classStudents = await classStudent.find({ code: viva.classCode });
+    
+    // Get all student details
+    const studentIds = classStudents.map(s => s.student);
+    const students = await User.find({ _id: { $in: studentIds } });
+
+    // Get all results for this viva
+    const results = await resultModel.find({ vivaId: vivaId });
+    console.log("Results found:", results.length);
+    if (results.length > 0) {
+      console.log("Sample result:", {
+        active: results[0].active,
+        score: results[0].score,
+        student: results[0].student
+      });
+    }
+
+    // Combine student data with results
+    const studentData = students.map(student => {
+      const result = results.find(r => r.student.toString() === student._id.toString());
+      
+      // Determine status based on result
+      let status = "not-submitted";
+      if (result) {
+        if (result.active === true) {
+          status = "in-progress";
+        } else if (result.active === false) {
+          status = "submitted";
+        }
+      }
+      
+      return {
+        _id: student._id,
+        name: student.name,
+        enrollment: student.ennumber,
+        email: student.email,
+        status: status,
+        marks: result && result.active === false ? result.score : null, // Use 'score' field from database
+        submittedAt: result && result.active === false ? result.updatedAt : null,
+      };
+    });
+
+    res.json({
+      success: true,
+      viva: {
+        _id: viva._id,
+        title: viva.title,
+        time: viva.time,
+        totalquetions: viva.totalquetions,
+        classCode: viva.classCode,
+        status: viva.status,
+        date: viva.date,
+        syllabus: viva.syllabus,
+        marksPerQuestion: viva.marksPerQuestion || 1,
+      },
+      className: className,
+      students: studentData,
+      stats: {
+        total: studentData.length,
+        submitted: studentData.filter(s => s.status === "submitted").length,
+        inProgress: studentData.filter(s => s.status === "in-progress").length,
+        notStarted: studentData.filter(s => s.status === "not-submitted").length,
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching viva monitor data:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 // get viva by class code
 
 router.post("/get/vivavbyclasscode", async (req, res) => {
@@ -462,7 +624,7 @@ router.post("/get/allstudentinclass", async (req, res) => {
 //update viva
 
 router.post("/update/vivadetail", async (req, res) => {
-  const { id, title, date, time, totalquetions, status, syllabus } = req.body;
+  const { id, title, date, time, totalquetions, status, syllabus, marksPerQuestion } = req.body;
 
   // Check required fields
   if (!id || !title || !date || !time || !totalquetions || !status) {
@@ -473,6 +635,15 @@ router.post("/update/vivadetail", async (req, res) => {
     const viva = await vivaModel.findById({ _id: id });
     if (!viva) {
       return res.status(404).json({ message: "Viva Not Found" });
+    }
+
+    // Validate marksPerQuestion if provided
+    if (marksPerQuestion !== undefined) {
+      const marks = parseInt(marksPerQuestion);
+      if (marks < 1) {
+        return res.status(400).json({ message: "Marks per question must be at least 1" });
+      }
+      viva.marksPerQuestion = marks;
     }
 
     // Update fields
@@ -545,25 +716,46 @@ router.post("/get/analytics", async (req, res) => {
         .json({ message: "No classes found for this teacher" });
     }
 
-    // 2. For each class, get all viva results + populate student
+    // 2. For each class, get all viva results and manually fetch student data
     const classData = await Promise.all(
       classes.map(async (cls) => {
         const results = await resultModel
           .find({ classCode: cls.code })
-          .populate("student", "name rollNo email") // adjust fields as per your Student schema
           .lean();
+
+        // Manually fetch student data since student field is String, not ObjectId
+        const studentsWithData = await Promise.all(
+          results.map(async (r) => {
+            try {
+              // Fetch student data using the student ID string
+              const studentData = await User.findById(r.student).lean();
+              
+              return {
+                studentId: r.student,
+                name: studentData?.name || "Unknown Student",
+                enrollment: studentData?.ennumber || "N/A",
+                email: studentData?.email || "N/A",
+                score: r.score || 0,
+              };
+            } catch (error) {
+              console.error("Error fetching student:", r.student, error);
+              return {
+                studentId: r.student,
+                name: "Unknown Student",
+                enrollment: "N/A",
+                email: "N/A",
+                score: r.score || 0,
+              };
+            }
+          })
+        );
 
         return {
           classId: cls._id,
           classname: cls.classname,
           code: cls.code,
-          totalStudents: results.length,
-          students: results.map((r) => ({
-            studentId: r.student?._id,
-            name: r.student?.name,
-            rollNo: r.student?.rollNo,
-            score: r.score,
-          })),
+          totalStudents: studentsWithData.length,
+          students: studentsWithData,
         };
       })
     );
@@ -579,4 +771,50 @@ router.post("/get/analytics", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+// Delete class and all associated data
+router.post("/delete/class", async (req, res) => {
+  const { classCode } = req.body;
+  
+  if (!classCode) {
+    return res.status(400).json({ message: "Class code is required" });
+  }
+
+  try {
+    // Check if class exists
+    const classExists = await classModel.findOne({ code: classCode });
+    if (!classExists) {
+      return res.status(404).json({ message: "Class not found" });
+    }
+
+    // Delete all vivas associated with this class
+    const vivasDeleted = await vivaModel.deleteMany({ classCode: classCode });
+    
+    // Delete all results associated with this class
+    const resultsDeleted = await resultModel.deleteMany({ classCode: classCode });
+    
+    // Delete all student enrollments in this class
+    const studentsDeleted = await classStudent.deleteMany({ code: classCode });
+    
+    // Delete all syllabus entries for this class
+    const syllabusDeleted = await syllabusModel.deleteMany({ classCode: classCode });
+    
+    // Finally, delete the class itself
+    await classModel.deleteOne({ code: classCode });
+
+    res.status(200).json({ 
+      message: "Class and all associated data deleted successfully",
+      deleted: {
+        vivas: vivasDeleted.deletedCount,
+        results: resultsDeleted.deletedCount,
+        students: studentsDeleted.deletedCount,
+        syllabus: syllabusDeleted.deletedCount,
+      }
+    });
+  } catch (error) {
+    console.error("Error deleting class:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+});
+
 export default router;

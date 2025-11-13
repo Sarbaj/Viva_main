@@ -175,9 +175,17 @@ const Home = () => {
                     </Link>
                   )}
                   {userRole === "1" && (
-                    <Link to="/teacherdashboard" className="btn-navbar-style">
-                      <BarChart2 size={18} /> Dashboard
-                    </Link>
+                    <>
+                      <Link to="/teacherdashboard" className="btn-navbar-style">
+                        <BarChart2 size={18} /> Dashboard
+                      </Link>
+                      <Link to="/analytics" className="btn-navbar-style">
+                        <Activity size={18} /> Analytics
+                      </Link>
+                      <Link to="/resources" className="btn-navbar-style">
+                        <BookOpen size={18} /> Resources
+                      </Link>
+                    </>
                   )}
                   {userRole === "2" && (
                     <Link to="/analytics" className="btn-navbar-style">

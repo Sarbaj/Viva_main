@@ -22,7 +22,8 @@ const ClassVivasPage = () => {
   const [classname, setClassname] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [userid, setUserId] = useState("");
-  const { UserInfo } = useSelector((state) => state.user);
+  const [submittedVivas, setSubmittedVivas] = useState([]);
+  const { UserInfo} = useSelector((state) => state.user);
 
   useEffect(() => {
     if (UserInfo && UserInfo.length > 0) {
@@ -89,6 +90,27 @@ const ClassVivasPage = () => {
           );
           setVivas(classVivas);
 
+          // Fetch student's submitted vivas
+          const resultsResponse = await fetch(
+            "http://localhost:5050/bin/get/studentinresult",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ classCode: classCode, student: userid }),
+            }
+          );
+
+          if (resultsResponse.ok) {
+            const resultsData = await resultsResponse.json();
+            // Get list of submitted viva IDs
+            const submittedIds = resultsData
+              .filter(result => result.active === false)
+              .map(result => result.vivaId);
+            setSubmittedVivas(submittedIds);
+          }
+
           // Use class name from navigation state if available
           if (location.state?.className) {
             setClassname(location.state.className);
@@ -150,7 +172,11 @@ const ClassVivasPage = () => {
               <div className="classvivaspage-card" key={index}>
                 <div className="classvivaspage-card-header">
                   <h3>{viva.title}</h3>
-                  {viva.status === "true" ? (
+                  {submittedVivas.includes(viva._id) ? (
+                    <span className="classvivaspage-badge submitted">
+                      <CheckCircle size={16} /> Submitted
+                    </span>
+                  ) : viva.status === "active" || viva.status === "true" ? (
                     <span className="classvivaspage-badge active">
                       <CheckCircle size={16} /> Active
                     </span>
@@ -179,11 +205,15 @@ const ClassVivasPage = () => {
                 <button
                   onClick={() => handleAttendViva(viva)}
                   className={`classvivaspage-attend-btn ${
-                    viva.status === "false" ? "locked" : ""
+                    (viva.status === "inactive" || viva.status === "false" || submittedVivas.includes(viva._id)) ? "locked" : ""
                   }`}
-                  disabled={viva.status === "false"}
+                  disabled={viva.status === "inactive" || viva.status === "false" || submittedVivas.includes(viva._id)}
                 >
-                  {viva.status === "true" ? (
+                  {submittedVivas.includes(viva._id) ? (
+                    <>
+                      <CheckCircle size={18} /> Submitted
+                    </>
+                  ) : (viva.status === "active" || viva.status === "true") ? (
                     <>
                       <CheckCircle size={18} /> Attend Viva
                     </>

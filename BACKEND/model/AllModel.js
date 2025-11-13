@@ -56,7 +56,8 @@ const vivaSchema = new mongoose.Schema({
   totalquetions:String,
   time:String,
   syllabus:String,
-  status:String
+  status:String,
+  marksPerQuestion: { type: Number, default: 1, min: 1 }
 });
 
 const resultSchema = new mongoose.Schema({

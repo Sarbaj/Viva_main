@@ -1,0 +1,342 @@
+/* Resources Coming Soon Page */
+.resources-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #0a0a0a, #111827);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 20px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.resources-content {
+  text-align: center;
+  z-index: 10;
+  max-width: 800px;
+}
+
+/* Animated Icon */
+.resources-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 40px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.resources-icon {
+  color: #8b5cf6;
+  filter: drop-shadow(0 0 30px rgba(139, 92, 246, 0.6));
+  position: relative;
+  z-index: 3;
+}
+
+.resources-icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4), transparent);
+  border-radius: 50%;
+  animation: glow 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+.resources-icon-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  border: 3px solid rgba(139, 92, 246, 0.5);
+  border-radius: 50%;
+  animation: pulse-ring 2s ease-out infinite;
+  z-index: 2;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Live Dot */
+.resources-live-dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+  animation: blink 1.5s infinite;
+  z-index: 4;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+}
+
+/* Title */
+.resources-title {
+  font-size: 4rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: gradient-shift 3s ease infinite;
+  background-size: 200% 200%;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.resources-sparkle {
+  color: #f59e0b;
+  animation: sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: rotate(180deg) scale(1.2);
+  }
+}
+
+/* Subtitle */
+.resources-subtitle {
+  font-size: 1.5rem;
+  color: #9ca3af;
+  margin: 0 0 30px 0;
+  font-weight: 500;
+}
+
+/* Description */
+.resources-description {
+  color: #d1d5db;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 50px;
+}
+
+.resources-description p {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.resources-rocket {
+  color: #f59e0b;
+  animation: rocket-fly 2s ease-in-out infinite;
+}
+
+@keyframes rocket-fly {
+  0%, 100% {
+    transform: translateY(0px) rotate(-45deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(-45deg);
+  }
+}
+
+/* Progress Bar */
+.resources-progress-container {
+  margin-top: 40px;
+}
+
+.resources-progress-bar {
+  width: 100%;
+  max-width: 400px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 auto 15px;
+  position: relative;
+}
+
+.resources-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #ec4899, #f59e0b);
+  border-radius: 10px;
+  animation: progress 2s ease-in-out infinite;
+  background-size: 200% 100%;
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+    background-position: 0% 50%;
+  }
+  50% {
+    width: 70%;
+    background-position: 100% 50%;
+  }
+  100% {
+    width: 0%;
+    background-position: 0% 50%;
+  }
+}
+
+.resources-progress-text {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Background Animation */
+.resources-bg-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.resources-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1), transparent);
+  animation: float-circle 20s ease-in-out infinite;
+}
+
+.resources-circle-1 {
+  width: 300px;
+  height: 300px;
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.resources-circle-2 {
+  width: 400px;
+  height: 400px;
+  top: 50%;
+  right: 10%;
+  animation-delay: 5s;
+}
+
+.resources-circle-3 {
+  width: 250px;
+  height: 250px;
+  bottom: 10%;
+  left: 50%;
+  animation-delay: 10s;
+}
+
+@keyframes float-circle {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(50px, -50px) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .resources-title {
+    font-size: 2.5rem;
+    gap: 10px;
+  }
+
+  .resources-sparkle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .resources-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .resources-description {
+    font-size: 1rem;
+  }
+
+  .resources-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .resources-icon-wrapper {
+    margin-bottom: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .resources-container {
+    padding: 100px 15px 40px;
+  }
+
+  .resources-title {
+    font-size: 2rem;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .resources-subtitle {
+    font-size: 1rem;
+  }
+
+  .resources-description p {
+    flex-direction: column;
+  }
+}

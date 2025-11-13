@@ -12,6 +12,8 @@ import ClassVivasPage from "./PAGE/ClassVivasPage";
 import "../src/App.css";
 import Studentresult from "./PAGE/Studentresult";
 import VivaAnalytics from "./PAGE/VivaAnalytics";
+import VivaMonitor from "./PAGE/VivaMonitor";
+import Resources from "./PAGE/Resources";
 
 const App = () => {
   const location = useLocation();
@@ -28,6 +30,7 @@ const App = () => {
         <Route path="/join" element={<JoinClass />} />
         <Route path="/class/:classCode/vivas" element={<ClassVivasPage />} />
         <Route path="/analytics" element={<VivaAnalytics />} />
+        <Route path="/resources" element={<Resources />} />
         <Route path="/vivatest" element={<VivaTest />} />
         <Route path="/teacherdashboard" element={<TeacherDashboard />} />
         <Route
@@ -37,6 +40,10 @@ const App = () => {
         <Route
           path="/class/overview/studentresult"
           element={<Studentresult />}
+        />
+        <Route
+          path="/viva/monitor/:vivaId"
+          element={<VivaMonitor />}
         />
       </Routes>
     </>
