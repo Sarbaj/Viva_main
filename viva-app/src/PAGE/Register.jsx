@@ -4,6 +4,7 @@ import "../CSS/global-loading.css";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2, Mail, Clock } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +62,7 @@ const Register = () => {
     try {
       console.log("Sending OTP request for:", formData.email);
       
-      const data = await fetch("http://localhost:5050/bin/send-otp", {
+      const data = await fetch(getApiUrl("bin/send-otp"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +127,7 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/verify-otp", {
+      const response = await fetch(getApiUrl("bin/verify-otp"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +161,7 @@ const Register = () => {
   const handleResendOTP = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/resend-otp", {
+      const response = await fetch(getApiUrl("bin/resend-otp"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

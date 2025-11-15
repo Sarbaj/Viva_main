@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, addBasicInfo } from "../REDUX/UserSlice";
+import { getApiUrl } from "../utils/api";
 import {
   Brain,
   BarChart3,
@@ -51,7 +52,7 @@ const Home = () => {
 
         // Fetch user info from API
         const response = await fetch(
-          "http://localhost:5050/bin/getUsername",
+          getApiUrl("bin/getUsername"),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -103,8 +104,8 @@ const Home = () => {
       try {
         // Try to fetch real data
         const [usersResponse, vivasResponse] = await Promise.allSettled([
-          fetch("http://localhost:5050/bin/get/all-users-count"),
-          fetch("http://localhost:5050/bin/get/all-viva")
+          fetch(getApiUrl("bin/get/all-users-count")),
+          fetch(getApiUrl("bin/get/all-viva"))
         ]);
         
         let totalUsers = fallbackData.users;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import { getApiUrl } from "../utils/api";
 import {
   ArrowLeft,
   BookOpen,
@@ -38,7 +39,7 @@ const VivaMonitor = () => {
   const fetchVivaMonitorData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/viva/monitor-data", {
+      const response = await fetch(getApiUrl("bin/viva/monitor-data"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vivaId: vivaId }),
@@ -75,7 +76,7 @@ const VivaMonitor = () => {
     if (!confirmEnd) return;
 
     try {
-      const response = await fetch("http://localhost:5050/bin/viva/toggle-status", {
+      const response = await fetch(getApiUrl("bin/viva/toggle-status"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ vivaId: vivaId, status: "ended" }),

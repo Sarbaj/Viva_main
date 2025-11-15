@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "../CSS/classoverview.css";
 import "../CSS/global-loading.css";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
+import { getApiUrl } from "../utils/api";
 import {
   GraduationCap,
   Users,
@@ -76,7 +77,7 @@ const ClassOverview = () => {
       try {
         // Fetch all results for this class
         const response = await fetch(
-          "http://localhost:5050/bin/get/analytics",
+          getApiUrl("bin/get/analytics"),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -95,7 +96,7 @@ const ClassOverview = () => {
           for (const student of studentData) {
             try {
               const resultResponse = await fetch(
-                "http://localhost:5050/bin/get/studentinresult",
+                getApiUrl("bin/get/studentinresult"),
                 {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -140,7 +141,7 @@ const ClassOverview = () => {
       if (!token) {
         window.location.href = "/login";
       }
-      const response = await fetch("http://localhost:5050/bin/getUsername", {
+      const response = await fetch(getApiUrl("bin/getUsername"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -195,7 +196,7 @@ const ClassOverview = () => {
     try {
       const FetchData = async () => {
         const response = await fetch(
-          "http://localhost:5050/bin/get/studentinclass",
+          getApiUrl("bin/get/studentinclass"),
           {
             method: "POST",
             headers: {
@@ -211,7 +212,7 @@ const ClassOverview = () => {
           const idList = data.map((s) => s.student);
 
           const allstudent = await fetch(
-            "http://localhost:5050/bin/get/allstudentinclass",
+            getApiUrl("bin/get/allstudentinclass"),
             {
               method: "POST",
               headers: {
@@ -233,7 +234,7 @@ const ClassOverview = () => {
       try {
         const FetchData = async () => {
           const response = await fetch(
-            "http://localhost:5050/bin/get/vivavbyclasscode",
+            getApiUrl("bin/get/vivavbyclasscode"),
             {
               method: "POST",
               headers: {
@@ -316,7 +317,7 @@ const ClassOverview = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/viva/toggle-status",
+        getApiUrl("bin/viva/toggle-status"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -378,7 +379,7 @@ const ClassOverview = () => {
 
     setIsCreatingViva(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/create/viva", {
+      const response = await fetch(getApiUrl("bin/create/viva"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -463,7 +464,7 @@ const ClassOverview = () => {
     setIsUpdatingViva(true);
     try {
       const UpdateViva = await fetch(
-        "http://localhost:5050/bin/update/vivadetail",
+        getApiUrl("bin/update/vivadetail"),
         {
           method: "POST",
           headers: {
@@ -509,7 +510,7 @@ const ClassOverview = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/get/studentinresult",
+        getApiUrl("bin/get/studentinresult"),
         {
           method: "POST",
           headers: {
@@ -524,7 +525,7 @@ const ClassOverview = () => {
       const Data = await response.json();
 
       const responseViva = await fetch(
-        "http://localhost:5050/bin/get/all-viva",
+        getApiUrl("bin/get/all-viva"),
         {
           method: "GET",
           headers: {
@@ -579,7 +580,7 @@ const ClassOverview = () => {
 
     try {
       const responseViva = await fetch(
-        "http://localhost:5050/bin/get/all-vivaresult",
+        getApiUrl("bin/get/all-vivaresult"),
         {
           method: "POST",
           headers: {
@@ -1424,6 +1425,6 @@ const ClassOverview = () => {
 };
 
 //tittle,date,totalq
-//http://localhost:5050/bin/get/vivavbyclasscode
+//API endpoint: bin/get/vivavbyclasscode
 
 export default ClassOverview;

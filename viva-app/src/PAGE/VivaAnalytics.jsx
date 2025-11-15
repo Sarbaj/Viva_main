@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { getApiUrl } from "../utils/api";
 import {
   BarChart,
   Bar,
@@ -76,7 +77,7 @@ const VivaAnalytics = () => {
   const fetchAnalyticsData = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/get/analytics", {
+      const response = await fetch(getApiUrl("bin/get/analytics"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teacherId: teacherId }),
@@ -223,7 +224,7 @@ const VivaAnalytics = () => {
     const classVivasData = [];
     for (const cls of data.classes) {
       try {
-        const vivaResponse = await fetch("http://localhost:5050/bin/get/vivavbyclasscode", {
+        const vivaResponse = await fetch(getApiUrl("bin/get/vivavbyclasscode"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ classCode: cls.code }),

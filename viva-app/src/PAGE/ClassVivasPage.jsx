@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
+import { getApiUrl } from "../utils/api";
 import {
   BookOpen,
   Calendar,
@@ -47,7 +48,7 @@ const ClassVivasPage = () => {
         if (!token) {
           window.location.href = "/login";
         }
-        const response = await fetch("http://localhost:5050/bin/getUsername", {
+        const response = await fetch(getApiUrl("bin/getUsername"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -78,7 +79,7 @@ const ClassVivasPage = () => {
       setIsLoading(true);
       try {
         const response = await fetch(
-          "http://localhost:5050/bin/get/viva-info",
+          getApiUrl("bin/get/viva-info"),
           {
             method: "POST",
             headers: {
@@ -98,7 +99,7 @@ const ClassVivasPage = () => {
 
           // Fetch student's submitted vivas
           const resultsResponse = await fetch(
-            "http://localhost:5050/bin/get/studentinresult",
+            getApiUrl("bin/get/studentinresult"),
             {
               method: "POST",
               headers: {
@@ -134,7 +135,7 @@ const ClassVivasPage = () => {
             // Fallback: Fetch class name from backend
             try {
               const classInfoResponse = await fetch(
-                "http://localhost:5050/bin/get/class-info",
+                getApiUrl("bin/get/class-info"),
                 {
                   method: "POST",
                   headers: {
@@ -207,7 +208,7 @@ const ClassVivasPage = () => {
     try {
       // Fetch student's result for this viva
       const response = await fetch(
-        "http://localhost:5050/bin/get/studentinresult",
+        getApiUrl("bin/get/studentinresult"),
         {
           method: "POST",
           headers: {

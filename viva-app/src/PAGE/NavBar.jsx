@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { addBasicInfo } from "../REDUX/UserSlice";
 import { Bell, BarChart2, Users, BookOpen, Menu, X, User, Home } from "lucide-react";
 import Login from "./Login";
+import { getApiUrl } from "../utils/api";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const NavBar = () => {
         }
 
         // Fetch user info from API
-        const response = await fetch("http://localhost:5050/bin/getUsername", {
+        const response = await fetch(getApiUrl("bin/getUsername"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
@@ -106,7 +107,7 @@ const NavBar = () => {
       
       try {
         const response = await fetch(
-          "http://localhost:5050/bin/notification/get-student",
+          getApiUrl("bin/notification/get-student"),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -133,7 +134,7 @@ const NavBar = () => {
   const handleDeleteNotification = async (notificationId) => {
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/notification/delete",
+        getApiUrl("bin/notification/delete"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

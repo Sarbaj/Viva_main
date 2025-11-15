@@ -5,6 +5,7 @@ import { User, Mail, Hash, BookOpen, LogOut, Edit2, Check, X, Lock } from "lucid
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../CSS/studentprofile.css";
+import { getApiUrl } from "../utils/api";
 
 const StudentProfile = () => {
   const navigate = useNavigate();
@@ -71,7 +72,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/update/student-name", {
+      const response = await fetch(getApiUrl("bin/update/student-name"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -89,7 +90,7 @@ const StudentProfile = () => {
         
         // Update localStorage token
         const token = localStorage.getItem("authToken");
-        const verifyResponse = await fetch("http://localhost:5050/bin/getUsername", {
+        const verifyResponse = await fetch(getApiUrl("bin/getUsername"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
@@ -113,7 +114,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/send-update-otp", {
+      const response = await fetch(getApiUrl("bin/send-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -143,7 +144,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/verify-update-otp", {
+      const response = await fetch(getApiUrl("bin/verify-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -185,7 +186,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/send-update-otp", {
+      const response = await fetch(getApiUrl("bin/send-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -216,7 +217,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/verify-update-otp", {
+      const response = await fetch(getApiUrl("bin/verify-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -262,7 +263,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/send-update-otp", {
+      const response = await fetch(getApiUrl("bin/send-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -291,7 +292,7 @@ const StudentProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/verify-update-otp", {
+      const response = await fetch(getApiUrl("bin/verify-update-otp"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

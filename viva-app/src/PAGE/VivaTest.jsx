@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../CSS/vivatest.css";
 import { useSelector } from "react-redux";
+import { getApiUrl } from "../utils/api";
 
 const VivaTest = () => {
   const [timeLeft, setTimeLeft] = useState(null); // in seconds
@@ -89,7 +90,7 @@ const VivaTest = () => {
     
     try {
       const UpdateResul = await fetch(
-        "http://localhost:5050/bin/update/status",
+        getApiUrl("bin/update/status"),
         {
           method: "POST",
           headers: {
@@ -114,7 +115,7 @@ const VivaTest = () => {
       // If auto-submitted, create notification
       if (autoSubmitReason) {
         const vivaId = localStorage.getItem("VivaId");
-        await fetch("http://localhost:5050/bin/notification/create", {
+        await fetch(getApiUrl("bin/notification/create"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -150,7 +151,7 @@ const VivaTest = () => {
     try {
       // Check if result already exists for this student and viva
       const VivaExistInResult = await fetch(
-        "http://localhost:5050/bin/get/viva-resultexist",
+        getApiUrl("bin/get/viva-resultexist"),
         {
           method: "POST",
           headers: {
@@ -223,7 +224,7 @@ const VivaTest = () => {
         
         // Generate questions
         const responseQuetion = await fetch(
-          "http://localhost:5050/bin/api/questions",
+          getApiUrl("bin/api/questions"),
           {
             method: "POST",
             headers: {
@@ -248,7 +249,7 @@ const VivaTest = () => {
 
         // Create viva result entry
         const PostResultData = await fetch(
-          "http://localhost:5050/bin/take/vivatest",
+          getApiUrl("bin/take/vivatest"),
           {
             method: "POST",
             headers: {
@@ -337,7 +338,7 @@ const VivaTest = () => {
       try {
         const VivaId = localStorage.getItem("VivaId");
         const response = await fetch(
-          "http://localhost:5050/bin/get/viva-detail",
+          getApiUrl("bin/get/viva-detail"),
           {
             method: "POST",
             headers: {

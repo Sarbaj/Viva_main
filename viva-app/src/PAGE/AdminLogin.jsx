@@ -4,6 +4,7 @@ import { Shield, Mail, Lock } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../CSS/adminlogin.css";
+import { getApiUrl } from "../utils/api";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5050/bin/admin/login", {
+      const response = await fetch(getApiUrl("bin/admin/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials)

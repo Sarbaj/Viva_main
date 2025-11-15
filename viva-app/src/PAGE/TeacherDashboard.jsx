@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { getApiUrl } from "../utils/api";
 import {
   GraduationCap,
   Users,
@@ -64,7 +65,7 @@ const TeacherDashboard = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:5050/bin/notification/get-teacher",
+          getApiUrl("bin/notification/get-teacher"),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -108,7 +109,7 @@ const TeacherDashboard = () => {
     const GetClassCode = async () => {
       try {
         const data = await fetch(
-          "http://localhost:5050/bin/get/teacher-classes-with-stats",
+          getApiUrl("bin/get/teacher-classes-with-stats"),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -125,7 +126,7 @@ const TeacherDashboard = () => {
           // Calculate real success rate from analytics
           try {
             const analyticsResponse = await fetch(
-              "http://localhost:5050/bin/get/analytics",
+              getApiUrl("bin/get/analytics"),
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -194,7 +195,7 @@ const TeacherDashboard = () => {
     setIsCreatingClass(true);
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/create/classcode",
+        getApiUrl("bin/create/classcode"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -254,7 +255,7 @@ const TeacherDashboard = () => {
 
     setIsDeleting(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/delete/class", {
+      const response = await fetch(getApiUrl("bin/delete/class"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ classCode: classToDelete.code }),
@@ -299,7 +300,7 @@ const TeacherDashboard = () => {
   const handleDeleteNotification = async (notificationId) => {
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/notification/delete",
+        getApiUrl("bin/notification/delete"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -323,7 +324,7 @@ const TeacherDashboard = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/notification/delete-all",
+        getApiUrl("bin/notification/delete-all"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

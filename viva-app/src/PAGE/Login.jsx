@@ -4,6 +4,7 @@ import "../CSS/login.css";
 import "../CSS/global-loading.css";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -26,7 +27,7 @@ const Login = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:5050/bin/login",
+        getApiUrl("bin/login"),
         {
           method: "POST",
           headers: {
@@ -53,7 +54,7 @@ const Login = () => {
       
       // Fetch user info to determine role-based redirect
       const userResponse = await fetch(
-        "http://localhost:5050/bin/getUsername",
+        getApiUrl("bin/getUsername"),
         {
           method: "POST",
           headers: {

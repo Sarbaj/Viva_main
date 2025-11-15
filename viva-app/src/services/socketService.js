@@ -6,7 +6,7 @@ class SocketService {
     this.isConnected = false;
   }
 
-  connect(serverUrl = 'http://localhost:5050') {
+  connect(serverUrl = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5050') {
     if (this.socket) {
       return this.socket;
     }

@@ -4,6 +4,7 @@ import { Users, BookOpen, FileText, GraduationCap, Plus, Trash2, LogOut, Mail, H
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../CSS/admindashboard.css";
+import { getApiUrl } from "../utils/api";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       // Fetch stats
-      const statsResponse = await fetch("http://localhost:5050/bin/admin/stats");
+      const statsResponse = await fetch(getApiUrl("bin/admin/stats"));
       const statsData = await statsResponse.json();
       
       if (statsData.success) {
@@ -45,7 +46,7 @@ const AdminDashboard = () => {
       }
 
       // Fetch teachers
-      const teachersResponse = await fetch("http://localhost:5050/bin/admin/teachers");
+      const teachersResponse = await fetch(getApiUrl("bin/admin/teachers"));
       const teachersData = await teachersResponse.json();
       
       if (teachersData.success) {
@@ -71,7 +72,7 @@ const AdminDashboard = () => {
     setIsAddingTeacher(true);
 
     try {
-      const response = await fetch("http://localhost:5050/bin/admin/add-teacher", {
+      const response = await fetch(getApiUrl("bin/admin/add-teacher"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTeacher)
@@ -102,7 +103,7 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5050/bin/admin/delete-teacher", {
+      const response = await fetch(getApiUrl("bin/admin/delete-teacher"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ teacherId })

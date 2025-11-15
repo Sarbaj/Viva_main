@@ -5,6 +5,7 @@ import "../CSS/global-loading.css";
 import { useSelector } from "react-redux";
 import { ToastContainer, toast } from "react-toastify";
 import { Loader2, BookOpen, Plus, GraduationCap } from "lucide-react";
+import { getApiUrl } from "../utils/api";
 
 const JoinClass = () => {
   const [showModal, setShowModal] = useState(false);
@@ -31,7 +32,7 @@ const JoinClass = () => {
         console.log("no token");
         window.location.href = "/login";
       }
-      const response = await fetch("http://localhost:5050/bin/getUsername", {
+      const response = await fetch(getApiUrl("bin/getUsername"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +76,7 @@ const JoinClass = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5050/bin/join/class", {
+      const response = await fetch(getApiUrl("bin/join/class"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -109,7 +110,7 @@ const JoinClass = () => {
     try {
       // Get viva info which includes class codes
       const vivaResponse = await fetch(
-        "http://localhost:5050/bin/get/viva-info",
+        getApiUrl("bin/get/viva-info"),
         {
           method: "POST",
           headers: {
@@ -135,7 +136,7 @@ const JoinClass = () => {
           try {
             // Get class information from the new class-info endpoint
             const classResponse = await fetch(
-              "http://localhost:5050/bin/get/class-info",
+              getApiUrl("bin/get/class-info"),
               {
                 method: "POST",
                 headers: {
