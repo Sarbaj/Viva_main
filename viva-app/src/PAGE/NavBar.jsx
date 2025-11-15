@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "../CSS/navbar.css";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { addBasicInfo } from "../REDUX/UserSlice";
-import { Bell, BarChart2, Users, BookOpen, Menu, X } from "lucide-react"; // added Menu + X
+import { Bell, BarChart2, Users, BookOpen, Menu, X, User, Home } from "lucide-react";
 import Login from "./Login";
 
 const NavBar = () => {
@@ -12,9 +12,29 @@ const NavBar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Role, SetRole] = useState("");
   const [username, setUsername] = useState("");
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // ✅ NEW
+  const [userId, setUserId] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showTeacherProfile, setShowTeacherProfile] = useState(false);
+  const [teacherTheme, setTeacherTheme] = useState(() => {
+    return localStorage.getItem("theme") || "dark";
+  });
   const dispatch = useDispatch();
   const { UserInfo } = useSelector((state) => state.user);
+
+  // Apply theme changes
+  useEffect(() => {
+    if (teacherTheme === "light") {
+      document.documentElement.classList.add("light-theme");
+      document.body.classList.add("light-theme");
+    } else {
+      document.documentElement.classList.remove("light-theme");
+      document.body.classList.remove("light-theme");
+    }
+    localStorage.setItem("theme", teacherTheme);
+  }, [teacherTheme]);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
@@ -69,6 +89,7 @@ const NavBar = () => {
         dispatch(addBasicInfo(data));
         setUsername(data.payload.name);
         SetRole(data.payload.role);
+        setUserId(data.payload._id);
       } catch (error) {
         console.log("error verifying token");
         setIsLoggedIn(false);
@@ -77,6 +98,57 @@ const NavBar = () => {
     };
     verifyToken();
   }, [dispatch, location, UserInfo]);
+
+  // Fetch notifications for students
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!userId || Role !== "0") return; // Only for students
+      
+      try {
+        const response = await fetch(
+          "http://localhost:5050/bin/notification/get-student",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ studentId: userId }),
+          }
+        );
+        const data = await response.json();
+        
+        if (data.success) {
+          setNotifications(data.notifications);
+          setUnreadCount(data.unreadCount);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+    // Refresh every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [userId, Role]);
+
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5050/bin/notification/delete",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ notificationId }),
+        }
+      );
+
+      if (response.ok) {
+        setNotifications(notifications.filter((n) => n._id !== notificationId));
+        setUnreadCount(Math.max(0, unreadCount - 1));
+      }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
 
   return (
     <nav className="navbar glassy-nav">
@@ -114,57 +186,132 @@ const NavBar = () => {
         {Role === "1" && (
           <>
             <Link
+              to="/"
+              className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Home size={16} /> Home
+            </Link>
+            <Link
               to="/teacherdashboard"
-              className="nav-link"
+              className={`nav-link ${location.pathname === "/teacherdashboard" ? "active" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
               <BarChart2 size={16} /> Dashboard
             </Link>
             <Link
               to="/resources"
-              className="nav-link"
+              className={`nav-link ${location.pathname === "/resources" ? "active" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
               <BookOpen size={16} /> Resources
             </Link>
             <Link
               to="/analytics"
-              className="nav-link"
+              className={`nav-link ${location.pathname === "/analytics" ? "active" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
               <BarChart2 size={16} /> Analytics
             </Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
+            <button 
+              className="nav-link" 
+              onClick={() => {
+                setShowTeacherProfile(true);
+                setIsMenuOpen(false);
+              }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+            >
+              <User size={16} /> Profile
             </button>
           </>
         )}
         {isLoggedIn && Role == 0 && (
           <>
             <Link
+              to="/"
+              className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Home size={16} /> Home
+            </Link>
+            <Link
               to="/join"
-              className="nav-link"
+              className={`nav-link ${location.pathname === "/join" ? "active" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >
               <Users size={16} /> Classes
             </Link>
-            <button className="logout-btn" onClick={handleLogout}>
-              Logout
-            </button>
+            <Link
+              to="/profile"
+              className={`nav-link ${location.pathname === "/profile" ? "active" : ""}`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <User size={16} /> Profile
+            </Link>
           </>
         )}
       </div>
 
       {/* Right Side */}
       <div className="nav-right">
-        <div className="notification">
-          <Bell size={20} />
-          <span className="badge">3</span>
-        </div>
+        {/* Show notification bell only for logged-in students */}
+        {isLoggedIn && Role === "0" && (
+          <div className="notification" onClick={() => setShowNotifications(!showNotifications)}>
+            <Bell size={20} />
+            {unreadCount > 0 && <span className="badge">{unreadCount}</span>}
+          </div>
+        )}
+
+        {/* Student Notification Panel */}
+        {showNotifications && Role === "0" && (
+          <div className="student-notification-panel">
+            <div className="notification-panel-header">
+              <h3>📢 New Viva Notifications</h3>
+              <button className="notification-close-btn" onClick={() => setShowNotifications(false)}>
+                ×
+              </button>
+            </div>
+            <div className="notification-panel-body">
+              {notifications.length === 0 ? (
+                <div className="notification-empty">
+                  <Bell size={48} />
+                  <p>No notifications</p>
+                  <span>You're all caught up!</span>
+                </div>
+              ) : (
+                notifications.map((notification) => (
+                  <div key={notification._id} className="student-notification-item">
+                    <div className="notification-icon-wrapper">
+                      <span className="notification-viva-icon">📝</span>
+                    </div>
+                    <div className="notification-content">
+                      <div className="notification-header-row">
+                        <strong>{notification.vivaTitle}</strong>
+                      </div>
+                      <div className="notification-details">
+                        <span className="notification-class">{notification.className}</span>
+                      </div>
+                      <div className="notification-message">{notification.message}</div>
+                      <div className="notification-time">
+                        {new Date(notification.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <button
+                      className="notification-delete-btn"
+                      onClick={() => handleDeleteNotification(notification._id)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
         {isLoggedIn ? (
           <></>
         ) : (
-          // <Login />
           <>
             <Link to="/login" className="signin-link">
               Sign In
@@ -175,6 +322,56 @@ const NavBar = () => {
           </>
         )}
       </div>
+
+      {/* Teacher Profile Modal */}
+      {showTeacherProfile && Role === "1" && UserInfo && UserInfo.length > 0 && (
+        <div className="teacher-profile-modal-overlay" onClick={() => setShowTeacherProfile(false)}>
+          <div className="teacher-profile-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="teacher-profile-close" onClick={() => setShowTeacherProfile(false)}>
+              ×
+            </button>
+            
+            <div className="teacher-profile-avatar">
+              {UserInfo[0].payload.name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2)}
+            </div>
+            
+            <div className="teacher-profile-info">
+              <h3>{UserInfo[0].payload.name}</h3>
+              <p className="teacher-profile-role">Teacher</p>
+              <div className="teacher-profile-email">
+                <User size={16} />
+                <span>{UserInfo[0].payload.email}</span>
+              </div>
+              <div className="teacher-profile-enrollment">
+                <User size={16} />
+                <span>{UserInfo[0].payload.ennumber}</span>
+              </div>
+              
+              <div className="teacher-profile-theme">
+                <label>Theme</label>
+                <div className="teacher-theme-selector">
+                  <button 
+                    className={`teacher-theme-btn ${teacherTheme === 'dark' ? 'active' : ''}`}
+                    onClick={() => setTeacherTheme('dark')}
+                  >
+                    Dark
+                  </button>
+                  <button 
+                    className={`teacher-theme-btn ${teacherTheme === 'light' ? 'active' : ''}`}
+                    onClick={() => setTeacherTheme('light')}
+                  >
+                    Light
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <button className="teacher-profile-logout" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };

@@ -54,18 +54,27 @@ const VivaTest = () => {
   }
 
   openFullscreen();
-  const handleSubmit = async () => {
-    // /api/questionsresultcalculate
+  const handleSubmit = async (autoSubmitReason = null) => {
+    // Prevent submission if questions aren't loaded or already submitted
+    if (FinalQuetion.length === 0 || !vivaMainid || submitted || done) {
+      console.log("⚠️ Cannot submit - invalid state");
+      return;
+    }
+
+    // Mark as submitted immediately to prevent duplicate submissions
+    setSubmitted(true);
+    
+    console.log("📤 Submitting viva...", autoSubmitReason ? `Reason: ${autoSubmitReason}` : "Manual submission");
+
     const data = FinalQuetion.map((q, i) => ({
       question: q.question,
       options: q.options,
       selectedAnswer: userAnswers[i] || "Not Answered",
       correctAnswer: q.answer,
     }));
+    
     let correctCount = 0;
-    console.log(data);
     data.forEach((q) => {
-      // Normalize both answers for comparison - handles case sensitivity, whitespace, and data types
       const selectedAnswer = String(q.selectedAnswer || '').trim().toLowerCase();
       const correctAnswer = String(q.correctAnswer || '').trim().toLowerCase();
       if (selectedAnswer === correctAnswer) {
@@ -73,11 +82,11 @@ const VivaTest = () => {
       }
     });
     
-    // Calculate total marks based on marksPerQuestion
     const totalMarks = correctCount * marksPerQuestion;
     
     setSubmittedData(data);
     const _id = vivaMainid;
+    
     try {
       const UpdateResul = await fetch(
         "http://localhost:5050/bin/update/status",
@@ -94,21 +103,52 @@ const VivaTest = () => {
           }),
         }
       );
-      setFinalQuetion([]);
+      
+      if (!UpdateResul.ok) {
+        throw new Error("Failed to submit viva");
+      }
+      
       const res = await UpdateResul.json();
+      console.log("✅ Viva submitted successfully");
+      
+      // If auto-submitted, create notification
+      if (autoSubmitReason) {
+        const vivaId = localStorage.getItem("VivaId");
+        await fetch("http://localhost:5050/bin/notification/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            studentId: userid,
+            vivaId: vivaId,
+            reason: autoSubmitReason,
+          }),
+        });
+      }
+      
+      // Clear questions and timer
+      setFinalQuetion([]);
+      localStorage.removeItem("quizEndTs");
+      setDone(true);
+      
+      // Show email notification alert
+      alert("✅ Viva Submitted Successfully!\n\n📧 Check your email - We've sent your detailed result with marks and performance analysis.");
+      
       window.location.href = "/";
     } catch (error) {
-      console.log(error);
+      console.error("❌ Error submitting viva:", error);
+      setSubmitted(false); // Reset if submission failed
+      alert("Failed to submit viva. Please try again.");
     }
   };
 
   const HandleGenrateQ = async (data) => {
-    //  http://localhost:5050/bin/get/viva-resultexist
-    
     // Set marks per question from viva data
     setMarksPerQuestion(data.marksPerQuestion || 1);
 
     try {
+      // Check if result already exists for this student and viva
       const VivaExistInResult = await fetch(
         "http://localhost:5050/bin/get/viva-resultexist",
         {
@@ -119,46 +159,69 @@ const VivaTest = () => {
           body: JSON.stringify({ vivaId: data._id, student: userid }),
         }
       );
-      const Data = await VivaExistInResult.json();
+      
+      const responseData = await VivaExistInResult.json();
       const status = VivaExistInResult.status;
 
-      if (Data.result) {
-        if (Data.result.active === false && Data.result.student == userid) {
+      console.log("Viva check response:", { status, responseData });
+
+      // Case 1: Result exists (status 200)
+      if (status === 200 && responseData.result) {
+        const result = responseData.result;
+        const isActive = result.active === true;
+        const isSubmitted = result.active === false;
+        
+        console.log("Result found - Active:", isActive, "Submitted:", isSubmitted);
+        
+        // If already submitted, show completion message
+        if (isSubmitted) {
+          console.log("✅ Viva already submitted");
           setFinalQuetion([]);
+          setLoad(false);
           setDone(true);
           localStorage.removeItem("quizEndTs");
+          return;
         }
-        if (Data.result.active === true && Data.result.student == userid) {
+        
+        // If in progress, load existing questions
+        if (isActive) {
+          console.log("📝 Viva in progress, loading existing questions");
           setLoad(false);
-          setFinalQuetion(Data.result.vivaq);
+          setFinalQuetion(result.vivaq);
+          setvivaMainid(result._id);
+          
+          // Check if timer is still valid for THIS viva
+          const storedVivaId = localStorage.getItem("VivaId");
           const existingEndTs = localStorage.getItem("quizEndTs");
-
-          if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
-            const oneMinuteMs = data.time * 60 * 1000;
-            const endTs = Date.now() + oneMinuteMs;
-            localStorage.setItem("quizEndTs", endTs);
-            setTimeLeft(data.time * 60); // or time in seconds based on viva
-          } else {
-            const remaining = Math.floor(
-              (parseInt(existingEndTs) - Date.now()) / 1000
-            );
-            setTimeLeft(remaining);
+          
+          // Only use stored timer if it's for the same viva and not expired
+          if (existingEndTs && storedVivaId === data._id) {
+            const remaining = Math.floor((parseInt(existingEndTs) - Date.now()) / 1000);
+            if (remaining > 0) {
+              console.log("Using existing timer:", remaining, "seconds");
+              setTimeLeft(remaining);
+              return;
+            }
           }
-
-          setvivaMainid(Data.result._id);
+          
+          // Timer expired or doesn't exist - create new one
+          console.log("Creating new timer for resumed viva");
+          const timeMs = data.time * 60 * 1000;
+          const endTs = Date.now() + timeMs;
+          localStorage.setItem("quizEndTs", endTs);
+          setTimeLeft(data.time * 60);
+          return;
         }
-        setUserId(Data.result.student);
-
-        setvivaMainid(Data.result._id);
       }
 
-      if (Data.result) {
-        setVivaResultId(Data.result._id);
-      }
-
-      if (status === 409) {
-        //// if viva does not Exist
-
+      // Case 2: No result exists (status 404) - Create new viva attempt
+      if (status === 404) {
+        console.log("🆕 No existing result, creating new viva attempt");
+        
+        // Clear any old timer from previous vivas
+        localStorage.removeItem("quizEndTs");
+        
+        // Generate questions
         const responseQuetion = await fetch(
           "http://localhost:5050/bin/api/questions",
           {
@@ -173,32 +236,17 @@ const VivaTest = () => {
           }
         );
 
-        setVivaResultId(data._id);
-
-        const existingEndTs = localStorage.getItem("quizEndTs");
-        if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
-          const Time = Number(data.time) * 60 * 1000;
-          const endTs = Date.now() + Time;
-          localStorage.setItem("quizEndTs", endTs);
-          setTimeLeft(data.time * 60); // or time in seconds based on viva
-        } else {
-          const remaining = Math.floor(
-            (parseInt(existingEndTs) - Date.now()) / 1000
-          );
-          setTimeLeft(remaining);
+        if (!responseQuetion.ok) {
+          throw new Error("Failed to generate questions");
         }
+
         const DataQ = await responseQuetion.json();
-        setLoad(false);
+        
+        if (!DataQ.questions || DataQ.questions.length === 0) {
+          throw new Error("No questions generated");
+        }
 
-        // const text=DataQ.output;
-        //   const cleaned = text
-        //   .replace(/^```json\s*/, '')  // remove ```json at start
-        //   .replace(/```$/, '')         // remove ``` at end
-        //   .trim();
-        //   const fixed = cleaned.replace(/([{,]\s*)(\w+)(\s*:)/g, '$1"$2"$3');
-        //   const questionArray = JSON.parse(fixed);
-        setFinalQuetion(DataQ.questions);
-
+        // Create viva result entry
         const PostResultData = await fetch(
           "http://localhost:5050/bin/take/vivatest",
           {
@@ -214,58 +262,50 @@ const VivaTest = () => {
             }),
           }
         );
-        const Empp = await PostResultData.json();
 
-        // if no viva in result endddd
-
-        setvivaMainid(Empp.data._id);
-      }
-      if (Data.result) {
-        if (Data.result.active === false && Data.result.student == userid) {
-          setFinalQuetion([]);
-          setLoad(false);
-          alert("Already Submited");
-          window.location.href = "/";
+        const resultResponse = await PostResultData.json();
+        
+        if (PostResultData.status === 409) {
+          // Result already exists (race condition), reload the page
+          console.log("⚠️ Result created by another request, reloading...");
+          window.location.reload();
+          return;
         }
-        if (Data.result.active === true && Data.result.student == userid) {
-          const existingEndTs = localStorage.getItem("quizEndTs");
-          if (!existingEndTs || Date.now() > parseInt(existingEndTs)) {
-            const Time = data.time * 60 * 1000;
-            const endTs = Date.now() + Time;
-            localStorage.setItem("quizEndTs", endTs);
-            setTimeLeft(data.time * 60); // or time in seconds based on viva
-          } else {
-            const remaining = Math.floor(
-              (parseInt(existingEndTs) - Date.now()) / 1000
-            );
-            setTimeLeft(remaining);
-          }
+
+        if (!PostResultData.ok) {
+          throw new Error(resultResponse.message || "Failed to create viva attempt");
         }
-        setUserId(Data.result.student);
-        setvivaMainid(Data.result._id);
+
+        // Set questions and timer
+        setFinalQuetion(DataQ.questions);
+        setvivaMainid(resultResponse.data._id);
+        setLoad(false);
+
+        // Set NEW timer for this viva
+        const timeMs = Number(data.time) * 60 * 1000;
+        const endTs = Date.now() + timeMs;
+        localStorage.setItem("quizEndTs", endTs);
+        setTimeLeft(data.time * 60);
+        
+        console.log("✅ New viva attempt created with timer:", data.time, "minutes");
+        return;
       }
 
-      ///get/viva-resultexist"
-    } catch (error) {}
-  };
-  useEffect(() => {
-    const storedEndTs = localStorage.getItem("quizEndTs");
+      // Unexpected status
+      console.error("Unexpected response status:", status);
+      alert("An error occurred. Please try again.");
+      window.location.href = "/";
 
-    if (storedEndTs) {
-      const remaining = Math.floor((parseInt(storedEndTs) - Date.now()) / 1000);
-      if (remaining > 0) {
-        setTimeLeft(remaining);
-      } else {
-        // Time expired
-        localStorage.removeItem("quizEndTs");
-        setTimeLeft(0);
-        // Optional: handle auto-submit here
-      }
+    } catch (error) {
+      console.error("Error in HandleGenrateQ:", error);
+      alert("Failed to load viva. Please try again.");
+      window.location.href = "/";
     }
-  }, []);
+  };
 
   useEffect(() => {
-    if (timeLeft === null) return;
+    // Don't start timer if timeLeft is null or if questions aren't loaded
+    if (timeLeft === null || FinalQuetion.length === 0) return;
 
     if (intervalRef.current) clearInterval(intervalRef.current);
 
@@ -275,11 +315,11 @@ const VivaTest = () => {
           clearInterval(intervalRef.current);
           localStorage.removeItem("quizEndTs");
 
-          // 🚨 Auto-submit if not already submitted
-          if (!submitted) {
-            //  handleSubmit();
-            // setSubmitted(true);
-            handleSubmit();
+          // 🚨 Auto-submit if not already submitted and questions are loaded
+          if (!submitted && FinalQuetion.length > 0 && vivaMainid) {
+            console.log("⏰ Time over - auto-submitting viva");
+            handleSubmit("time-over");
+            setSubmitted(true);
             setDone(true);
           }
 
@@ -290,7 +330,7 @@ const VivaTest = () => {
     }, 1000);
 
     return () => clearInterval(intervalRef.current);
-  }, [timeLeft, submitted]);
+  }, [timeLeft, submitted, FinalQuetion, vivaMainid]);
 
   useEffect(() => {
     const GetVivaFunc = async () => {
@@ -347,17 +387,23 @@ const VivaTest = () => {
   }
 
   useEffect(() => {
-    const stopMonitoring = startTabFocusMonitor((status) => {
-      if (status === "inactive") {
-        alert("Form Is Submited Because You Left The Tab 🚨");
-        setTimeLeft(2);
+    // Only monitor tab switching if viva is active (questions loaded and not submitted)
+    if (!vivaMainid || FinalQuetion.length === 0 || submitted || done) {
+      return;
+    }
 
-        // Optional: increase count, warn, or auto-submit
+    const stopMonitoring = startTabFocusMonitor((status) => {
+      if (status === "inactive" && !submitted && !done) {
+        console.log("🚨 Tab switch detected - auto-submitting");
+        alert("Form Is Submitted Because You Left The Tab 🚨");
+        handleSubmit("tab-switch");
+        setSubmitted(true);
+        setTimeLeft(2);
       }
     });
 
     return () => stopMonitoring(); // cleanup on unmount
-  }, []);
+  }, [userid, vivaMainid, FinalQuetion, userAnswers, submitted, done]);
 
   let minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   let seconds = String(timeLeft % 60).padStart(2, "0");
@@ -377,35 +423,47 @@ const VivaTest = () => {
     console.log("Submitted Data:", newData);
   };
 
-  (function () {
+  useEffect(() => {
+    // Only monitor resize if viva is active
+    if (!vivaMainid || FinalQuetion.length === 0 || submitted || done) {
+      return;
+    }
+
     let initialWidth = window.innerWidth;
     let initialHeight = window.innerHeight;
-    let resizeTimeout; // for debounce
+    let resizeTimeout;
 
-    window.addEventListener("resize", function () {
-      clearTimeout(resizeTimeout); // reset timer
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
 
-      resizeTimeout = setTimeout(function () {
+      resizeTimeout = setTimeout(() => {
+        if (submitted || done) return; // Don't trigger if already submitted
+
         let currentWidth = window.innerWidth;
         let currentHeight = window.innerHeight;
 
-        let widthChange = Math.abs(
-          ((currentWidth - initialWidth) / initialWidth) * 100
-        );
         let heightChange = Math.abs(
           ((currentHeight - initialHeight) / initialHeight) * 100
         );
 
         if (heightChange >= 30) {
-          alert("Height Compromized");
-          handleSubmit();
-          // Set a cooldown period so it doesn't trigger again immediately
+          console.log("🚨 Screen minimized - auto-submitting");
+          alert("Height Compromised - Screen Minimized");
+          handleSubmit("minimize");
+          setSubmitted(true);
           initialWidth = currentWidth;
           initialHeight = currentHeight;
         }
-      }, 500); // Runs 500ms after last resize event
-    });
-  })();
+      }, 500);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimeout);
+    };
+  }, [vivaMainid, FinalQuetion, submitted, done]);
 
   return (
     <div className="viva-test-page-wrapper">

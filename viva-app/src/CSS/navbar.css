@@ -58,7 +58,8 @@
   transition: color 0.3s ease;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: #f15bb5;
 }
 
@@ -74,6 +75,18 @@
   color: #ccc;
   cursor: pointer;
   overflow: visible;
+}
+
+.profile-icon-link {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+.profile-icon-link:hover {
+  color: #f15bb5;
 }
 
 .badge {
@@ -138,14 +151,16 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 28px;
+    padding: 0 20px;
     background: rgba(30, 30, 30, 0.6);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    margin: 0 3vw;
-    width: 80vw;
+    margin: 0 auto;
+    width: 95%;
+    left: 50%;
+    transform: translateX(-50%);
     position: fixed;
     top: 10px;
     height: 5vh;
@@ -169,10 +184,478 @@
   }
 
   .nav-right {
-    display: none; /* hide right side on small screens */
+    display: flex; /* Keep notification bell visible on mobile */
+  }
+  
+  .nav-right .signin-link,
+  .nav-right .get-started-btn {
+    display: none; /* Hide sign in/get started buttons on mobile */
   }
 
   .menu-toggle {
     display: block;
+  }
+}
+
+/* Student Notification Panel */
+.student-notification-panel {
+  position: absolute;
+  top: 70px;
+  right: 20px;
+  width: 400px;
+  max-height: 500px;
+  background: rgba(20, 20, 20, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.student-notification-item {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  margin-bottom: 10px;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.student-notification-item:hover {
+  background: rgba(30, 30, 30, 0.8);
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateX(-5px);
+}
+
+.notification-delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  transition: all 0.3s ease;
+  opacity: 0;
+  z-index: 10;
+}
+
+.student-notification-item:hover .notification-delete-btn {
+  opacity: 1;
+}
+
+.notification-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.6);
+  transform: scale(1.1);
+}
+
+/* Always show delete button on mobile/touch devices */
+@media (max-width: 768px) {
+  .notification-delete-btn {
+    opacity: 1;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .notification-delete-btn {
+    opacity: 1;
+  }
+}
+
+.notification-viva-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+.notification-message {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-top: 5px;
+}
+
+.notification-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.notification-panel-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.notification-close-btn {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.notification-close-btn:hover {
+  color: #fff;
+}
+
+.notification-panel-body {
+  padding: 15px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.notification-panel-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-panel-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.notification-panel-body::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 10px;
+}
+
+.notification-panel-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
+}
+
+.notification-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #999;
+  text-align: center;
+}
+
+.notification-empty svg {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.notification-empty p {
+  font-size: 1.1rem;
+  margin: 10px 0 5px 0;
+  color: #ccc;
+}
+
+.notification-empty span {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.notification-content {
+  flex: 1;
+  padding-right: 35px;
+}
+
+.notification-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.notification-header-row strong {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.notification-details {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.notification-class {
+  font-size: 0.85rem;
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.15);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.notification-time {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 8px;
+}
+
+.notification-icon-wrapper {
+  flex-shrink: 0;
+}
+
+/* Teacher Profile Modal */
+.teacher-profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.teacher-profile-modal {
+  background: rgba(20, 20, 20, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  padding: 32px;
+  width: 90%;
+  max-width: 400px;
+  position: fixed;
+  top: 80px;
+  right: calc(8vw + 20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: top right;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.teacher-profile-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 32px;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.3s ease;
+}
+
+.teacher-profile-close:hover {
+  color: white;
+}
+
+.teacher-profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin: 0 auto 20px;
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+}
+
+.teacher-profile-info {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.teacher-profile-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+  color: white;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.teacher-profile-role {
+  margin: 0 0 20px 0;
+  color: #9ca3af;
+  font-size: 0.95rem;
+}
+
+.teacher-profile-email,
+.teacher-profile-enrollment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  color: #d1d5db;
+  font-size: 0.95rem;
+}
+
+.teacher-profile-email svg,
+.teacher-profile-enrollment svg {
+  color: #8b5cf6;
+  flex-shrink: 0;
+}
+
+.teacher-profile-theme {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.teacher-profile-theme label {
+  display: block;
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.teacher-theme-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.teacher-theme-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.teacher-theme-btn:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.teacher-theme-btn.active {
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border-color: #8b5cf6;
+  color: white;
+  font-weight: 600;
+}
+
+.teacher-profile-logout {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.teacher-profile-logout:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+}
+
+/* Mobile responsive for navbar */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 5%;
+    width: 95%;
+    margin: 0 auto;
+  }
+
+  .student-notification-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .teacher-profile-modal {
+    padding: 24px;
+    width: calc(100% - 40px);
+    max-width: 380px;
+    top: 90px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    animation: scaleInMobile 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: top center;
+  }
+
+  @keyframes scaleInMobile {
+    from {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+  }
+
+  .teacher-profile-avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+
+  .teacher-profile-info h3 {
+    font-size: 1.3rem;
   }
 }

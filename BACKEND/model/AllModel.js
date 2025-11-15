@@ -27,6 +27,18 @@ const userSchema = new mongoose.Schema(
           required: true  
         },
         role:String,
+        isVerified: {
+            type: Boolean,
+            default: false
+        },
+        otp: {
+            type: String,
+            default: null
+        },
+        otpExpiry: {
+            type: Date,
+            default: null
+        }
     },
     {timestamps: true}
 );
@@ -68,6 +80,31 @@ const resultSchema = new mongoose.Schema({
   answers: [],
   active:Boolean,
   score: Number
+}, { timestamps: true });
+
+const notificationSchema = new mongoose.Schema({
+  teacherId: { type: String, required: true },
+  studentId: { type: String, required: true },
+  studentName: String,
+  studentEnrollment: String,
+  vivaId: String,
+  vivaTitle: String,
+  classCode: String,
+  className: String,
+  reason: { type: String, required: true }, // "tab-switch", "minimize", "time-over"
+  message: { type: String, required: true },
+  isRead: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const vivaNotificationSchema = new mongoose.Schema({
+  vivaId: String,
+  vivaTitle: String,
+  classCode: String,
+  className: String,
+  message: String,
+  isRead: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now }
 });
 
 
@@ -77,4 +114,6 @@ const classModel = mongoose.model('classDetail', classSchema);
 const vivaModel = mongoose.model('viva', vivaSchema);
 const resultModel = mongoose.model('vivaresult', resultSchema);
 const classStudent = mongoose.model('classstudent', classSchemaDetail);
-export  {User,classModel,syllabusModel,vivaModel,classStudent,resultModel};   
+const notificationModel = mongoose.model('notification', notificationSchema);
+const vivaNotificationModel = mongoose.model('vivanotification', vivaNotificationSchema);
+export  {User,classModel,syllabusModel,vivaModel,classStudent,resultModel,notificationModel,vivaNotificationModel};   

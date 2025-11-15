@@ -26,6 +26,7 @@
   padding: 100px 20px 60px; /* top spacing adjusted for navbar */
   max-width: 900px;
   margin: 0 auto;
+  margin-top: 3rem;
   min-height: 500px;
   display: flex;
   flex-direction: column;
@@ -40,6 +41,7 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 500;
+  margin-top: 160px;
 }
 
 .hero h1 {
@@ -60,9 +62,19 @@
   -webkit-text-fill-color: transparent;
 }
 
+.namee {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+.namee h1 {
+  margin: 0px 0px -40px -0px;
+}
+
 .subtitle {
   max-width: 700px;
   margin: 0 auto 40px;
+  margin-top: 4rem;
   font-size: 1.1rem;
   color: #9ca3af;
   line-height: 1.6;
@@ -109,7 +121,7 @@
 }
 
 .glow-border::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   left: -50%;
@@ -130,7 +142,7 @@
 }
 
 .glow-border::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 3px;
   background: linear-gradient(90deg, #6366f1, #8b5cf6);
@@ -173,6 +185,8 @@
 
 .stat-item {
   text-align: center;
+  display: flex;
+  flex-direction: column;
   animation: slideUp 0.8s ease-out;
 }
 
@@ -360,13 +374,17 @@ html {
 }
 
 .feature-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.1),
+    rgba(236, 72, 153, 0.1)
+  );
   opacity: 0;
   transition: opacity 0.4s ease;
   z-index: 0;
@@ -450,7 +468,8 @@ html {
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -467,7 +486,8 @@ html {
 }
 
 @keyframes sparkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
     transform: scale(0.8) rotate(0deg);
   }
@@ -534,7 +554,8 @@ html {
 }
 
 @keyframes checkPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.7;
   }
   50% {
@@ -556,14 +577,25 @@ html {
 @media (max-width: 1024px) {
   .hero {
     padding: 80px 15px 50px;
+    margin-top: -5rem;
   }
 
   .hero h1 {
     font-size: 2.3rem;
   }
+  .namee {
+    margin-bottom: 2rem;
+  }
+  .namee h1 {
+    margin-bottom: -70px;
+  }
+  .title {
+    margin-top: 7rem;
+  }
 
   .subtitle {
     font-size: 1rem;
+    margin-top: 0rem;
   }
 
   .stats {
@@ -578,6 +610,9 @@ html {
 
   .feature-card {
     min-width: 240px;
+  }
+  .maindiv2 {
+    margin-top: 3rem;
   }
 }
 
@@ -604,7 +639,7 @@ html {
     flex-direction: column;
     align-items: center;
     gap: 25px;
-    margin-top: 40px;
+    margin-top: 0px;
   }
 
   .dashboard h1 {
@@ -620,6 +655,7 @@ html {
   .feature-card {
     width: 100%;
     max-width: 380px;
+    max-height: 500px;
   }
 }
 
@@ -647,13 +683,17 @@ html {
     font-size: 0.9rem;
   }
 
+  .stat-number {
+    font-size: 2.5rem;
+  }
+
   .stats h2 {
-    font-size: 1.4rem;
+    font-size: 2.5rem;
     text-align: center;
   }
 
   .stats p {
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   .feature-text h3 {
@@ -696,21 +736,21 @@ html {
     font-size: 13px;
     justify-content: start;
   }
-  
+
   .icon-container {
     width: 70px;
     height: 70px;
   }
-  
+
   .animated-icon {
     width: 30px;
     height: 30px;
   }
-  
+
   .feature-card h2 {
     font-size: 18px;
   }
-  
+
   .feature-card a {
     color: #d10f0f;
     font-weight: bold;
@@ -729,7 +769,12 @@ html {
 .skeleton-btn {
   width: 180px;
   height: 48px;
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 25%, rgba(139, 92, 246, 0.4) 50%, rgba(139, 92, 246, 0.2) 75%);
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.2) 25%,
+    rgba(139, 92, 246, 0.4) 50%,
+    rgba(139, 92, 246, 0.2) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 30px;
@@ -761,4 +806,240 @@ html {
 .btn-navbar-style:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 6px 20px rgba(214, 110, 253, 0.5);
+}
+
+/* ================= Testimonials Section ================= */
+.testimonials-section {
+  width: 100%;
+  padding: 80px 0 100px;
+  background: linear-gradient(to bottom, #0a0a0a, #111827);
+  overflow: hidden;
+  position: relative;
+}
+
+.testimonials-section::before,
+.testimonials-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 200px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.testimonials-section::before {
+  left: 0;
+  background: linear-gradient(to right, #0a0a0a, transparent);
+}
+
+.testimonials-section::after {
+  right: 0;
+  background: linear-gradient(to left, #0a0a0a, transparent);
+}
+
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 0 20px;
+}
+
+.testimonials-header h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 12px;
+}
+
+.testimonials-header p {
+  font-size: 1.1rem;
+  color: #9ca3af;
+}
+
+.testimonials-row {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+  width: max-content;
+}
+
+.testimonials-row-ltr {
+  animation: scrollLeft 40s linear infinite;
+}
+
+.testimonials-row-rtl {
+  animation: scrollRight 40s linear infinite;
+}
+
+@keyframes scrollLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes scrollRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.testimonials-row:hover {
+  animation-play-state: paused;
+}
+
+.testimonial-card {
+  min-width: 400px;
+  max-width: 600px;
+  background: rgba(30, 30, 30, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  display: flex;
+  gap: 16px;
+}
+
+.testimonial-card:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+}
+
+.testimonial-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.testimonial-content {
+  flex: 1;
+}
+
+.testimonial-text {
+  color: #d1d5db;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.testimonial-name {
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.testimonial-role {
+  color: #8b5cf6;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Duplicate cards for seamless loop */
+.testimonials-row-ltr::after,
+.testimonials-row-rtl::after {
+  content: "";
+  display: block;
+}
+
+/* Mobile Responsive for Testimonials */
+@media (max-width: 768px) {
+  .testimonials-section {
+    padding: 60px 0 80px;
+  }
+
+  .testimonials-section::before,
+  .testimonials-section::after {
+    width: 100px;
+  }
+
+  .testimonials-header h2 {
+    font-size: 2rem;
+  }
+
+  .testimonials-header p {
+    font-size: 1rem;
+  }
+
+  .testimonial-card {
+    min-width: 320px;
+    max-width: 200px;
+    padding: 20px;
+  }
+
+  .testimonial-avatar {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+
+  .testimonial-text {
+    font-size: 0.9rem;
+  }
+
+  .testimonial-name {
+    font-size: 0.95rem;
+  }
+
+  .testimonial-role {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials-section::before,
+  .testimonials-section::after {
+    width: 50px;
+  }
+
+  .testimonial-card {
+    min-width: 280px;
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .testimonial-avatar {
+    margin: 0 auto 12px;
+  }
+
+  .testimonials-header h2 {
+    font-size: 1.6rem;
+  }
+}
+/* ================= Inner Glow Effect for Username ================= */
+.inner-glow {
+  position: relative;
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
+    0 0 20px rgba(139, 92, 246, 0.3), 0 0 30px rgba(139, 92, 246, 0.2);
+  animation: innerGlow 2.5s ease-in-out infinite alternate;
+}
+
+@keyframes innerGlow {
+  0% {
+    text-shadow: 0 0 10px rgba(139, 92, 246, 0.5),
+      0 0 20px rgba(139, 92, 246, 0.3), 0 0 30px rgba(139, 92, 246, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 15px rgba(139, 92, 246, 0.8),
+      0 0 25px rgba(139, 92, 246, 0.5), 0 0 35px rgba(139, 92, 246, 0.3);
+  }
 }

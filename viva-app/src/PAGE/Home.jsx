@@ -94,13 +94,54 @@ const Home = () => {
     }
   }, [UserInfo, dispatch]);
 
-  // Animate stats counter
+  // Fetch real statistics from backend with fallback
   useEffect(() => {
+    const fetchStats = async () => {
+      // Set fallback data immediately
+      const fallbackData = { users: 125, satisfaction: 98, assessments: 200 };
+      
+      try {
+        // Try to fetch real data
+        const [usersResponse, vivasResponse] = await Promise.allSettled([
+          fetch("http://localhost:5050/bin/get/all-users-count"),
+          fetch("http://localhost:5050/bin/get/all-viva")
+        ]);
+        
+        let totalUsers = fallbackData.users;
+        let totalVivas = fallbackData.assessments;
+        
+        // Use real data if available
+        if (usersResponse.status === 'fulfilled' && usersResponse.value.ok) {
+          const usersData = await usersResponse.value.json();
+          totalUsers = usersData.count || fallbackData.users;
+        }
+        
+        if (vivasResponse.status === 'fulfilled' && vivasResponse.value.ok) {
+          const vivasData = await vivasResponse.value.json();
+          totalVivas = vivasData.length || fallbackData.assessments;
+        }
+        
+        // Animate with real or fallback data
+        animateStats({ 
+          users: totalUsers, 
+          satisfaction: 98, 
+          assessments: totalVivas 
+        });
+      } catch (error) {
+        console.log("Using fallback stats due to API error");
+        // Use fallback data
+        animateStats(fallbackData);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  // Animate stats counter
+  const animateStats = (targets) => {
     const duration = 2000; // 2 seconds
     const steps = 60;
     const interval = duration / steps;
-    
-    const targets = { users: 50, satisfaction: 98, assessments: 1 };
     let currentStep = 0;
 
     const timer = setInterval(() => {
@@ -110,7 +151,7 @@ const Home = () => {
       setStats({
         users: Math.floor(targets.users * progress),
         satisfaction: Math.floor(targets.satisfaction * progress),
-        assessments: Math.floor(targets.assessments * progress * 10) / 10,
+        assessments: Math.floor(targets.assessments * progress),
       });
 
       if (currentStep >= steps) {
@@ -120,7 +161,7 @@ const Home = () => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, []);
+  };
 
   function FeatureCard({ icon, title, description }) {
     return (
@@ -139,20 +180,24 @@ const Home = () => {
       <div className="maindiv">
         <div className="home-container">
           <section className="hero">
-            <span className="badgehome">AI-Powered Education Platform</span>
             {UserInfo.length > 0 ? (
               <>
-                <h1>
-                  Welcome <span>-</span> 
-                  <span className="gradient-text">{username}</span>
-                </h1>
+              <div className="namee">
+                  <h1>
+                    Welcome 
+                  </h1>
+                    <h1><span className="gradient-text nameee">{username}</span></h1>
+                </div>
               </>
             ) : (
               <>
+              <div className="title">
+                <span className="badge">AI-Powered Education Platform</span>
                 <h1>
                   Transform Education with <br />
                   <span className="gradient-text">AI Excellence</span>
                 </h1>
+                </div>
               </>
             )}
 
@@ -207,7 +252,7 @@ const Home = () => {
           {/* Stats Section */}
           <section className="stats">
             <div className="stat-item">
-              <h2 className="stat-number">20+</h2>
+              <h2 className="stat-number">{stats.users}+</h2>
               <p>Active Users</p>
             </div>
             <div className="stat-item">
@@ -215,7 +260,7 @@ const Home = () => {
               <p>Satisfaction Rate</p>
             </div>
             <div className="stat-item">
-              <h2 className="stat-number">30+</h2>
+              <h2 className="stat-number">{stats.assessments}+</h2>
               <p>Assessments</p>
             </div>
           </section>
@@ -287,6 +332,204 @@ const Home = () => {
                 <li><CheckCircle2 size={16} className="check-icon" /> Behavior Analysis</li>
                 <li><CheckCircle2 size={16} className="check-icon" /> Secure Environment</li>
               </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Testimonials Section */}
+        <div className="testimonials-section">
+          <div className="testimonials-header">
+            <h2>What Our Users Say</h2>
+            <p>Real feedback from students and teachers using AI Viva</p>
+          </div>
+
+          {/* Upper Row - Left to Right */}
+          <div className="testimonials-row testimonials-row-ltr">
+            {/* First set */}
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">RS</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"AI Viva has completely transformed how I conduct assessments. The automated grading saves me hours every week!"</p>
+                <h4 className="testimonial-name">Rajesh Sharma</h4>
+                <span className="testimonial-role">Computer Science Teacher</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">PK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The AI-powered questions are incredibly smart. It feels like having a real conversation with a teacher!"</p>
+                <h4 className="testimonial-name">Priya Kapoor</h4>
+                <span className="testimonial-role">Engineering Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">AM</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The analytics dashboard gives me deep insights into my students' performance. Best educational tool I've used!"</p>
+                <h4 className="testimonial-name">Amit Mehta</h4>
+                <span className="testimonial-role">Mathematics Professor</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">SK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"I love how the platform adapts to my learning pace. The instant feedback helps me improve quickly."</p>
+                <h4 className="testimonial-name">Sneha Kumar</h4>
+                <span className="testimonial-role">Medical Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">VG</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The anti-cheat system ensures fair assessments. My students take tests seriously now!"</p>
+                <h4 className="testimonial-name">Vikram Gupta</h4>
+                <span className="testimonial-role">Physics Teacher</span>
+              </div>
+            </div>
+
+            {/* Duplicate set for seamless loop */}
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">RS</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"AI Viva has completely transformed how I conduct assessments. The automated grading saves me hours every week!"</p>
+                <h4 className="testimonial-name">Rajesh Sharma</h4>
+                <span className="testimonial-role">Computer Science Teacher</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">PK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The AI-powered questions are incredibly smart. It feels like having a real conversation with a teacher!"</p>
+                <h4 className="testimonial-name">Priya Kapoor</h4>
+                <span className="testimonial-role">Engineering Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">AM</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The analytics dashboard gives me deep insights into my students' performance. Best educational tool I've used!"</p>
+                <h4 className="testimonial-name">Amit Mehta</h4>
+                <span className="testimonial-role">Mathematics Professor</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">SK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"I love how the platform adapts to my learning pace. The instant feedback helps me improve quickly."</p>
+                <h4 className="testimonial-name">Sneha Kumar</h4>
+                <span className="testimonial-role">Medical Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">VG</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The anti-cheat system ensures fair assessments. My students take tests seriously now!"</p>
+                <h4 className="testimonial-name">Vikram Gupta</h4>
+                <span className="testimonial-role">Physics Teacher</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Lower Row - Right to Left */}
+          <div className="testimonials-row testimonials-row-rtl">
+            {/* First set */}
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">NP</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The interface is so intuitive! Even my non-tech-savvy colleagues can use it easily."</p>
+                <h4 className="testimonial-name">Neha Patel</h4>
+                <span className="testimonial-role">English Teacher</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">RV</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"Best platform for online assessments. The email notifications keep me updated on my progress!"</p>
+                <h4 className="testimonial-name">Rahul Verma</h4>
+                <span className="testimonial-role">MBA Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">MS</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"Creating vivas is so quick now. I can generate quality questions in minutes instead of hours!"</p>
+                <h4 className="testimonial-name">Meera Singh</h4>
+                <span className="testimonial-role">Chemistry Professor</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">AJ</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The real-time monitoring during tests gives me confidence that assessments are fair and secure."</p>
+                <h4 className="testimonial-name">Arjun Joshi</h4>
+                <span className="testimonial-role">IT Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">DK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The detailed result analysis helps me identify exactly where my students need more support."</p>
+                <h4 className="testimonial-name">Deepak Khanna</h4>
+                <span className="testimonial-role">Biology Teacher</span>
+              </div>
+            </div>
+
+            {/* Duplicate set for seamless loop */}
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">NP</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The interface is so intuitive! Even my non-tech-savvy colleagues can use it easily."</p>
+                <h4 className="testimonial-name">Neha Patel</h4>
+                <span className="testimonial-role">English Teacher</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">RV</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"Best platform for online assessments. The email notifications keep me updated on my progress!"</p>
+                <h4 className="testimonial-name">Rahul Verma</h4>
+                <span className="testimonial-role">MBA Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">MS</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"Creating vivas is so quick now. I can generate quality questions in minutes instead of hours!"</p>
+                <h4 className="testimonial-name">Meera Singh</h4>
+                <span className="testimonial-role">Chemistry Professor</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">AJ</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The real-time monitoring during tests gives me confidence that assessments are fair and secure."</p>
+                <h4 className="testimonial-name">Arjun Joshi</h4>
+                <span className="testimonial-role">IT Student</span>
+              </div>
+            </div>
+
+            <div className="testimonial-card">
+              <div className="testimonial-avatar">DK</div>
+              <div className="testimonial-content">
+                <p className="testimonial-text">"The detailed result analysis helps me identify exactly where my students need more support."</p>
+                <h4 className="testimonial-name">Deepak Khanna</h4>
+                <span className="testimonial-role">Biology Teacher</span>
+              </div>
             </div>
           </div>
         </div>

@@ -5,14 +5,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10000;
+  z-index: 999;
   animation: globalFadeIn 0.3s ease;
+  pointer-events: none;
 }
 
 @keyframes globalFadeIn {
@@ -29,11 +30,12 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  background: rgba(30, 30, 30, 0.9);
+  background: rgba(30, 30, 30, 0.95);
   padding: 40px 60px;
   border-radius: 20px;
   border: 1px solid rgba(139, 92, 246, 0.3);
   box-shadow: 0 20px 60px rgba(139, 92, 246, 0.4);
+  pointer-events: auto;
 }
 
 .global-spinner-icon {
@@ -55,4 +57,32 @@
   font-size: 16px;
   font-weight: 500;
   margin: 0;
+}
+
+/* Ensure toast messages appear above loading overlay */
+.Toastify__toast-container {
+  z-index: 99999 !important;
+}
+
+.Toastify__toast {
+  background: rgba(30, 30, 30, 0.98) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.Toastify__toast--success {
+  border-left: 4px solid #10b981;
+}
+
+.Toastify__toast--error {
+  border-left: 4px solid #ef4444;
+}
+
+.Toastify__toast--info {
+  border-left: 4px solid #3b82f6;
+}
+
+.Toastify__toast--warning {
+  border-left: 4px solid #f59e0b;
 }

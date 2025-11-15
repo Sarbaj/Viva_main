@@ -133,9 +133,9 @@ const JoinClass = () => {
         
         for (const classCode of classCodesSet) {
           try {
-            // Try to get class information from the studentinclass endpoint
+            // Get class information from the new class-info endpoint
             const classResponse = await fetch(
-              "http://localhost:5050/bin/get/studentinclass",
+              "http://localhost:5050/bin/get/class-info",
               {
                 method: "POST",
                 headers: {
@@ -149,9 +149,8 @@ const JoinClass = () => {
             
             if (classResponse.ok) {
               const classData = await classResponse.json();
-              // Check if the response contains class name information
-              if (classData && classData.length > 0 && classData[0].classnname) {
-                className = classData[0].classnname;
+              if (classData.success && classData.className) {
+                className = classData.className;
               }
             }
 

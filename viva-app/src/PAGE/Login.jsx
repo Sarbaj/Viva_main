@@ -76,8 +76,8 @@ const Login = () => {
             // Student - redirect to home
             navigate("/");
           } else if (userRole === "1") {
-            // Teacher - redirect to dashboard
-            navigate("/teacherdashboard");
+            // Teacher - redirect to home
+            navigate("/");
           } else if (userRole === "2") {
             // Admin - redirect to home
             navigate("/");

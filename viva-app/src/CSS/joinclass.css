@@ -519,3 +519,196 @@
     font-size: 1.5rem;
   }
 }
+
+/* Email Preview Modal */
+.joinclass-email-preview-modal {
+  position: relative;
+  background: white;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.email-preview-container {
+  color: #1f2937;
+}
+
+.email-preview-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px;
+  text-align: center;
+  color: white;
+}
+
+.email-score-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: white;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.email-score-number {
+  font-size: 52px;
+  font-weight: bold;
+  color: #667eea;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.email-score-total {
+  font-size: 22px;
+  color: #666;
+  font-weight: 600;
+}
+
+.email-preview-content {
+  padding: 40px;
+}
+
+.email-info-section {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.email-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.email-info-row:last-child {
+  border-bottom: none;
+}
+
+.email-info-label {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.email-info-value {
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.email-performance-badge {
+  background: #10b981;
+  color: white;
+  padding: 15px 30px;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 30px 0;
+}
+
+.email-advice-box {
+  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+  border-left: 4px solid #667eea;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.email-advice-box p {
+  margin: 5px 0;
+  color: #1f2937;
+  line-height: 1.6;
+}
+
+.email-questions-section {
+  margin-top: 30px;
+}
+
+.email-section-title {
+  color: #1f2937;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #667eea;
+}
+
+.email-question-card {
+  background: #f9fafb;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 8px;
+}
+
+.email-question-card.correct {
+  border-left: 4px solid #10b981;
+}
+
+.email-question-card.incorrect {
+  border-left: 4px solid #ef4444;
+}
+
+.email-question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.email-question-text {
+  color: #1f2937;
+  margin: 10px 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.email-options {
+  margin-top: 15px;
+}
+
+.email-option {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+  background: #f3f4f6;
+}
+
+.email-option.selected-correct {
+  background: #d1fae5;
+  border: 2px solid #10b981;
+}
+
+.email-option.selected-incorrect {
+  background: #fee2e2;
+  border: 2px solid #ef4444;
+}
+
+.email-option.correct-answer {
+  background: #d1fae5;
+  border: 2px solid #10b981;
+}
+
+.email-footer {
+  background: #f9fafb;
+  text-align: center;
+  padding: 30px;
+  color: #6b7280;
+}
+
+.email-developers {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.email-developers strong {
+  color: #667eea;
+}

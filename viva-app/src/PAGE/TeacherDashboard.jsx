@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
@@ -18,6 +17,9 @@ import {
   FileText,
   Award,
   Loader2,
+  Bell,
+  X,
+  AlertTriangle,
 } from "lucide-react";
 import "../CSS/teacher.css";
 import "../CSS/global-loading.css";
@@ -39,6 +41,9 @@ const TeacherDashboard = () => {
     totalStudents: 0,
     successRate: 0,
   });
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const { UserInfo } = useSelector((state) => state.user);
 
@@ -52,14 +57,64 @@ const TeacherDashboard = () => {
     }
   }, [UserInfo]);
 
+  // Fetch notifications
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (!userid) return;
+
+      try {
+        const response = await fetch(
+          "http://localhost:5050/bin/notification/get-teacher",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ teacherId: userid }),
+          }
+        );
+        const data = await response.json();
+
+        if (data.success) {
+          setNotifications(data.notifications);
+          setUnreadCount(data.unreadCount);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+    // Refresh notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [userid]);
+
+  // Close notification panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        showNotifications &&
+        !event.target.closest(".notification-panel") &&
+        !event.target.closest(".teacher-notification-btn")
+      ) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showNotifications]);
+
   useEffect(() => {
     const GetClassCode = async () => {
       try {
-        const data = await fetch("http://localhost:5050/bin/get/teacher-classes-with-stats", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ teacherid: userid }),
-        });
+        const data = await fetch(
+          "http://localhost:5050/bin/get/teacher-classes-with-stats",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ teacherid: userid }),
+          }
+        );
         const result = await data.json();
         if (result.message.length > 0) {
           setClassRoom(result.message);
@@ -69,11 +124,14 @@ const TeacherDashboard = () => {
 
           // Calculate real success rate from analytics
           try {
-            const analyticsResponse = await fetch("http://localhost:5050/bin/get/analytics", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ teacherId: userid }),
-            });
+            const analyticsResponse = await fetch(
+              "http://localhost:5050/bin/get/analytics",
+              {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ teacherId: userid }),
+              }
+            );
             const analyticsData = await analyticsResponse.json();
 
             if (analyticsData.classes && analyticsData.classes.length > 0) {
@@ -89,7 +147,10 @@ const TeacherDashboard = () => {
                 });
               });
 
-              const successRate = totalSubmissions > 0 ? Math.round(totalScore / totalSubmissions) : 0;
+              const successRate =
+                totalSubmissions > 0
+                  ? Math.round(totalScore / totalSubmissions)
+                  : 0;
               setStats((prev) => ({ ...prev, successRate }));
             }
           } catch (error) {
@@ -212,7 +273,8 @@ const TeacherDashboard = () => {
         setStats({
           totalClasses: updatedClasses.length,
           totalVivas: stats.totalVivas - (classToDelete.vivaCount || 0),
-          totalStudents: stats.totalStudents - (classToDelete.studentCount || 0),
+          totalStudents:
+            stats.totalStudents - (classToDelete.studentCount || 0),
         });
 
         // Close modal and reset
@@ -220,7 +282,9 @@ const TeacherDashboard = () => {
         setClassToDelete(null);
         setDeleteConfirmation("");
 
-        alert(`Class "${classToDelete.classname}" and all associated vivas deleted successfully.`);
+        alert(
+          `Class "${classToDelete.classname}" and all associated vivas deleted successfully.`
+        );
       } else {
         alert(result.message || "Failed to delete class. Please try again.");
       }
@@ -229,6 +293,76 @@ const TeacherDashboard = () => {
       alert("An error occurred while deleting the class.");
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5050/bin/notification/delete",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ notificationId }),
+        }
+      );
+
+      if (response.ok) {
+        setNotifications(notifications.filter((n) => n._id !== notificationId));
+        setUnreadCount(Math.max(0, unreadCount - 1));
+      }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
+
+  const handleClearAllNotifications = async () => {
+    if (!window.confirm("Are you sure you want to clear all notifications?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:5050/bin/notification/delete-all",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ teacherId: userid }),
+        }
+      );
+
+      if (response.ok) {
+        setNotifications([]);
+        setUnreadCount(0);
+      }
+    } catch (error) {
+      console.error("Error clearing notifications:", error);
+    }
+  };
+
+  const getReasonIcon = (reason) => {
+    switch (reason) {
+      case "tab-switch":
+        return "🔄";
+      case "minimize":
+        return "📉";
+      case "time-over":
+        return "⏰";
+      default:
+        return "⚠️";
+    }
+  };
+
+  const getReasonColor = (reason) => {
+    switch (reason) {
+      case "tab-switch":
+        return "#f59e0b";
+      case "minimize":
+        return "#ef4444";
+      case "time-over":
+        return "#3b82f6";
+      default:
+        return "#6b7280";
     }
   };
 
@@ -245,14 +379,113 @@ const TeacherDashboard = () => {
             </div>
           </div>
           <div className="teacher-header-actions">
-            <button 
+            <button
               className="teacher-notification-btn"
+              onClick={() => setShowNotifications(!showNotifications)}
             >
-              <Activity size={20} />
-              <span className="teacher-notification-badge">3</span>
+              <Bell size={20} />
+              {unreadCount > 0 && (
+                <span className="teacher-notification-badge">
+                  {unreadCount}
+                </span>
+              )}
             </button>
           </div>
-          
+
+          {/* Notification Panel */}
+          {showNotifications && (
+            <div className="notification-panel">
+              <div className="notification-panel-header">
+                <h3>
+                  <AlertTriangle size={20} />
+                  Auto-Submit Notifications
+                </h3>
+                <div className="notification-header-actions">
+                  {notifications.length > 0 && (
+                    <button
+                      className="notification-clear-all"
+                      onClick={handleClearAllNotifications}
+                    >
+                      Clear All
+                    </button>
+                  )}
+                  <button
+                    className="notification-close-btn"
+                    onClick={() => setShowNotifications(false)}
+                    title="Close"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+              <div className="notification-panel-body">
+                {notifications.length === 0 ? (
+                  <div className="notification-empty">
+                    <Bell size={48} />
+                    <p>No notifications</p>
+                    <span>All students are following the rules!</span>
+                  </div>
+                ) : (
+                  notifications.map((notification) => (
+                    <div
+                      key={notification._id}
+                      className={`notification-item ${
+                        !notification.isRead ? "notification-unread" : ""
+                      }`}
+                    >
+                      <div className="notification-icon-wrapper">
+                        <span
+                          className="notification-reason-icon"
+                          style={{
+                            background: getReasonColor(notification.reason),
+                          }}
+                        >
+                          {getReasonIcon(notification.reason)}
+                        </span>
+                      </div>
+                      <div className="notification-content">
+                        <div className="notification-header-row">
+                          <strong>{notification.studentName}</strong>
+                          <span className="notification-enrollment">
+                            ({notification.studentEnrollment})
+                          </span>
+                        </div>
+                        <div className="notification-details">
+                          <span className="notification-class">
+                            {notification.className}
+                          </span>
+                          <span className="notification-separator">•</span>
+                          <span className="notification-viva">
+                            {notification.vivaTitle}
+                          </span>
+                        </div>
+                        <div className="notification-reason">
+                          {notification.reason === "tab-switch" &&
+                            "🔄 Tab Switch Detected"}
+                          {notification.reason === "minimize" &&
+                            "📉 Screen Minimized"}
+                          {notification.reason === "time-over" &&
+                            "⏰ Time Over"}
+                        </div>
+                        <div className="notification-time">
+                          {new Date(notification.createdAt).toLocaleString()}
+                        </div>
+                      </div>
+                      <button
+                        className="notification-delete-btn"
+                        onClick={() =>
+                          handleDeleteNotification(notification._id)
+                        }
+                      >
+                        <X size={16} />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Celebration Animation */}
           {showCelebration && (
             <div className="celebration-overlay">
@@ -344,15 +577,39 @@ const TeacherDashboard = () => {
               <Plus size={20} />
               Create New Class
             </button>
-            <button className="teacher-action-btn" style={{ opacity: 0.6, cursor: "not-allowed" }} disabled>
+            <button
+              className="teacher-action-btn"
+              style={{ opacity: 0.6, cursor: "not-allowed" }}
+              disabled
+            >
               <Upload size={20} />
               Upload Syllabus
-              <span style={{ marginLeft: "auto", fontSize: "0.85rem", color: "#9ca3af" }}>Coming Soon</span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontSize: "0.85rem",
+                  color: "#9ca3af",
+                }}
+              >
+                Coming Soon
+              </span>
             </button>
-            <button className="teacher-action-btn" style={{ opacity: 0.6, cursor: "not-allowed" }} disabled>
+            <button
+              className="teacher-action-btn"
+              style={{ opacity: 0.6, cursor: "not-allowed" }}
+              disabled
+            >
               <Calendar size={20} />
               Schedule Test
-              <span style={{ marginLeft: "auto", fontSize: "0.85rem", color: "#9ca3af" }}>Coming Soon</span>
+              <span
+                style={{
+                  marginLeft: "auto",
+                  fontSize: "0.85rem",
+                  color: "#9ca3af",
+                }}
+              >
+                Coming Soon
+              </span>
             </button>
           </div>
         </div>
@@ -586,31 +843,50 @@ const TeacherDashboard = () => {
             </div>
             <div className="teacher-modal-body">
               <div style={{ marginBottom: "20px" }}>
-                <p style={{ color: "#f87171", fontWeight: "600", marginBottom: "10px" }}>
+                <p
+                  style={{
+                    color: "#f87171",
+                    fontWeight: "600",
+                    marginBottom: "10px",
+                  }}
+                >
                   This action cannot be undone!
                 </p>
                 <p style={{ color: "#9ca3af", marginBottom: "15px" }}>
                   Deleting this class will permanently remove:
                 </p>
-                <ul style={{ color: "#9ca3af", marginLeft: "20px", marginBottom: "15px" }}>
+                <ul
+                  style={{
+                    color: "#9ca3af",
+                    marginLeft: "20px",
+                    marginBottom: "15px",
+                  }}
+                >
                   <li>The class "{classToDelete.classname}"</li>
-                  <li>All {classToDelete.vivaCount || 0} vivas in this class</li>
+                  <li>
+                    All {classToDelete.vivaCount || 0} vivas in this class
+                  </li>
                   <li>All student results and submissions</li>
                   <li>All associated data</li>
                 </ul>
               </div>
               <div className="teacher-form-group">
-                <label>Type the class name to confirm: <strong>{classToDelete.classname}</strong></label>
+                <label>
+                  Type the class name to confirm:{" "}
+                  <strong>{classToDelete.classname}</strong>
+                </label>
                 <input
                   type="text"
                   placeholder={`Type "${classToDelete.classname}" to confirm`}
                   value={deleteConfirmation}
                   onChange={(e) => setDeleteConfirmation(e.target.value)}
                   disabled={isDeleting}
-                  style={{ 
-                    borderColor: deleteConfirmation && deleteConfirmation !== classToDelete.classname 
-                      ? "rgba(239, 68, 68, 0.5)" 
-                      : "rgba(139, 92, 246, 0.3)" 
+                  style={{
+                    borderColor:
+                      deleteConfirmation &&
+                      deleteConfirmation !== classToDelete.classname
+                        ? "rgba(239, 68, 68, 0.5)"
+                        : "rgba(139, 92, 246, 0.3)",
                   }}
                 />
               </div>
@@ -630,10 +906,13 @@ const TeacherDashboard = () => {
               <button
                 className="teacher-btn-primary"
                 onClick={HandleConfirmDelete}
-                disabled={isDeleting || deleteConfirmation !== classToDelete.classname}
+                disabled={
+                  isDeleting || deleteConfirmation !== classToDelete.classname
+                }
                 style={{
                   background: "linear-gradient(90deg, #ef4444, #dc2626)",
-                  opacity: deleteConfirmation !== classToDelete.classname ? 0.5 : 1,
+                  opacity:
+                    deleteConfirmation !== classToDelete.classname ? 0.5 : 1,
                 }}
               >
                 {isDeleting ? (
